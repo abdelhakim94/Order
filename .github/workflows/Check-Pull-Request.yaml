@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # TODO: Manage versions
-      - run: docker build -t Order:latest .
+      - run: docker build -t order:latest .
