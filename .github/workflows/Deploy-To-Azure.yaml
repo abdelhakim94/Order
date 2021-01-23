@@ -1,0 +1,31 @@
+name: Deploy-To-Azure
+
+# TODO: Include Release and Prod branches among target branches.
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - Dev
+
+jobs:
+  deploy-to-azure:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: azure/docker-login@v1
+        with:
+          login-server: orderregistry.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      # TODO: Manage versions.
+      - run: |
+        docker build -t order:latest .
+        docker tag order:latest orderregistry.azurecr.io/order:latest
+        docker push orderregistry.azurecr.io/order:latest
+
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Dev-Order'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: 'orderregistry.azurecr.io/order:latest'
