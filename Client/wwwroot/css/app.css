@@ -1,7 +1,7 @@
 /*  
   Every component has a <div> root whose main purpose is
   to allow the component to be completely resizable/customizable
-  by it's consumer. For this two work, we have to follow these
+  by it's consumer. For this to work, we have to follow these
   convetions:
   - The <div> wrapping the component should be of class
    "component-container".
@@ -14,10 +14,6 @@
     consumer will need to override (this is rarely necessary).
 */
 .component-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: stretch;
   padding: 0em;
   margin: 0em;
 }
