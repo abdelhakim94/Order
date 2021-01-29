@@ -4,6 +4,8 @@
   border-radius: 2em;
   outline-style: none;
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 ::deep input:focus,
