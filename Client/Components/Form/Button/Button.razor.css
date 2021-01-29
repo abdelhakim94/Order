@@ -1,0 +1,15 @@
+button {
+  color: #fff;
+  background-color: #52affa;
+  border: none;
+  border-radius: 2em;
+  outline: none;
+  height: 100%;
+
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+button:active {
+  box-shadow: 0 0 0.2em #3db8ff;
+}
