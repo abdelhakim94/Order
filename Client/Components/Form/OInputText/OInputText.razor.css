@@ -1,0 +1,16 @@
+::deep input {
+  padding: 0.5em 1rem;
+  border: 0.01em solid black;
+  border-radius: 2em;
+  outline-style: none;
+  height: 100%;
+}
+
+::deep input:focus,
+::deep input:hover {
+  box-shadow: 0 0 0.2em #1b6ec2;
+}
+
+::deep input.invalid {
+  box-shadow: 0 0 0.2em red;
+}
