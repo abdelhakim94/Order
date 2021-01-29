@@ -1,0 +1,45 @@
+@page "/"
+
+@using Order.Client.Components.Form
+@using Order.Client.Components.Misc
+
+@namespace Order.Client.Pages
+
+<EditForm Model=LoginData>
+
+    <ObjectGraphDataAnnotationsValidator />
+
+    <div class="form-container">
+
+        <h1 class="form-header">@PageLabel</h1>
+
+        <div class="form-block">
+            <OInputText CssClass="form-input" @bind-Value=@LoginData.Email PlaceHolder=@M.Email />
+            <ValidationMessage For=@( () => LoginData.Email) />
+        </div>
+
+        <div class="form-block">
+            <OInputText CssClass="form-input" @bind-Value=@LoginData.Password PlaceHolder=@M.Password />
+            <ValidationMessage For=@( () => LoginData.Password) />
+        </div>
+
+        <div class="form-block" hidden=@IsLoggingIn>
+            <OInputText CssClass="form-input" @bind-Value=@LoginData.ConfirmPassword PlaceHolder=@M.ConfirmPassword />
+            <ValidationMessage For=@( () => LoginData.ConfirmPassword ) />
+        </div>
+
+        <Button CssClass="form-submit" Type="submit" Label=@SubmitButtonLabel />
+
+        <div class="redirection" hidden=@(!IsLoggingIn)>
+            <a href="/">@M.ForgotPassword</a>
+        </div>
+
+        <LineTextSeparator Text=@M.Otherwise hidden=@(!IsLoggingIn) />
+
+        <div class="redirection">
+            @FooterAsk <a href="" class="redirect" @onclick=@ToggleIsLoggingIn>@FooterRedirect</a>
+        </div>
+
+    </div>
+
+</EditForm>

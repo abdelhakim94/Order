@@ -1,0 +1,35 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-content: stretch;
+  height: 95vh;
+  width: 90vw;
+  margin: auto;
+}
+
+.form-header {
+  font-size: 1.5em;
+}
+
+::deep .form-input {
+  height: 2em;
+}
+
+::deep .form-submit {
+  height: 2em;
+  font-size: 1.1em;
+}
+
+.redirection {
+  align-self: center;
+}
+
+.redirect {
+  font-weight: bold;
+  color: #52affa;
+}
+
+.redirect:active {
+  text-shadow: 0 0 0.1em #1b6ec2;
+}
