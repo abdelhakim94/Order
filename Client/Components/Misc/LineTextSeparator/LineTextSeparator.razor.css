@@ -1,0 +1,16 @@
+.featured-header {
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  text-align: center;
+  height: 100%;
+}
+
+.featured-header legend {
+  padding-inline-start: 8px; /* It sets the whitespace between the line and the text */
+  padding-inline-end: 8px;
+  background: transparent; /** It's cool because you don't need to fill your bg-color as you would need to in some of the other examples that you can find (: */
+  font-weight: normal; /* I preffer the text to be regular instead of bold  */
+  color: grey;
+  height: 100%;
+}
