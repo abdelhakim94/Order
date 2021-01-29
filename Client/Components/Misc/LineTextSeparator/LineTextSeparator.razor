@@ -1,0 +1,22 @@
+@namespace Order.Client.Components.Misc
+
+<div @attributes=@AdditionalAttributes class="component-container @CssClass">
+
+    <fieldset class="featured-header" @attributes=@AdditionalAttributes>
+
+        <legend>@Text</legend>
+
+    </fieldset>
+
+</div>
+
+@code{
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}
