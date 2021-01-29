@@ -16,3 +16,14 @@
 ::deep input.invalid {
   box-shadow: 0 0 0.2em red;
 }
+
+.component-container {
+  position: relative;
+}
+
+img {
+  position: absolute;
+  right: 1em;
+  top: 20%;
+  height: 60%;
+}

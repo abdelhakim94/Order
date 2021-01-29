@@ -19,14 +19,14 @@
         </div>
 
         <div class="form-block">
-            <OInputText IsSensitiveInput=@ShouldHidePasswords CssClass="form-input" @bind-Value=@LoginData.Password
+            <OInputText IsSensitiveInput=@true CssClass="form-input" @bind-Value=@LoginData.Password
                 PlaceHolder=@M.Password />
             <ValidationMessage For=@( () => LoginData.Password) />
         </div>
 
         <div class="form-block" hidden=@IsLoggingIn>
-            <OInputText IsSensitiveInput=@ShouldHidePasswords CssClass="form-input"
-                @bind-Value=@LoginData.ConfirmPassword PlaceHolder=@M.ConfirmPassword />
+            <OInputText IsSensitiveInput=@true CssClass="form-input" @bind-Value=@LoginData.ConfirmPassword
+                PlaceHolder=@M.ConfirmPassword />
             <ValidationMessage For=@( () => LoginData.ConfirmPassword ) />
         </div>
 
@@ -37,6 +37,8 @@
         </div>
 
         <LineTextSeparator Text=@M.Otherwise hidden=@(!IsLoggingIn) />
+
+        <i class="fa-eye-slash"></i>
 
         <div class="redirection">
             @FooterAsk <a href="" class="redirect" @onclick=@ToggleIsLoggingIn>@FooterRedirect</a>

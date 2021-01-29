@@ -1,40 +1,6 @@
 @namespace Order.Client.Components.Form
 
 <div @attributes=@AdditionalAttributes class="component-container @CssClass">
-    <InputText type=@HideInformation() @bind-Value=@Value placeholder=@PlaceHolder />
+    <InputText type=@ShouldHideValue() @bind-Value=@Value placeholder=@PlaceHolder />
+    <img src=@GetIcon() hidden=@(!IsSensitiveInput) @onclick=@ToggleIsHiddenValue />
 </div>
-
-@code{
-    private string value;
-    [Parameter]
-    public string Value
-    {
-        get => value;
-        set
-        {
-            if (this.value != value)
-            {
-                this.value = value;
-                if (ValueChanged.HasDelegate)
-                    ValueChanged.InvokeAsync(value);
-            }
-        }
-    }
-
-    [Parameter]
-    public EventCallback<string> ValueChanged { get; set; }
-
-    [Parameter]
-    public string PlaceHolder { get; set; }
-
-    [Parameter]
-    public bool IsSensitiveInput { get; set; }
-
-    [Parameter]
-    public string CssClass { get; set; }
-
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, Object> AdditionalAttributes { get; set; }
-
-    string HideInformation() => IsSensitiveInput ? "password" : "";
-}

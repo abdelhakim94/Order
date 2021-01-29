@@ -11,8 +11,6 @@ namespace Order.Client.Pages
         /// </summary>
         public bool IsLoggingIn { get; set; } = true;
 
-        public bool ShouldHidePasswords { get; set; } = true;
-
         public string PageHeader { get => IsLoggingIn ? M.SignIn : M.SignUp; }
         public string SubmitButtonLabel { get => IsLoggingIn ? M.Login : M.Register; }
         public string FooterAsk { get => IsLoggingIn ? M.AskForAccountAbsence : M.AskForAccountExistance; }
@@ -21,7 +19,5 @@ namespace Order.Client.Pages
         public UserLoginDto LoginData { get; set; } = new UserLoginDto();
 
         public void ToggleIsLoggingIn() => IsLoggingIn = !IsLoggingIn;
-
-        public void ToggleShouldHidePasswords() => ShouldHidePasswords = !ShouldHidePasswords;
     }
 }
