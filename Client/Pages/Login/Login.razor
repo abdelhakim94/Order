@@ -11,7 +11,7 @@
 
     <div class="form-container">
 
-        <h1 class="form-header">@PageLabel</h1>
+        <h1 class="form-header">@PageHeader</h1>
 
         <div class="form-block">
             <OInputText CssClass="form-input" @bind-Value=@LoginData.Email PlaceHolder=@M.Email />
@@ -19,12 +19,14 @@
         </div>
 
         <div class="form-block">
-            <OInputText CssClass="form-input" @bind-Value=@LoginData.Password PlaceHolder=@M.Password />
+            <OInputText IsSensitiveInput=@ShouldHidePasswords CssClass="form-input" @bind-Value=@LoginData.Password
+                PlaceHolder=@M.Password />
             <ValidationMessage For=@( () => LoginData.Password) />
         </div>
 
         <div class="form-block" hidden=@IsLoggingIn>
-            <OInputText CssClass="form-input" @bind-Value=@LoginData.ConfirmPassword PlaceHolder=@M.ConfirmPassword />
+            <OInputText IsSensitiveInput=@ShouldHidePasswords CssClass="form-input"
+                @bind-Value=@LoginData.ConfirmPassword PlaceHolder=@M.ConfirmPassword />
             <ValidationMessage For=@( () => LoginData.ConfirmPassword ) />
         </div>
 

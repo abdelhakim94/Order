@@ -1,7 +1,7 @@
 @namespace Order.Client.Components.Form
 
 <div @attributes=@AdditionalAttributes class="component-container @CssClass">
-    <InputText @bind-Value=@Value placeholder=@PlaceHolder />
+    <InputText type=@HideInformation() @bind-Value=@Value placeholder=@PlaceHolder />
 </div>
 
 @code{
@@ -28,8 +28,13 @@
     public string PlaceHolder { get; set; }
 
     [Parameter]
+    public bool IsSensitiveInput { get; set; }
+
+    [Parameter]
     public string CssClass { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, Object> AdditionalAttributes { get; set; }
+
+    string HideInformation() => IsSensitiveInput ? "password" : "";
 }
