@@ -4,7 +4,7 @@
   justify-content: space-around;
   align-items: stretch;
   height: 95vh;
-  width: 80vw;
+  width: 90vw;
   margin: auto;
 }
 
@@ -28,6 +28,7 @@
 
 a {
   text-decoration: none;
+  color: grey;
 }
 
 .redirect {

@@ -13,18 +13,18 @@
 
         <h1 class="form-header">@PageHeader</h1>
 
-        <div class="form-block">
+        <div>
             <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@LoginData.Email />
             <ValidationMessage For=@( () => LoginData.Email ) />
         </div>
 
-        <div class="form-block">
+        <div>
             <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.Password
                 @bind-Value=@LoginData.Password />
             <ValidationMessage For=@( () => LoginData.Password) />
         </div>
 
-        <div class="form-block" hidden=@IsLoggingIn>
+        <div hidden=@IsLoggingIn>
             <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.ConfirmPassword
                 @bind-Value=@LoginData.ConfirmPassword />
             <ValidationMessage For=@( () => LoginData.ConfirmPassword ) />
