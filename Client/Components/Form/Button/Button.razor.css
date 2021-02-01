@@ -2,14 +2,10 @@ button {
   color: #fff;
   background-color: #52affa;
   border: none;
-  border-radius: 2em;
+  border-radius: 3em;
   outline: none;
 
-  height: 100%;
-  width: 100%;
   box-sizing: border-box;
-  font-size: inherit;
-  font-weight: inherit;
 }
 
 button:active {
