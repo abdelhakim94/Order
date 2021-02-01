@@ -7,30 +7,16 @@ namespace Order.Client.Components.Form
 {
     public partial class OInputText
     {
-        private string value;
-
         [Parameter]
-        public string Value
-        {
-            get => value;
-            set
-            {
-                if (this.value != value)
-                {
-                    this.value = value;
-                    if (ValueChanged.HasDelegate)
-                        ValueChanged.InvokeAsync(value);
-                }
-            }
-        }
+        public string Value { get; set; }
 
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
 
-        private bool isHiddenValue;
-
         [Parameter]
         public string PlaceHolder { get; set; }
+
+        private bool isHiddenValue;
 
         [Parameter]
         public bool IsSensitiveInput { get; set; }
@@ -52,5 +38,12 @@ namespace Order.Client.Components.Form
         void ToggleIsHiddenValue() => isHiddenValue = !isHiddenValue;
 
         string GetIcon() => isHiddenValue ? "/icons/show-password.png" : "/icons/hide-password.png";
+
+        async Task HandleInputChange(ChangeEventArgs args)
+        {
+            Value = args.Value.ToString();
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(Value);
+        }
     }
 }
