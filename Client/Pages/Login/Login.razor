@@ -14,31 +14,29 @@
         <h1 class="form-header">@PageHeader</h1>
 
         <div class="form-block">
-            <OInputText CssClass="form-input" @bind-Value=@LoginData.Email PlaceHolder=@M.Email />
-            <ValidationMessage For=@( () => LoginData.Email) />
+            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@LoginData.Email />
+            <ValidationMessage For=@( () => LoginData.Email ) />
         </div>
 
         <div class="form-block">
-            <OInputText IsSensitiveInput=@true CssClass="form-input" @bind-Value=@LoginData.Password
-                PlaceHolder=@M.Password />
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.Password
+                @bind-Value=@LoginData.Password />
             <ValidationMessage For=@( () => LoginData.Password) />
         </div>
 
         <div class="form-block" hidden=@IsLoggingIn>
-            <OInputText IsSensitiveInput=@true CssClass="form-input" @bind-Value=@LoginData.ConfirmPassword
-                PlaceHolder=@M.ConfirmPassword />
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.ConfirmPassword
+                @bind-Value=@LoginData.ConfirmPassword />
             <ValidationMessage For=@( () => LoginData.ConfirmPassword ) />
         </div>
 
         <Button CssClass="form-submit" Type="submit" Label=@SubmitButtonLabel />
 
         <div class="redirection" hidden=@(!IsLoggingIn)>
-            <a href="/">@M.ForgotPassword</a>
+            <a href="">@M.ForgotPassword</a>
         </div>
 
         <LineTextSeparator Text=@M.Otherwise hidden=@(!IsLoggingIn) />
-
-        <i class="fa-eye-slash"></i>
 
         <div class="redirection">
             @FooterAsk <a href="" class="redirect" @onclick=@ToggleIsLoggingIn>@FooterRedirect</a>
