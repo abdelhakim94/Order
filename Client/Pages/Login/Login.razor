@@ -38,6 +38,15 @@
 
         <LineTextSeparator Text=@M.Otherwise hidden=@(!IsLoggingIn) />
 
+        <div class="social-logins" hidden=@(!IsLoggingIn)>
+            <SocialButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=0 />
+            <SocialButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=50 />
+            <SocialButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=100 />
+        </div>
+
         <div class="redirection">
             @FooterAsk <a href="" class="redirect" @onclick=@ToggleIsLoggingIn>@FooterRedirect</a>
         </div>

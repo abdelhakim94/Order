@@ -6,24 +6,49 @@
   height: 95vh;
   width: 90vw;
   margin: auto;
+  overflow: visible;
 }
 
 .form-header {
   font-size: 1.5em;
   align-self: center;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 ::deep .form-input {
   height: 2em;
+  margin-top: 0.5em;
 }
 
 ::deep .form-submit {
   height: 2em;
   font-size: 1.1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.social-logins {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  height: 5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+::deep .social-login-button {
+  height: 4em;
+  width: 4em;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 .redirection {
   align-self: center;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
 }
 
 a {

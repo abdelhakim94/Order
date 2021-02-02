@@ -1,5 +1,5 @@
 using Order.Shared.Contract.Dto.Users;
-using M = Order.Client.Shared.Messages;
+using M = Order.Shared.Contract.Constants.Messages;
 
 namespace Order.Client.Pages
 {
@@ -15,6 +15,8 @@ namespace Order.Client.Pages
         public string SubmitButtonLabel { get => IsLoggingIn ? M.Login : M.Register; }
         public string FooterAsk { get => IsLoggingIn ? M.AskForAccountAbsence : M.AskForAccountExistance; }
         public string FooterRedirect { get => IsLoggingIn ? M.SignUpRedirect : M.SignInRedirect; }
+
+        public string SocialSpritePath { get => "/icons/social-media-sprite.png"; }
 
         public UserLoginDto LoginData { get; set; } = new UserLoginDto();
 

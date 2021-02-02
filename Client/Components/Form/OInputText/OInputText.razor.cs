@@ -27,10 +27,9 @@ namespace Order.Client.Components.Form
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, Object> AdditionalAttributes { get; set; }
 
-        public override Task SetParametersAsync(ParameterView parameters)
+        protected override void OnInitialized()
         {
-            this.isHiddenValue = parameters.GetValueOrDefault<bool>("IsSensitiveInput");
-            return base.SetParametersAsync(parameters);
+            this.isHiddenValue = IsSensitiveInput;
         }
 
         string ShouldHideValue() => isHiddenValue ? "password" : "";

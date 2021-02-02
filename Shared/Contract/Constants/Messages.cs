@@ -1,4 +1,4 @@
-namespace Order.Client.Shared
+namespace Order.Shared.Contract.Constants
 {
     public static class Messages
     {

@@ -1,0 +1,10 @@
+button {
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  background-color: #fff;
+}
+
+button:active {
+  box-shadow: 0 0 0.2em #3db8ff;
+}
