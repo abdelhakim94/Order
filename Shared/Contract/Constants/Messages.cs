@@ -19,5 +19,8 @@ namespace Order.Shared.Contract.Constants
         public static string SignUpRedirect { get => "Rejoignez nous"; }
 
         public static string Otherwise { get => "Sinon"; }
+
+        public static string LastName { get => "Nom"; }
+        public static string FirstName { get => "Prénom"; }
     }
 }

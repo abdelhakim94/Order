@@ -1,9 +1,11 @@
 @namespace Order.Client.Components.Form
 
-<button style="background-image:url(@SocialMediaPath); 
-        background-position: @(Translate)% 0%;
-        background-size: @(ImagesInSprite * 100)% 100%;" @attributes=@AdditionalAttributes
-    class="component-container @CssClass" type=@Type>
+<button @attributes=@AdditionalAttributes
+        style="background-image:url(@SocialMediaPath); 
+            background-position: @(Translate)% 0%;
+            background-size: @(ImagesInSprite * 100)% 100%;"
+        class="component-container @CssClass"
+        type=@Type>
 </button>
 
 @code{
