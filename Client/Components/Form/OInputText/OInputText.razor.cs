@@ -7,30 +7,16 @@ namespace Order.Client.Components.Form
 {
     public partial class OInputText
     {
-        private string value;
-
         [Parameter]
-        public string Value
-        {
-            get => value;
-            set
-            {
-                if (this.value != value)
-                {
-                    this.value = value;
-                    if (ValueChanged.HasDelegate)
-                        ValueChanged.InvokeAsync(value);
-                }
-            }
-        }
+        public string Value { get; set; }
 
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
 
-        private bool isHiddenValue;
-
         [Parameter]
         public string PlaceHolder { get; set; }
+
+        private bool isHiddenValue;
 
         [Parameter]
         public bool IsSensitiveInput { get; set; }
@@ -41,10 +27,9 @@ namespace Order.Client.Components.Form
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, Object> AdditionalAttributes { get; set; }
 
-        public override Task SetParametersAsync(ParameterView parameters)
+        protected override void OnInitialized()
         {
-            this.isHiddenValue = parameters.GetValueOrDefault<bool>("IsSensitiveInput");
-            return base.SetParametersAsync(parameters);
+            this.isHiddenValue = IsSensitiveInput;
         }
 
         string ShouldHideValue() => isHiddenValue ? "password" : "";
@@ -52,5 +37,12 @@ namespace Order.Client.Components.Form
         void ToggleIsHiddenValue() => isHiddenValue = !isHiddenValue;
 
         string GetIcon() => isHiddenValue ? "/icons/show-password.png" : "/icons/hide-password.png";
+
+        async Task HandleInputChange(ChangeEventArgs args)
+        {
+            Value = args.Value.ToString();
+            if (ValueChanged.HasDelegate)
+                await ValueChanged.InvokeAsync(Value);
+        }
     }
 }

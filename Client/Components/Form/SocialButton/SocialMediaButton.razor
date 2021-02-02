@@ -1,0 +1,42 @@
+@namespace Order.Client.Components.Form
+
+<button @attributes=@AdditionalAttributes
+        style="background-image:url(@SocialMediaPath); 
+            background-position: @(Translate)% 0%;
+            background-size: @(ImagesInSprite * 100)% 100%;"
+        class="component-container @CssClass"
+        type=@Type>
+</button>
+
+@code{
+    [Parameter]
+    public string Type { get; set; } = "button";
+
+    /// <summary>
+    /// Path to the social media backgroun image.
+    /// </summary>
+    [Parameter]
+    public string SocialMediaPath { get; set; }
+
+    /// <summary>
+    /// Translates the background image horizontally.
+    /// A percentage value.
+    /// Useful when using sprites.
+    /// </summary>
+    [Parameter]
+    public double Translate { get; set; }
+
+    /// <summary>
+    /// The number of images in the sprite.
+    /// Images in a sprite should be distributed
+    /// evenly.
+    /// </summary>
+    [Parameter]
+    public int ImagesInSprite { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}

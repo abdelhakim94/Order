@@ -1,11 +1,8 @@
 button {
-  color: #fff;
-  background-color: #52affa;
   border: none;
-  border-radius: 3em;
   outline: none;
-
-  box-sizing: border-box;
+  border-radius: 50%;
+  background-color: #fff;
 }
 
 button:active {

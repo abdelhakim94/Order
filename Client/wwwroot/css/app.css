@@ -1,8 +1,9 @@
 /*  
-  Every component has a <div> root whose main purpose is
-  to allow the component to be completely resizable/customizable
-  by it's consumer. For this to work, we have to follow these
-  convetions:
+  A Component with only one element doesn't need a container.
+  Every other componet with more than on element has a <div>
+  root whose main purpose is to allow the component to be 
+  completely resizable/customizable by it's consumer. 
+  For this to work, we have to follow these convetions:
   - The <div> wrapping the component should be of class
    "component-container".
   - avoid using the class "component-container" in any other
@@ -10,15 +11,20 @@
   - if there is a need to add a css class to a component,
     do it using the "CssClass" parameter. (to avoid overriding
     the "component-container" class)
-  - inside a component, inherit any property property that a
-    consumer will need to override (this is rarely necessary).
 */
-.component-container {
-  padding: 0em;
-  margin: 0em;
-}
 
 .validation-message {
   color: red;
   font-size: 0.8rem;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  flex: 0 0 auto;
 }

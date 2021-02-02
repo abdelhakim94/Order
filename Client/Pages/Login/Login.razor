@@ -13,32 +13,50 @@
 
         <h1 class="form-header">@PageHeader</h1>
 
-        <div class="form-block">
-            <OInputText CssClass="form-input" @bind-Value=@LoginData.Email PlaceHolder=@M.Email />
-            <ValidationMessage For=@( () => LoginData.Email) />
+        <div hidden=@IsLoggingIn>
+            <OInputText CssClass="form-input" PlaceHolder=@M.LastName @bind-Value=@LoginData.LastName />
+            <ValidationMessage For=@( () => LoginData.LastName ) />
         </div>
 
-        <div class="form-block">
-            <OInputText IsSensitiveInput=@true CssClass="form-input" @bind-Value=@LoginData.Password
-                PlaceHolder=@M.Password />
+        <div hidden=@IsLoggingIn>
+            <OInputText CssClass="form-input" PlaceHolder=@M.FirstName @bind-Value=@LoginData.FirstName />
+            <ValidationMessage For=@( () => LoginData.FirstName ) />
+        </div>
+
+        <div>
+            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@LoginData.Email />
+            <ValidationMessage For=@( () => LoginData.Email ) />
+        </div>
+
+        <div>
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.Password
+                @bind-Value=@LoginData.Password />
             <ValidationMessage For=@( () => LoginData.Password) />
         </div>
 
-        <div class="form-block" hidden=@IsLoggingIn>
-            <OInputText IsSensitiveInput=@true CssClass="form-input" @bind-Value=@LoginData.ConfirmPassword
-                PlaceHolder=@M.ConfirmPassword />
+        <div hidden=@IsLoggingIn>
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.ConfirmPassword
+                @bind-Value=@LoginData.ConfirmPassword />
             <ValidationMessage For=@( () => LoginData.ConfirmPassword ) />
         </div>
 
         <Button CssClass="form-submit" Type="submit" Label=@SubmitButtonLabel />
 
         <div class="redirection" hidden=@(!IsLoggingIn)>
-            <a href="/">@M.ForgotPassword</a>
+            <a href="">@M.ForgotPassword</a>
         </div>
 
         <LineTextSeparator Text=@M.Otherwise hidden=@(!IsLoggingIn) />
 
-        <i class="fa-eye-slash"></i>
+        @* Hiding this block should be done with hidden=@(!IsLoggingIn) *@
+        <div class="social-logins" style=@(IsLoggingIn ? "" : "display:none")>
+            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=0 />
+            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=50 />
+            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=100 />
+        </div>
 
         <div class="redirection">
             @FooterAsk <a href="" class="redirect" @onclick=@ToggleIsLoggingIn>@FooterRedirect</a>

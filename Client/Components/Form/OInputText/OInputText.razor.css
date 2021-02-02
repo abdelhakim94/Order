@@ -1,11 +1,10 @@
 ::deep input {
   padding: 0.5em 1rem;
-  border: 0.01em solid black;
-  border-radius: 2em;
+  border: 0.01em solid lightgrey;
+  border-radius: 3em;
   outline-style: none;
   height: 100%;
   width: 100%;
-  box-sizing: border-box;
 }
 
 ::deep input:focus,
@@ -24,6 +23,6 @@
 img {
   position: absolute;
   right: 1em;
-  top: 20%;
-  height: 60%;
+  top: 5%;
+  height: 90%;
 }
