@@ -1,5 +1,5 @@
-using Order.Shared.Contract.Dto.Users;
-using M = Order.Shared.Contract.Constants.Messages;
+using Order.Shared.Dto.Users;
+using M = Order.Client.Pages.Messages;
 
 namespace Order.Client.Pages
 {

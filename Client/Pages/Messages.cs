@@ -1,4 +1,4 @@
-namespace Order.Shared.Contract.Constants
+namespace Order.Client.Pages
 {
     public static class Messages
     {
@@ -18,7 +18,7 @@ namespace Order.Shared.Contract.Constants
         public static string AskForAccountAbsence { get => "Vous n'avez pas de compte?"; }
         public static string SignUpRedirect { get => "Rejoignez nous"; }
 
-        public static string Otherwise { get => "Sinon"; }
+        public static string ContinueWith { get => "Continuer avec"; }
 
         public static string LastName { get => "Nom"; }
         public static string FirstName { get => "Prénom"; }

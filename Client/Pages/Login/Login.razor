@@ -46,7 +46,7 @@
             <a href="">@M.ForgotPassword</a>
         </div>
 
-        <LineTextSeparator Text=@M.Otherwise hidden=@(!IsLoggingIn) />
+        <LineTextSeparator Text=@M.ContinueWith hidden=@(!IsLoggingIn) />
 
         @* Hiding this block should be done with hidden=@(!IsLoggingIn) *@
         <div class="social-logins" style=@(IsLoggingIn ? "" : "display:none")>
