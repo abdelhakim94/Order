@@ -1,9 +1,11 @@
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.ResponseCompression;
 using Order.Server.Domain;
 
 namespace Order.Server
@@ -21,17 +23,24 @@ namespace Order.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<IOrderContext, OrderContext>(
-                builder => builder.UseNpgsql(
-                    Configuration.GetConnectionString("dev_db_order")
+            services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
             ));
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddSignalR().AddMessagePackProtocol();
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,6 +63,10 @@ namespace Order.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+
+                // Map hubs here
+                // endpoints.MapHub<FooHub>("/Foo");
+
                 endpoints.MapFallbackToFile("index.html");
             });
         }
