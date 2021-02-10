@@ -28,3 +28,21 @@ html {
   box-sizing: inherit;
   flex: 0 0 auto;
 }
+
+#app {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#spinner {
+  height: 30vw;
+  width: 30vw;
+}
+
+#spinner-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}

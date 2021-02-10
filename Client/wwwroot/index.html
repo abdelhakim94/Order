@@ -12,7 +12,11 @@
 </head>
 
 <body>
-    <div id="app" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Loading...</div>
+    <div id="app">
+        <div id="spinner-container">
+            <img id="spinner" src="icons/spinner.gif"/>
+        </div>
+    </div>
     
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
