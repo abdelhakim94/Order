@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
-using Order.Server.Domain;
+using Order.Server.Model;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 namespace Order.Server
 {
@@ -26,6 +28,22 @@ namespace Order.Server
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
             ));
+
+            #region Identity
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<OrderContext>();
+
+            services.AddIdentityServer()
+                .AddApiAuthorization<IdentityUser, OrderContext>();
+
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
+
+            #endregion
+
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSignalR().AddMessagePackProtocol();
@@ -44,6 +62,7 @@ namespace Order.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
             }
             else
@@ -58,6 +77,10 @@ namespace Order.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
