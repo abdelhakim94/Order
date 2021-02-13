@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Order.Server.Model;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 
 namespace Order.Server
 {
@@ -33,11 +32,12 @@ namespace Order.Server
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<Role>()
                 .AddEntityFrameworkStores<OrderContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<IdentityUser, OrderContext>();
+                .AddApiAuthorization<User, OrderContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
