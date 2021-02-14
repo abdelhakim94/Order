@@ -1,13 +1,14 @@
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Order.Server.Model;
-using Microsoft.AspNetCore.Authentication;
 
 namespace Order.Server
 {
@@ -29,23 +30,39 @@ namespace Order.Server
             ));
 
             #region Identity
-
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<Role>()
+            services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<OrderContext>();
 
-            // Adds the "IdentityServer" identity provider
-            // The identity provider allows this app to talk
-            // to other identity providers in order to delegate
-            // authentication to them.
             services.AddIdentityServer()
+                .AddConfigurationStore<OrderContext>(options =>
+                {
+                    options.ConfigureDbContext = (builder) => builder.UseNpgsql(
+                        Configuration.GetConnectionString("dev_db_order"),
+                        npgsql => npgsql
+                            .MigrationsAssembly(Assembly
+                                .GetExecutingAssembly()
+                                .GetName()
+                                .ToString())
+                            .MigrationsHistoryTable("__EFMigrationsHistory"));
+                })
+                .AddOperationalStore<OrderContext>(options =>
+                {
+                    options.ConfigureDbContext = (builder) => builder.UseNpgsql(
+                        Configuration.GetConnectionString("dev_db_order"),
+                        npgsql => npgsql
+                            .MigrationsAssembly(Assembly
+                                .GetExecutingAssembly()
+                                .GetName()
+                                .ToString())
+                            .MigrationsHistoryTable("__EFMigrationsHistory"));
+                    options.EnableTokenCleanup = true;
+                })
                 .AddApiAuthorization<User, OrderContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-
             #endregion
 
             services.AddControllersWithViews();
