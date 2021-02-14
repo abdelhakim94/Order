@@ -36,6 +36,10 @@ namespace Order.Server
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<OrderContext>();
 
+            // Adds the "IdentityServer" identity provider
+            // The identity provider allows this app to talk
+            // to other identity providers in order to delegate
+            // authentication to them.
             services.AddIdentityServer()
                 .AddApiAuthorization<User, OrderContext>();
 
