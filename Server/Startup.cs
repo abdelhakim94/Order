@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Order.Server.Model;
+using Order.Server.Hubs;
 
 namespace Order.Server
 {
@@ -32,7 +33,7 @@ namespace Order.Server
             #region Identity
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<OrderContext>();
 
             services.AddIdentityServer()
@@ -59,7 +60,7 @@ namespace Order.Server
                             .MigrationsHistoryTable("__EFMigrationsHistory"));
                     options.EnableTokenCleanup = true;
                 })
-                .AddApiAuthorization<User, OrderContext>();
+                .AddAspNetIdentity<User>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -109,7 +110,7 @@ namespace Order.Server
                 endpoints.MapControllers();
 
                 // Map hubs here
-                // endpoints.MapHub<FooHub>("/Foo");
+                endpoints.MapHub<AccountHub>("/Account");
 
                 endpoints.MapFallbackToFile("index.html");
             });

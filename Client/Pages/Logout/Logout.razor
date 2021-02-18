@@ -1,0 +1,41 @@
+@page "/Logout"
+
+@using Order.Client.Services
+
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+
+<p>Authenticated : @authenticated</p>
+<p>@token</p>
+
+<button type="button" @onclick=HandleLogout>Logout</button>
+
+@code{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    private string token;
+    private bool authenticated;
+
+    async Task HandleLogout()
+    {
+        await AuthenticationService.SignOut();
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        token = await GetToken();
+        authenticated = await Authenticated();
+    }
+
+    async Task<string> GetToken()
+    {
+        return (await AuthState).User.Identity.Name;
+    }
+
+    async Task<bool> Authenticated()
+    {
+        return (await AuthState).User.Identity.IsAuthenticated;
+    }
+}
