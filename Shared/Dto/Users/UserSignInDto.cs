@@ -3,14 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Order.Shared.Dto.Users
 {
-    public class UserLoginDto
+    public class UserSignInDto
     {
-        [Required]
-        public string LastName { get; set; }
-
-        [Required]
-        public string FirstName { get; set; }
-
         [Required(ErrorMessage = "Une adresse mail est obligatoire")]
         [EmailAddress(ErrorMessage = "Adresse mail invalide")]
         public string Email { get; set; }
@@ -20,9 +14,5 @@ namespace Order.Shared.Dto.Users
         [RegularExpression("^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$",
             ErrorMessage = "Le mot de passe doit contenir au moin 8 caractères, une lettre et un chiffre")]
         public string Password { get; set; }
-
-        // should have a validator to ensure that it is equal to the password
-        [Required]
-        public string ConfirmPassword { get; set; }
     }
 }

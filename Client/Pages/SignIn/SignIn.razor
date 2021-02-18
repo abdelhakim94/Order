@@ -1,0 +1,50 @@
+@page "/"
+
+@using Order.Client.Components.Form
+@using Order.Client.Components.Misc
+
+@namespace Order.Client.Pages
+
+<EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition>
+
+    <ObjectGraphDataAnnotationsValidator />
+
+    <div class="form-container">
+
+        <h1 class="form-header">@M.SignIn</h1>
+
+        <div>
+            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@UserSignInData.Email />
+            <ValidationMessage For=@( () => UserSignInData.Email ) />
+        </div>
+
+        <div>
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.Password
+                @bind-Value=@UserSignInData.Password />
+            <ValidationMessage For=@( () => UserSignInData.Password) />
+        </div>
+
+        <Button CssClass="form-submit" Type="submit" Label=@M.Login />
+
+        <div class="redirection">
+            <a href="">@M.ForgotPassword</a>
+        </div>
+
+        <LineTextSeparator Text=@M.ContinueWith />
+
+        <div class="social-logins">
+            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=0 />
+            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=50 />
+            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
+                Translate=100 />
+        </div>
+
+        <div class="redirection">
+            @M.AskForAccountAbsence <a href="/SignUp" class="redirect">@M.SignUpRedirect</a>
+        </div>
+
+    </div>
+
+</EditForm>
