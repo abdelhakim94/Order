@@ -1,15 +1,15 @@
+using System.Text;
 using System.Linq;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Order.Server.Model;
-using Order.Server.Hubs;
 
 namespace Order.Server
 {
@@ -33,37 +33,29 @@ namespace Order.Server
             #region Identity
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            // Since "AddEntityFrameworkStores" depends on a concrete implementation
+            // of DbContext, we need to add out "OrderContext" in this way.
+            services.AddDbContextPool<OrderContext>(builder =>
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
+            ));
+
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<OrderContext>();
 
-            services.AddIdentityServer()
-                .AddConfigurationStore<OrderContext>(options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    options.ConfigureDbContext = (builder) => builder.UseNpgsql(
-                        Configuration.GetConnectionString("dev_db_order"),
-                        npgsql => npgsql
-                            .MigrationsAssembly(Assembly
-                                .GetExecutingAssembly()
-                                .GetName()
-                                .ToString())
-                            .MigrationsHistoryTable("__EFMigrationsHistory"));
-                })
-                .AddOperationalStore<OrderContext>(options =>
-                {
-                    options.ConfigureDbContext = (builder) => builder.UseNpgsql(
-                        Configuration.GetConnectionString("dev_db_order"),
-                        npgsql => npgsql
-                            .MigrationsAssembly(Assembly
-                                .GetExecutingAssembly()
-                                .GetName()
-                                .ToString())
-                            .MigrationsHistoryTable("__EFMigrationsHistory"));
-                    options.EnableTokenCleanup = true;
-                })
-                .AddAspNetIdentity<User>();
-
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JwtIssuer"],
+                        ValidAudience = Configuration["JwtAudience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"]))
+                    };
+                });
             #endregion
 
             services.AddControllersWithViews();
@@ -100,7 +92,6 @@ namespace Order.Server
 
             app.UseRouting();
 
-            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -110,7 +101,7 @@ namespace Order.Server
                 endpoints.MapControllers();
 
                 // Map hubs here
-                endpoints.MapHub<AccountHub>("/Account");
+                // endpoints.MapHub<AccountHub>("/Account");
 
                 endpoints.MapFallbackToFile("index.html");
             });

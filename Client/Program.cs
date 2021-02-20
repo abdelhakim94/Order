@@ -23,7 +23,8 @@ namespace Order.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-            builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider, OrderAuthenticationStateProvider>();
+            builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazoredLocalStorage();
 

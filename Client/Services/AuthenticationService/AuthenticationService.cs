@@ -1,78 +1,64 @@
-using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.DependencyInjection;
 using Order.Shared.Dto.Users;
 
 namespace Order.Client.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly HttpClient httpClient;
         private readonly AuthenticationStateProvider authenticationStateProvider;
-        private readonly NavigationManager navigationManager;
         private readonly ILocalStorageService localStorage;
-        private HubConnection hubConnection;
 
         public AuthenticationService(
+            HttpClient httpClient,
             AuthenticationStateProvider authenticationStateProvider,
-            ILocalStorageService localStorage,
-            NavigationManager navigationManager)
+            ILocalStorageService localStorage)
         {
+            this.httpClient = httpClient;
             this.authenticationStateProvider = authenticationStateProvider;
             this.localStorage = localStorage;
-            this.navigationManager = navigationManager;
-
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(this.navigationManager.ToAbsoluteUri("/Account"))
-                .AddMessagePackProtocol()
-                .Build();
-            hubConnection.StartAsync();
         }
 
-        public async Task<SignUpResultDto> SignUp(UserSignUpDto userSignUpData)
+        public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo)
         {
-            var result = await hubConnection.InvokeAsync<SignUpResultDto>("SignUp", userSignUpData);
-            return result;
+            var response = await httpClient.PostAsJsonAsync<UserSignUpDto>("api/account/signup", userInfo);
+            return JsonSerializer.Deserialize<SignUpResultDto>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public async Task<SignInResultDto> SignIn(UserSignInDto userSignInData)
+        public async Task<SignInResultDto> SignIn(UserSignInDto userInfo)
         {
-            var response = await hubConnection.InvokeAsync<SignInResultDto>("SignIn", userSignInData);
-            await localStorage.SetItemAsync("authToken", response.Token);
+            var userInfoAsJson = JsonSerializer.Serialize(userInfo);
+            var response = await httpClient.PostAsync("api/account/signin", new StringContent(userInfoAsJson, Encoding.UTF8, "application/json"));
+            var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            ((ApiAuthenticationStateProvider)authenticationStateProvider).MarkUserAsAuthenticated(userSignInData.Email);
-            await hubConnection.StopAsync();
-            hubConnection = new HubConnectionBuilder()
-               .WithUrl(this.navigationManager.ToAbsoluteUri("/Account"), options =>
-                    options.Headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", response.Token).ToString()))
-               .AddMessagePackProtocol()
-               .Build();
-            await hubConnection.StartAsync();
-            return response;
+            if (!response.IsSuccessStatusCode)
+            {
+                return signInResult;
+            }
+
+            await localStorage.SetItemAsync("authToken", signInResult.Token);
+            await ((OrderAuthenticationStateProvider)authenticationStateProvider).MarkUserAsAuthenticated();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", signInResult.Token);
+
+            return signInResult;
         }
 
         public async Task SignOut()
         {
             await localStorage.RemoveItemAsync("authToken");
-            ((ApiAuthenticationStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
-            await hubConnection.StopAsync();
-            hubConnection = new HubConnectionBuilder()
-               .WithUrl(this.navigationManager.ToAbsoluteUri("/Account"), options =>
-                    options.Headers.Add("Authorization", ""))
-               .AddMessagePackProtocol()
-               .Build();
-            await hubConnection.StartAsync();
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await hubConnection.DisposeAsync();
+            ((OrderAuthenticationStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
+            httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

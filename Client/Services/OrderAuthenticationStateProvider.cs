@@ -11,16 +11,17 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Order.Client.Services
 {
-    public class ApiAuthenticationStateProvider : AuthenticationStateProvider
+    public class OrderAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly HttpClient httpClient;
         private readonly ILocalStorageService localStorage;
 
-        public ApiAuthenticationStateProvider(HttpClient httpClient, ILocalStorageService localStorage)
+        public OrderAuthenticationStateProvider(HttpClient httpClient, ILocalStorageService localStorage)
         {
             this.httpClient = httpClient;
             this.localStorage = localStorage;
         }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var savedToken = await localStorage.GetItemAsync<string>("authToken");
@@ -35,9 +36,12 @@ namespace Order.Client.Services
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(savedToken), "jwt")));
         }
 
-        public void MarkUserAsAuthenticated(string email)
+        public async Task MarkUserAsAuthenticated()
         {
-            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, email) }, "apiauth"));
+            var savedToken = await localStorage.GetItemAsync<string>("authToken");
+            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(
+                ParseClaimsFromJwt(savedToken),
+                "jwt"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
         }
@@ -52,33 +56,32 @@ namespace Order.Client.Services
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();
-            Console.WriteLine(jwt);
-            // var payload = jwt.Split('.')[1];
-            // var jsonBytes = ParseBase64WithoutPadding(payload);
-            // var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            var payload = jwt.Split('.')[1];
+            var jsonBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
-            // keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
+            keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
 
-            // if (roles != null)
-            // {
-            //     if (roles.ToString().Trim().StartsWith("["))
-            //     {
-            //         var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
+            if (roles != null)
+            {
+                if (roles.ToString().Trim().StartsWith("["))
+                {
+                    var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
 
-            //         foreach (var parsedRole in parsedRoles)
-            //         {
-            //             claims.Add(new Claim(ClaimTypes.Role, parsedRole));
-            //         }
-            //     }
-            //     else
-            //     {
-            //         claims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
-            //     }
+                    foreach (var parsedRole in parsedRoles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, parsedRole));
+                    }
+                }
+                else
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
+                }
 
-            //     keyValuePairs.Remove(ClaimTypes.Role);
-            // }
+                keyValuePairs.Remove(ClaimTypes.Role);
+            }
 
-            // claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+            claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
 
             return claims;
         }

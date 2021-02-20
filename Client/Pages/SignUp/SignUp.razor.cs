@@ -13,9 +13,13 @@ namespace Order.Client.Pages
         [Inject]
         public IAuthenticationService authenticationService { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         public async Task HandleFormSubmition(EditContext context)
         {
             await authenticationService.SignUp(context.Model as UserSignUpDto);
+            NavigationManager.NavigateTo("/");
         }
     }
 }
