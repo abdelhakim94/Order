@@ -5,6 +5,9 @@ namespace Order.Server.Model
 {
     public class User : IdentityUser<int>
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
         public virtual ICollection<UserClaim> Claims { get; set; }
         public virtual ICollection<UserLogin> Logins { get; set; }
         public virtual ICollection<UserToken> Tokens { get; set; }

@@ -9,6 +9,16 @@ namespace Order.Server.Model
         {
             builder.ToTable("user", "order_schema");
 
+            builder.Property(e => e.FirstName)
+                .HasColumnName("FirstName")
+                .HasMaxLength(50)
+                .IsRequired();
+
+            builder.Property(e => e.LastName)
+                .HasColumnName("LastName")
+                .HasMaxLength(50)
+                .IsRequired();
+
             // Each User can have many UserClaims
             builder.HasMany(e => e.Claims)
                 .WithOne(e => e.User)
