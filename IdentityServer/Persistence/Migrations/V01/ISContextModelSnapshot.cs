@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Order.IdentityServer.Persistence;
 
-namespace Order.IdentityServer.Persistence.Migrations.V01.CreateISTables
+namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
 {
     [DbContext(typeof(ISContext))]
     partial class ISContextModelSnapshot : ModelSnapshot

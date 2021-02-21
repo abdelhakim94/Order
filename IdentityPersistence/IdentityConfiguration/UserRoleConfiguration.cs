@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Order.DomainModel;
 
-namespace Order.IdentityServer.Persistence
+namespace Order.IdentityPersistence
 {
     public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
     {

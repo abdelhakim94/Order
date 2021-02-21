@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Order.Application.Server.Persistence;
 
-namespace Order.Application.Server.Persistence.Migrations.V01
+namespace Order.Application.Server.Persistence.Migrations.V01.Initial
 {
     [DbContext(typeof(OrderContext))]
-    [Migration("20210221045945_CreateIdentityStore")]
+    [Migration("20210221060622_CreateIdentityStore")]
     partial class CreateIdentityStore
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainModel\Order.DomainModel.csproj" />
+    <ProjectReference Include="..\IdentityPersistence\Order.IdentityPersistence.csproj" />
   </ItemGroup>
 
 </Project>

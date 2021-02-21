@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Order.IdentityServer.Persistence;
 
-namespace Order.IdentityServer.Persistence.Migrations.V01.CreateISTables
+namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
 {
     [DbContext(typeof(ISContext))]
-    [Migration("20210221050004_CreateISTables")]
+    [Migration("20210221060637_CreateISTables")]
     partial class CreateISTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

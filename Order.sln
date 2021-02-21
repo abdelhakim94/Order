@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Application.Shared", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.IdentityServer", "IdentityServer\Order.IdentityServer.csproj", "{ED800ABF-BB34-47BB-86EE-2ABC119E64FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.IdentityPersistence", "IdentityPersistence\Order.IdentityPersistence.csproj", "{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +92,18 @@ Global
 		{ED800ABF-BB34-47BB-86EE-2ABC119E64FC}.Release|x64.Build.0 = Release|Any CPU
 		{ED800ABF-BB34-47BB-86EE-2ABC119E64FC}.Release|x86.ActiveCfg = Release|Any CPU
 		{ED800ABF-BB34-47BB-86EE-2ABC119E64FC}.Release|x86.Build.0 = Release|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Debug|x64.Build.0 = Debug|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Debug|x86.Build.0 = Debug|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Release|x64.ActiveCfg = Release|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Release|x64.Build.0 = Release|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Release|x86.ActiveCfg = Release|Any CPU
+		{BA92CC3F-BBDD-4469-B8FA-AB6394E92702}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EE3742F2-F376-4A2F-9A6F-B546A4141CA7} = {EF5E4546-CE0B-43A6-B9BF-2F95BA9FFF15}

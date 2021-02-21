@@ -26,7 +26,8 @@ namespace Order.Application.Server
                 builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
             ));
             services.AddDbContextPool<OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order"),
+                npgopt => npgopt.MigrationsHistoryTable("__ApplicationMigrationHistory")
             ));
 
             services.AddDatabaseDeveloperPageExceptionFilter();

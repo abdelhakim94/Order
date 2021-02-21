@@ -6,21 +6,13 @@ using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Order.DomainModel;
+using Order.IdentityPersistence;
 
 namespace Order.IdentityServer.Persistence
 {
     public class ISContext
-        : IdentityDbContext<
-            User,
-            Role,
-            int,
-            Order.DomainModel.UserClaim,
-            UserRole,
-            UserLogin,
-            RoleClaim,
-            UserToken>
+        : IdentityPersistenceContext<ISContext>
+        , IIdentityPersistenceContext
         , IConfigurationDbContext
         , IPersistedGrantDbContext
     {

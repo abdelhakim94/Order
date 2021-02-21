@@ -1,21 +1,10 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Order.DomainModel;
+using Order.IdentityPersistence;
 
 namespace Order.Application.Server.Persistence
 {
-    public class OrderContext
-        : IdentityDbContext<
-            User,
-            Role,
-            int,
-            UserClaim,
-            UserRole,
-            UserLogin,
-            RoleClaim,
-            UserToken>
-        , IOrderContext
+    public class OrderContext : IdentityPersistenceContext<OrderContext>, IIdentityPersistenceContext, IOrderContext
     {
         public OrderContext(DbContextOptions<OrderContext> options) : base(options) { }
 

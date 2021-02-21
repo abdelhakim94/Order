@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Order.DomainModel;
 
-namespace Order.Application.Server.Persistence
+namespace Order.IdentityPersistence
 {
     public class UserTokenConfiguration : IEntityTypeConfiguration<UserToken>
     {
