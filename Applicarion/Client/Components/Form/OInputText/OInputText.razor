@@ -1,0 +1,16 @@
+@namespace Order.Application.Client.Components.Form
+
+<div @attributes=@AdditionalAttributes class="component-container @CssClass">
+
+    <InputText 
+        type=@ShouldHideValue()
+        placeholder=@PlaceHolder
+        Value=@Value
+        @oninput=@HandleInputChange
+        ValueExpression=@(() => Value) 
+    />
+
+    <img src=@GetIcon() hidden=@(!IsSensitiveInput) @onclick=@ToggleIsHiddenValue />
+
+</div>
+    

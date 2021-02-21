@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch and Debug Hosted Blazor WebAssembly App",
+      "name": "Blazor WebAssembly App",
       "type": "blazorwasm",
       "request": "launch",
       "hosted": true,
-      "program": "${workspaceFolder}/Server/bin/Debug/net5.0/Order.Server.dll",
-      "cwd": "${workspaceFolder}/Server",
+      "program": "${workspaceFolder}/Application/Server/bin/Debug/net5.0/Order.Server.dll",
+      "cwd": "${workspaceFolder}/Application/Server",
       "browser": "chrome"
     }
   ]

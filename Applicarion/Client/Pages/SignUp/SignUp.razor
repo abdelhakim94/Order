@@ -1,0 +1,50 @@
+@page "/SignUp/"
+
+@using Order.Application.Client.Components.Form
+
+@namespace Order.Application.Client.Pages
+
+<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition>
+
+    <ObjectGraphDataAnnotationsValidator />
+
+    <div class="form-container">
+
+        <h1 class="form-header">@M.SignUp</h1>
+
+        <div>
+            <OInputText CssClass="form-input" PlaceHolder=@M.LastName @bind-Value=@SignUpData.LastName />
+            <ValidationMessage For=@( () => SignUpData.LastName ) />
+        </div>
+
+        <div>
+            <OInputText CssClass="form-input" PlaceHolder=@M.FirstName @bind-Value=@SignUpData.FirstName />
+            <ValidationMessage For=@( () => SignUpData.FirstName ) />
+        </div>
+
+        <div>
+            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@SignUpData.Email />
+            <ValidationMessage For=@( () => SignUpData.Email ) />
+        </div>
+
+        <div>
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.Password
+                @bind-Value=@SignUpData.Password />
+            <ValidationMessage For=@( () => SignUpData.Password) />
+        </div>
+
+        <div>
+            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.ConfirmPassword
+                @bind-Value=@SignUpData.ConfirmPassword />
+            <ValidationMessage For=@( () => SignUpData.ConfirmPassword ) />
+        </div>
+
+        <Button CssClass="form-submit" Type="submit" Label=@M.Register />
+
+        <div class="redirection">
+            @M.AskForAccountExistance <a href="/" class="redirect">@M.SignInRedirect</a>
+        </div>
+
+    </div>
+
+</EditForm>

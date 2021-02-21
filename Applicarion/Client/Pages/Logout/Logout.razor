@@ -1,0 +1,59 @@
+@page "/Logout"
+
+@using Microsoft.AspNetCore.Authorization
+@using Order.Application.Client.Services
+
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+@inject HttpClient httpClient
+
+<p>Authenticated : @authenticated</p>
+<p>@token</p>
+
+<button type="button" @onclick=HandleLogout>Logout</button>
+
+@* <AuthorizeView Roles="role1 role2" Policy="policy"> *@
+@* <Authorized> *@
+@* Here goes content to show only if user is authorized *@
+@* </Authorized> *@
+@* <NotAuthorized> *@
+@* Here goes content to show only if user is not authorized *@
+@* </NotAuthorized> *@
+@* <Authorizing> *@
+@* Here goes a spinner or something to tell that it is in progress *@
+@* </Authorizing> *@
+@* </AuthorizeView> *@
+
+@code{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    private string token;
+    private bool authenticated;
+
+    async Task HandleLogout()
+    {
+        await AuthenticationService.SignOut();
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        token = await GetToken();
+        authenticated = await Authenticated();
+    }
+
+    async Task<string> GetToken()
+    {
+        return (await AuthState).User.Identity.Name;
+    }
+
+    async Task<bool> Authenticated()
+    {
+        return (await AuthState).User.Identity.IsAuthenticated;
+    }
+}
+
+
+protected override void
