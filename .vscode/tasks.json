@@ -2,37 +2,50 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
+      "label": "ApplicationBuild",
       "command": "dotnet",
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Server/Order.Server.csproj",
+        "${workspaceFolder}/Application/Server/Order.Application.Server.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "publish",
-        "${workspaceFolder}/Server/Order.Server.csproj",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "watch",
+      "label": "ApplicationWatchRun",
       "command": "dotnet",
       "type": "process",
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/Server/Order.Server.csproj",
+        "${workspaceFolder}/Application/Server/Order.Application.Server.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "ISBuild",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/IdentityServer/Order.IdentityServer.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "ISWatchRun",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "${workspaceFolder}/IdentityServer/Order.IdentityServer.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

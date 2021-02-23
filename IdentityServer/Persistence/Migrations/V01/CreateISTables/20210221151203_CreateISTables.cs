@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
+namespace Order.IdentityServer.Persistence.Migrations.V01.CreateISTables
 {
     public partial class CreateISTables : Migration
     {
@@ -32,7 +32,7 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 });
 
             migrationBuilder.CreateTable(
-                name: "is4_api_ressource",
+                name: "is4_api_resource",
                 schema: "order_schema",
                 columns: table => new
                 {
@@ -51,7 +51,7 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_is4_api_ressource", x => x.Id);
+                    table.PrimaryKey("PK_is4_api_resource", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -233,10 +233,10 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 {
                     table.PrimaryKey("PK_is4_api_resource_claim", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_is4_api_resource_claim_is4_api_ressource_ApiResourceId",
+                        name: "FK_is4_api_resource_claim_is4_api_resource_ApiResourceId",
                         column: x => x.ApiResourceId,
                         principalSchema: "order_schema",
-                        principalTable: "is4_api_ressource",
+                        principalTable: "is4_api_resource",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -256,10 +256,10 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 {
                     table.PrimaryKey("PK_is4_api_resource_properties", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_is4_api_resource_properties_is4_api_ressource_ApiResourceId",
+                        name: "FK_is4_api_resource_properties_is4_api_resource_ApiResourceId",
                         column: x => x.ApiResourceId,
                         principalSchema: "order_schema",
-                        principalTable: "is4_api_ressource",
+                        principalTable: "is4_api_resource",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -278,10 +278,10 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 {
                     table.PrimaryKey("PK_is4_api_resource_scope", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_is4_api_resource_scope_is4_api_ressource_ApiResourceId",
+                        name: "FK_is4_api_resource_scope_is4_api_resource_ApiResourceId",
                         column: x => x.ApiResourceId,
                         principalSchema: "order_schema",
-                        principalTable: "is4_api_ressource",
+                        principalTable: "is4_api_resource",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -304,10 +304,10 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 {
                     table.PrimaryKey("PK_is4_api_resource_secret", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_is4_api_resource_secret_is4_api_ressource_ApiResourceId",
+                        name: "FK_is4_api_resource_secret_is4_api_resource_ApiResourceId",
                         column: x => x.ApiResourceId,
                         principalSchema: "order_schema",
-                        principalTable: "is4_api_ressource",
+                        principalTable: "is4_api_resource",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -737,6 +737,13 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
+                name: "IX_is4_api_resource_Name",
+                schema: "order_schema",
+                table: "is4_api_resource",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_is4_api_resource_claim_ApiResourceId",
                 schema: "order_schema",
                 table: "is4_api_resource_claim",
@@ -759,13 +766,6 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 schema: "order_schema",
                 table: "is4_api_resource_secret",
                 column: "ApiResourceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_is4_api_ressource_Name",
-                schema: "order_schema",
-                table: "is4_api_ressource",
-                column: "Name",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_is4_api_scope_Name",
@@ -1028,7 +1028,7 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                 schema: "order_schema");
 
             migrationBuilder.DropTable(
-                name: "is4_api_ressource",
+                name: "is4_api_resource",
                 schema: "order_schema");
 
             migrationBuilder.DropTable(

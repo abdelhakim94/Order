@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Order.IdentityServer.Persistence;
 
-namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
+namespace Order.IdentityServer.Persistence.Migrations.V01.CreateISTables
 {
     [DbContext(typeof(ISContext))]
-    [Migration("20210221060637_CreateISTables")]
+    [Migration("20210221151203_CreateISTables")]
     partial class CreateISTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,8 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                         .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("Created");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -70,7 +71,7 @@ namespace Order.IdentityServer.Persistence.Migrations.V01.Initial
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("is4_api_ressource", "order_schema");
+                    b.ToTable("is4_api_resource", "order_schema");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResourceClaim", b =>

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Order.Application.Server.Persistence;
 using Order.DomainModel;
+using Microsoft.AspNetCore.Identity;
 
 namespace Order.Application.Server
 {
@@ -31,8 +32,16 @@ namespace Order.Application.Server
             ));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<OrderContext>();
+                .AddEntityFrameworkStores<OrderContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration.GetValue<string>("IdentityServerAdress");
+                });
 
             services.AddControllersWithViews();
             services.AddRazorPages();

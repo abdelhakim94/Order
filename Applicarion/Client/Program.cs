@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Order.Application.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using IdentityModel.Client;
 
 namespace Order.Application.Client
 {
@@ -27,6 +28,11 @@ namespace Order.Application.Client
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddScoped<Task<DiscoveryDocumentResponse>>(provider => provider
+                .GetRequiredService<HttpClient>()
+                .GetDiscoveryDocumentAsync(provider
+                    .GetService<IConfiguration>()
+                    .GetValue<string>("IdentityServerAdress")));
 
             await builder.Build().RunAsync();
         }

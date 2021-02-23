@@ -46,7 +46,8 @@ namespace Order.IdentityServer.Persistence
                 .HasDefaultSchema("order_schema");
 
             // Override default table names of IdentityServer4 configuration store tables
-            modelBuilder.Entity<ApiResource>(e => e.ToTable("is4_api_ressource", "order_schema"));
+            modelBuilder.Entity<ApiResource>(e => e.ToTable("is4_api_resource", "order_schema"));
+            modelBuilder.Entity<ApiResource>(e => e.Property(e => e.Created).HasColumnName("Created"));
             modelBuilder.Entity<ApiScope>(e => e.ToTable("is4_api_scope", "order_schema"));
             modelBuilder.Entity<IdentityServer4.EntityFramework.Entities.Client>(e => e.ToTable("is4_client", "order_schema"));
             modelBuilder.Entity<IdentityResource>(e => e.ToTable("is4_identity_resource", "order_schema"));

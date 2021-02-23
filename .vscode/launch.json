@@ -12,6 +12,19 @@
       "program": "${workspaceFolder}/Application/Server/bin/Debug/net5.0/Order.Server.dll",
       "cwd": "${workspaceFolder}/Application/Server",
       "browser": "chrome"
-    }
+    },
+    {
+      "name": "Identity Server",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "ISBuild",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/IdentityServer/bin/Debug/net5.0/Order.IdentityServer.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+  },
   ]
 }
