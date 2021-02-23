@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Order.Server.Model
+namespace Order.DomainModel
 {
     public class UserToken : IdentityUserToken<int>
     {

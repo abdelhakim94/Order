@@ -1,4 +1,4 @@
-namespace Order.Server.Model
+namespace Order.Server.Persistence
 {
     public interface IOrderContext { }
 }

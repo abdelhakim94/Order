@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Order.DomainModel;
 
-namespace Order.Server.Model
+namespace Order.Server.Persistence
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

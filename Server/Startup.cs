@@ -9,21 +9,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Order.Server.Model;
+using Order.DomainModel;
+using Order.Server.Persistence;
 
 namespace Order.Server
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
@@ -34,10 +33,9 @@ namespace Order.Server
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             // Since "AddEntityFrameworkStores" depends on a concrete implementation
-            // of DbContext, we need to add out "OrderContext" in this way.
-            services.AddDbContextPool<OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
-            ));
+            // of DbContext, we need to add "OrderContext" in this way.
+            services.AddScoped<OrderContext>(provider =>
+                provider.GetRequiredService<IOrderContext>() as OrderContext);
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<OrderContext>();

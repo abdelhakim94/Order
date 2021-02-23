@@ -1,8 +1,9 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Order.DomainModel;
 
-namespace Order.Server.Model
+namespace Order.Server.Persistence
 {
     public class OrderContext
         : IdentityDbContext<

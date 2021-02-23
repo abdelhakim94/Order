@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Order.Server.Model;
+using Order.Server.Persistence;
 
-namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
+namespace Order.Server.Persistence.Migrations.V01
 {
     [DbContext(typeof(OrderContext))]
     partial class OrderContextModelSnapshot : ModelSnapshot
@@ -21,7 +21,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
-            modelBuilder.Entity("Order.Server.Model.Role", b =>
+            modelBuilder.Entity("Order.DomainModel.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("role", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.RoleClaim", b =>
+            modelBuilder.Entity("Order.DomainModel.RoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("role_claim", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.User", b =>
+            modelBuilder.Entity("Order.DomainModel.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,7 +150,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("user", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserClaim", b =>
+            modelBuilder.Entity("Order.DomainModel.UserClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,7 +173,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("user_claim", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserLogin", b =>
+            modelBuilder.Entity("Order.DomainModel.UserLogin", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -194,7 +194,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("user_login", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserRole", b =>
+            modelBuilder.Entity("Order.DomainModel.UserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -209,7 +209,7 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("user_role", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserToken", b =>
+            modelBuilder.Entity("Order.DomainModel.UserToken", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -228,9 +228,9 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.ToTable("user_token", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.RoleClaim", b =>
+            modelBuilder.Entity("Order.DomainModel.RoleClaim", b =>
                 {
-                    b.HasOne("Order.Server.Model.Role", "Role")
+                    b.HasOne("Order.DomainModel.Role", "Role")
                         .WithMany("RoleClaims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -239,9 +239,9 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserClaim", b =>
+            modelBuilder.Entity("Order.DomainModel.UserClaim", b =>
                 {
-                    b.HasOne("Order.Server.Model.User", "User")
+                    b.HasOne("Order.DomainModel.User", "User")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -250,9 +250,9 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserLogin", b =>
+            modelBuilder.Entity("Order.DomainModel.UserLogin", b =>
                 {
-                    b.HasOne("Order.Server.Model.User", "User")
+                    b.HasOne("Order.DomainModel.User", "User")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -261,15 +261,15 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserRole", b =>
+            modelBuilder.Entity("Order.DomainModel.UserRole", b =>
                 {
-                    b.HasOne("Order.Server.Model.Role", "Role")
+                    b.HasOne("Order.DomainModel.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Order.Server.Model.User", "User")
+                    b.HasOne("Order.DomainModel.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -280,9 +280,9 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.UserToken", b =>
+            modelBuilder.Entity("Order.DomainModel.UserToken", b =>
                 {
-                    b.HasOne("Order.Server.Model.User", "User")
+                    b.HasOne("Order.DomainModel.User", "User")
                         .WithMany("Tokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -291,14 +291,14 @@ namespace Order.Server.Model.Migrations.V01.CreateCustomIdentityStore
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.Role", b =>
+            modelBuilder.Entity("Order.DomainModel.Role", b =>
                 {
                     b.Navigation("RoleClaims");
 
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("Order.Server.Model.User", b =>
+            modelBuilder.Entity("Order.DomainModel.User", b =>
                 {
                     b.Navigation("Claims");
 

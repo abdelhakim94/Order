@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
-namespace Order.Server.Model
+namespace Order.DomainModel
 {
     public class User : IdentityUser<int>
     {
