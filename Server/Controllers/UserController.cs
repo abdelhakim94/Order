@@ -39,14 +39,12 @@ namespace Order.Server.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public new async Task SignOut()
         {
             await userService.SignOut(User.GetUserId());
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] TokenPairDto previousTokens)
         {
             try

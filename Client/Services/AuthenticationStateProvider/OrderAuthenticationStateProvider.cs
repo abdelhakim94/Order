@@ -26,14 +26,17 @@ namespace Order.Client.Services
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var accessToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.AccessToken));
-            if (string.IsNullOrWhiteSpace(accessToken))
+            try
+            {
+                var accessToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.AccessToken));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(accessToken), "jwt")));
+            }
+            catch (System.Exception)
             {
                 httpClient.DefaultRequestHeaders.Authorization = null;
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(accessToken), "jwt")));
         }
 
         public async Task MarkUserAsSignedIn(string accessToken, string refreshToken)

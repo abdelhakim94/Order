@@ -52,8 +52,8 @@ namespace Order.Client.Services
 
         public async Task SignOut()
         {
+            await httpClient.GetAsync("api/user/signout");
             await authenticationStateProvider.MarkUserAsSignedOut();
-            httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }
