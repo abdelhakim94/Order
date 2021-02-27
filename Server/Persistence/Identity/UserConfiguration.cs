@@ -24,25 +24,29 @@ namespace Order.Server.Persistence
             builder.HasMany(e => e.Claims)
                 .WithOne(e => e.User)
                 .HasForeignKey(uc => uc.UserId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Each User can have many UserLogins
             builder.HasMany(e => e.Logins)
                 .WithOne(e => e.User)
                 .HasForeignKey(ul => ul.UserId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Each User can have many UserTokens
             builder.HasMany(e => e.Tokens)
                 .WithOne(e => e.User)
                 .HasForeignKey(ut => ut.UserId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Each User can have many entries in the UserRole join table
             builder.HasMany(e => e.UserRoles)
                 .WithOne(e => e.User)
                 .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -18,7 +18,8 @@ namespace Order.Client.Pages
 
         public async Task HandleFormSubmition(EditContext context)
         {
-            await authenticationService.SignUp(context.Model as UserSignUpDto);
+            var result = await authenticationService.SignUp(context.Model as UserSignUpDto);
+            // use the error codes to handle errors.
             NavigationManager.NavigateTo("/");
         }
     }

@@ -24,6 +24,7 @@ namespace Order.Client.Pages
         public async Task HandleFormSubmition(EditContext context)
         {
             var result = await authenticationService.SignIn(context.Model as UserSignInDto);
+            // improve: use the errors to guide the user with what went wrong
             if (result.Successful)
             {
                 NavigationManager.NavigateTo("/logout/");

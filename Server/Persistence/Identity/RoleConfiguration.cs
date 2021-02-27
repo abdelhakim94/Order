@@ -14,13 +14,15 @@ namespace Order.Server.Persistence
             builder.HasMany(e => e.UserRoles)
                 .WithOne(e => e.Role)
                 .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Each Role can have many associated RoleClaims
             builder.HasMany(e => e.RoleClaims)
                 .WithOne(e => e.Role)
                 .HasForeignKey(rc => rc.RoleId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

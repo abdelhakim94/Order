@@ -1,9 +1,13 @@
 @page "/Logout"
 
 @using Order.Client.Services
+@using Microsoft.AspNetCore.Authorization
+@using Order.Shared.Security.Claims
+@using Order.Shared.Security.Policies
 
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
+@attribute [Authorize(Policy = IsGuest.Name)]
 
 <p>Authenticated : @authenticated</p>
 <p>@token</p>
@@ -31,7 +35,7 @@
 
     async Task<string> GetToken()
     {
-        return (await AuthState).User.Identity.Name;
+        return (await AuthState).User.Claims.FirstOrDefault(c => c.Type == nameof(Profile))?.Value;
     }
 
     async Task<bool> Authenticated()

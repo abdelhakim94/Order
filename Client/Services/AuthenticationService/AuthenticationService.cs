@@ -7,28 +7,26 @@ using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Order.Shared.Dto.Users;
+using Order.Shared.Interfaces;
 
 namespace Order.Client.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationService, IService
     {
         private readonly HttpClient httpClient;
-        private readonly AuthenticationStateProvider authenticationStateProvider;
-        private readonly ILocalStorageService localStorage;
+        private readonly IOrderAuthenticationStateProvider authenticationStateProvider;
 
         public AuthenticationService(
             HttpClient httpClient,
-            AuthenticationStateProvider authenticationStateProvider,
-            ILocalStorageService localStorage)
+            IOrderAuthenticationStateProvider authenticationStateProvider)
         {
             this.httpClient = httpClient;
             this.authenticationStateProvider = authenticationStateProvider;
-            this.localStorage = localStorage;
         }
 
         public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo)
         {
-            var response = await httpClient.PostAsJsonAsync<UserSignUpDto>("api/account/signup", userInfo);
+            var response = await httpClient.PostAsJsonAsync<UserSignUpDto>("api/user/signup", userInfo);
             return JsonSerializer.Deserialize<SignUpResultDto>(
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -36,8 +34,8 @@ namespace Order.Client.Services
 
         public async Task<SignInResultDto> SignIn(UserSignInDto userInfo)
         {
-            var userInfoAsJson = JsonSerializer.Serialize(userInfo);
-            var response = await httpClient.PostAsync("api/account/signin", new StringContent(userInfoAsJson, Encoding.UTF8, "application/json"));
+            var response = await httpClient.PostAsJsonAsync<UserSignInDto>("api/user/signin", userInfo);
+
             var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -47,17 +45,14 @@ namespace Order.Client.Services
                 return signInResult;
             }
 
-            await localStorage.SetItemAsync("authToken", signInResult.Token);
-            await ((OrderAuthenticationStateProvider)authenticationStateProvider).MarkUserAsAuthenticated();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", signInResult.Token);
-
+            await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", signInResult.TokenPair.AccessToken);
             return signInResult;
         }
 
         public async Task SignOut()
         {
-            await localStorage.RemoveItemAsync("authToken");
-            ((OrderAuthenticationStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
+            await authenticationStateProvider.MarkUserAsSignedOut();
             httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }

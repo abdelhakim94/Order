@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using System.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
@@ -8,9 +10,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using MediatR;
 using Order.DomainModel;
 using Order.Server.Persistence;
+using Order.Shared.Interfaces;
+using Order.Server.Dto.Jwt;
+using Order.Shared.Security.Policies;
 
 namespace Order.Server
 {
@@ -26,8 +33,16 @@ namespace Order.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_antony")
             ));
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            services.Scan(scan => scan
+               .FromCallingAssembly()
+               .AddClasses(classes => classes.AssignableTo<IService>())
+               .AsImplementedInterfaces()
+               .WithScopedLifetime());
 
             #region Identity
             services.AddDatabaseDeveloperPageExceptionFilter();
@@ -37,33 +52,58 @@ namespace Order.Server
             services.AddScoped<OrderContext>(provider =>
                 provider.GetRequiredService<IOrderContext>() as OrderContext);
 
-            services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<OrderContext>();
+            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
+            services.AddSingleton(jwtTokenConfig);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddIdentity<User, Role>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 8;
+                })
+                .AddEntityFrameworkStores<OrderContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(options =>
                 {
+                    options.RequireHttpsMetadata = true;
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
+                        ValidIssuer = jwtTokenConfig.Issuer,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["JwtIssuer"],
-                        ValidAudience = Configuration["JwtAudience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenConfig.secret)),
+                        ValidateAudience = true,
+                        ValidAudience = jwtTokenConfig.Audience,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(1),
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(IsGuest.Name, IsGuest.Policy);
+            });
             #endregion
+
+            services.AddSwaggerGen();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSignalR().AddMessagePackProtocol();
             services.AddResponseCompression(opts =>
-            {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] { "application/octet-stream" });
-            });
+                {
+                    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                        new[] { "application/octet-stream" });
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,9 +113,15 @@ namespace Order.Server
 
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order");
+                });
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
+
             }
             else
             {
@@ -96,7 +142,8 @@ namespace Order.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapControllers();
+                endpoints.MapControllers()
+                    .RequireAuthorization(IsGuest.Name);
 
                 // Map hubs here
                 // endpoints.MapHub<AccountHub>("/Account");
