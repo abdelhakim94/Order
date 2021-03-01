@@ -43,7 +43,6 @@ namespace Order.Client.Services
         {
             await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.AccessToken), accessToken);
             await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken), refreshToken);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(
                 ParseClaimsFromJwt(accessToken),
                 "jwt"));
@@ -55,7 +54,6 @@ namespace Order.Client.Services
         {
             await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.AccessToken));
             await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken));
-            httpClient.DefaultRequestHeaders.Authorization = null;
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(new AuthenticationState(anonymousUser));
             NotifyAuthenticationStateChanged(authState);
