@@ -23,9 +23,8 @@ namespace Order.Shared.Dto.Users
             ErrorMessage = "Nécessite au moin 8 caractères dont une lettre et un chiffre")]
         public string Password { get; set; }
 
-        // should have a validator to ensure that it is equal to the password
-        [Required(ErrorMessage = "Un mot de passe est requis")]
         [PasswordPropertyText(true)]
+        [Compare("Password", ErrorMessage = "Different du mot de passe")]
         public string ConfirmPassword { get; set; }
     }
 }
