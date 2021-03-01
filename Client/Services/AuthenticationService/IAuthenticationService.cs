@@ -9,5 +9,6 @@ namespace Order.Client.Services
         Task<SignUpResultDto> SignUp(UserSignUpDto userSignUpData);
         Task<SignInResultDto> SignIn(UserSignInDto userSignInData);
         Task SignOut();
+        Task RefreshTokens(string refreshToken);
     }
 }

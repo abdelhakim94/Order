@@ -18,9 +18,13 @@ namespace Order.Server.CQRS.User.Commands
             var token = await context.UserRefreshToken
                 .FirstOrDefaultAsync(rt => rt.UserId == command.UserId);
 
-            context.UserRefreshToken.Remove(token);
+            if (token is not null)
+            {
+                context.UserRefreshToken.Remove(token);
+                return (await context.SaveChangesAsync(ct)) > 0;
+            }
 
-            return (await context.SaveChangesAsync(ct)) > 0;
+            return false;
         }
     }
 }

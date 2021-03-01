@@ -1,5 +1,4 @@
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -23,34 +22,70 @@ namespace Order.Client.Services
 
         public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo)
         {
-            var response = await httpClient.PostAsJsonAsync<UserSignUpDto>("api/user/signup", userInfo);
-            return JsonSerializer.Deserialize<SignUpResultDto>(
-                await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            try
+            {
+                var response = await httpClient.PostAsJsonAsync<UserSignUpDto>("api/user/SignUp", userInfo);
+                return JsonSerializer.Deserialize<SignUpResultDto>(
+                    await response.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            catch (System.Exception)
+            {
+                return new() { Successful = false, Errors = new[] { "ServerError" } };
+            }
         }
 
         public async Task<SignInResultDto> SignIn(UserSignInDto userInfo)
         {
-            var response = await httpClient.PostAsJsonAsync<UserSignInDto>("api/user/signin", userInfo);
-
-            var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
-                await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
+                var response = await httpClient.PostAsJsonAsync<UserSignInDto>("api/user/SignIn", userInfo);
+
+                var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
+                    await response.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return signInResult;
+                }
+
+                await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
                 return signInResult;
             }
-
-            await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", signInResult.TokenPair.AccessToken);
-            return signInResult;
+            catch (System.Exception)
+            {
+                return new() { Successful = false };
+            }
         }
 
         public async Task SignOut()
         {
-            await httpClient.GetAsync("api/user/signout");
-            await authenticationStateProvider.MarkUserAsSignedOut();
+            try
+            {
+                await httpClient.GetAsync("api/user/SignOut");
+            }
+            catch (System.Exception) { }
+            finally
+            {
+                await authenticationStateProvider.MarkUserAsSignedOut();
+            }
+        }
+
+        public async Task RefreshTokens(string refreshToken)
+        {
+            try
+            {
+                var response = await httpClient.PostAsJsonAsync<string>("api/user/RefreshTokens", refreshToken);
+                var tokenPair = JsonSerializer.Deserialize<TokenPairDto>(
+                    await response.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                await authenticationStateProvider.MarkUserAsSignedIn(tokenPair.AccessToken, tokenPair.RefreshToken);
+            }
+            catch (System.Exception)
+            {
+                await authenticationStateProvider.MarkUserAsSignedOut();
+            }
         }
     }
 }

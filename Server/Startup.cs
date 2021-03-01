@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,8 @@ using Order.Server.Persistence;
 using Order.Shared.Interfaces;
 using Order.Server.Dto.Jwt;
 using Order.Shared.Security.Policies;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Order.Server
 {
@@ -94,16 +97,41 @@ namespace Order.Server
             });
             #endregion
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(setup =>
+            {
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Name = "JWT Authentication",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
+
+            });
 
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSignalR().AddMessagePackProtocol();
             services.AddResponseCompression(opts =>
-                {
-                    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                        new[] { "application/octet-stream" });
-                });
+                    {
+                        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                            new[] { "application/octet-stream" });
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +142,7 @@ namespace Order.Server
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
+
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order");

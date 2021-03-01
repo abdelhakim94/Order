@@ -75,7 +75,7 @@ namespace Order.Server.Services.UserService
                 return new SignInResultDto
                 {
                     Successful = false,
-                    IsNotAllowed = result.IsNotAllowed, // emil is not confirmed
+                    IsNotAllowed = result.IsNotAllowed, // email is not confirmed
                     IsLockedOut = result.IsLockedOut, // 5 unsuccessful signin 
                     LockoutEndDate = result.IsLockedOut ? await userManager.GetLockoutEndDateAsync(user) : null,
                     IsEmailOrPasswordIncorrect = !(result.IsNotAllowed || result.IsLockedOut || result.RequiresTwoFactor),
@@ -103,9 +103,17 @@ namespace Order.Server.Services.UserService
             await signInManager.SignOutAsync();
         }
 
-        public Task<TokenPairDto> RefreshTokens(TokenPairDto previousTokens)
+        public async Task<TokenPairDto> RefreshTokens(string userRefreshToken, int userId, IEnumerable<Claim> claims)
         {
-            return jwtAuthenticationService.RefreshTokens(previousTokens, DateTime.Now);
+            try
+            {
+                return await jwtAuthenticationService.RefreshTokens(userRefreshToken, userId, claims, DateTime.Now);
+            }
+            catch (System.Exception)
+            {
+                await this.SignOut(userId);
+                throw;
+            }
         }
     }
 }

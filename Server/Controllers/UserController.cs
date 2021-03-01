@@ -5,6 +5,8 @@ using Order.Shared.Dto.Users;
 using Order.Server.Services;
 using Order.Shared.Security.Policies;
 using Order.Shared.Security;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Order.Server.Controllers
 {
@@ -45,15 +47,15 @@ namespace Order.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] TokenPairDto previousTokens)
+        public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] string userRefreshToken)
         {
             try
             {
-                return Ok(await userService.RefreshTokens(previousTokens));
+                return Ok(await userService.RefreshTokens(userRefreshToken, User.GetUserId(), User.Claims));
             }
             catch (System.Exception)
             {
-                return Redirect("/");
+                return Unauthorized();
             }
         }
     }

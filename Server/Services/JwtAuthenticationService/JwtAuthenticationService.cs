@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,7 @@ using Order.Server.Dto.Jwt;
 using Order.Shared.Interfaces;
 using Order.Shared.Dto.Users;
 using Order.Server.CQRS.User.Commands;
-using System.Security.Cryptography;
 using Order.Server.CQRS.User.Queries;
-using Order.Shared.Security;
 
 namespace Order.Server.Services.JwtAuthenticationService
 {
@@ -60,58 +59,26 @@ namespace Order.Server.Services.JwtAuthenticationService
             };
         }
 
-        public async Task<TokenPairDto> RefreshTokens(TokenPairDto previousTokens, DateTime now)
+        public async Task<TokenPairDto> RefreshTokens(string userRefreshToken, int userId, IEnumerable<Claim> claims, DateTime now)
         {
-            if (string.IsNullOrWhiteSpace(previousTokens.RefreshToken))
+            if (string.IsNullOrWhiteSpace(userRefreshToken))
             {
-                throw new SecurityTokenException("Invalid tokens");
+                throw new SecurityTokenException("Refresh token can't be null");
             }
 
-            var (principal, jwtToken) = DecodeJwtToken(previousTokens.AccessToken);
+            var previousRefreshToken = await mediator.Send(new LoadRefreshTokenQuery(userId));
 
-            if (jwtToken is null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature))
+            if (previousRefreshToken is null || previousRefreshToken.Token != userRefreshToken || previousRefreshToken.ExpireAt < now)
             {
-                throw new SecurityTokenException("Invalid tokens");
+                throw new SecurityTokenException("Invalid refresh token");
             }
 
-            var userId = principal.GetUserId();
-            var refreshToken = await mediator.Send(new LoadRefreshTokenQuery(userId));
-
-            if (refreshToken is null || refreshToken.Token != previousTokens.RefreshToken || refreshToken.ExpireAt < now)
-            {
-                throw new SecurityTokenException("Invalid tokens");
-            }
-
-            return await GenerateTokens(userId, principal.Claims, now);
+            return await GenerateTokens(userId, claims, now);
         }
 
         public Task<bool> DeleteRefreshToken(int userId)
         {
             return mediator.Send(new DeleteRefreshTokenCommand(userId));
-        }
-
-        private (ClaimsPrincipal, JwtSecurityToken) DecodeJwtToken(string token)
-        {
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new SecurityTokenException("Invalid tokens");
-            }
-
-            var principal = new JwtSecurityTokenHandler()
-                .ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtTokenConfig.Issuer,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.secret)),
-                    ValidAudience = jwtTokenConfig.Audience,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(1)
-                },
-                    out var validatedToken);
-
-            return (principal, validatedToken as JwtSecurityToken);
         }
 
         private static string GenerateRefreshTokenString()

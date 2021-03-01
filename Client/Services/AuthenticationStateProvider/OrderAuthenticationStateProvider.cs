@@ -47,6 +47,7 @@ namespace Order.Client.Services
                 ParseClaimsFromJwt(accessToken),
                 "jwt"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
             NotifyAuthenticationStateChanged(authState);
         }
 
@@ -56,6 +57,7 @@ namespace Order.Client.Services
             await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken));
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(new AuthenticationState(anonymousUser));
+            httpClient.DefaultRequestHeaders.Authorization = null;
             NotifyAuthenticationStateChanged(authState);
         }
 
