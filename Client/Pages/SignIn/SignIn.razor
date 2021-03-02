@@ -5,11 +5,12 @@
 
 @namespace Order.Client.Pages
 
+
 <EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition>
 
     <ObjectGraphDataAnnotationsValidator />
 
-    <div class="form-container">
+    <div class="form-container @pageClass">
 
         <h1 class="form-header">@M.SignIn</h1>
 
