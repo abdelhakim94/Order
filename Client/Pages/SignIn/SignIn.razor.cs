@@ -7,8 +7,14 @@ using Order.Shared.Dto.Users;
 
 namespace Order.Client.Pages
 {
-    public partial class SignIn
+    public partial class SignIn : ComponentBase
     {
+        private bool isLoading { get; set; }
+        private string pageClass
+        {
+            get => isLoading ? CSSCLasses.PageBlur : string.Empty;
+        }
+
         public UserSignInDto UserSignInData { get; set; } = new UserSignInDto();
 
         [Inject]
@@ -20,12 +26,6 @@ namespace Order.Client.Pages
         public string SocialSpritePath
         {
             get => "/icons/social-media-sprite.png";
-        }
-
-        private bool isLoading { get; set; }
-        private string pageClass
-        {
-            get => isLoading ? CSSCLasses.PageBlur : "";
         }
 
         public async Task HandleFormSubmition(EditContext context)

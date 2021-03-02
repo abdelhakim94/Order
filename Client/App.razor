@@ -9,7 +9,7 @@
                 <NotAuthorized>
                     @if (!context.User.Identity.IsAuthenticated)
                         {
-                    <RedirectToSignIn />
+                    <Redirect Route="/" />
                     }
                         else
                         {

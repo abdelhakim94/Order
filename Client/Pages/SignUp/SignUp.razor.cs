@@ -7,8 +7,14 @@ using Order.Client.Constants;
 
 namespace Order.Client.Pages
 {
-    public partial class SignUp
+    public partial class SignUp : ComponentBase
     {
+        private bool isLoading { get; set; }
+        private string pageClass
+        {
+            get => isLoading ? CSSCLasses.PageBlur : string.Empty;
+        }
+
         public UserSignUpDto SignUpData { get; set; } = new UserSignUpDto();
 
         [Inject]
@@ -16,12 +22,6 @@ namespace Order.Client.Pages
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-
-        private bool isLoading { get; set; }
-        private string pageClass
-        {
-            get => isLoading ? CSSCLasses.PageBlur : "";
-        }
 
         public async Task HandleFormSubmition(EditContext context)
         {
