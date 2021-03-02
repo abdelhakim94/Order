@@ -1,3 +1,6 @@
+using System;
+using Order.Shared.Security.Constants;
+
 namespace Order.Client.Constants
 {
     public static class UIMessages
@@ -28,5 +31,10 @@ namespace Order.Client.Constants
         public static string ServerErrorDuringSignUp { get => "Ouups! Il semble que le serveur n'est pas accessible. Veuillez vérifier votre connexion internet ou réessayer plus tard."; }
         public static string PasswordNotSecure { get => "Le mot de passe ne répond pas aux exigences de sécurité. veuillez envisager de l'allonger ou d'utiliser des caractères spéciaux"; }
         public static string DefaultSignUpErrorMessage { get => "Ouups! Il semble que le compte n'a pas pu être créé. Veuillez réessayer plus tard"; }
+
+        public static string EmailNotConfirmed { get => "Votre email n'a pas été confirmé. Veuillez suivre le lien reçu par email pour confirmer l'adresse"; }
+        public static string AccountLockedOut(DateTimeOffset? remainning) => $"Votre compte est bloqué car {UserConstants.MAX_FAILED_SIGNIN} tentatives infructueuses de connexion. Veuillez réessayer dans {remainning.Value.ToLocalTime().Subtract(DateTime.Now).Minutes + 1} minutes";
+        public static string WrongEmailOrPassword { get => "Email ou mot de passe incorrect, veuillez réessayer"; }
+        public static string DefaultSignInErrorMessage { get => "impossible de vous connecter. Veuillez envisager de créer un compte ou de continuer avec un compte de réseau social"; }
     }
 }

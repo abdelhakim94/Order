@@ -66,7 +66,7 @@ namespace Order.Server.Services.UserService
                 userInfo.Email,
                 userInfo.Password,
                 true,
-                false);
+                true);
 
             var user = await userManager.FindByEmailAsync(userInfo.Email);
 

@@ -19,8 +19,7 @@ using Order.Server.Persistence;
 using Order.Shared.Interfaces;
 using Order.Server.Dto.Jwt;
 using Order.Shared.Security.Policies;
-using System.IO;
-using System.Collections.Generic;
+using Order.Shared.Security.Constants;
 
 namespace Order.Server
 {
@@ -65,6 +64,9 @@ namespace Order.Server
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequiredLength = 8;
+                    options.Lockout.AllowedForNewUsers = true;
+                    options.Lockout.MaxFailedAccessAttempts = UserConstants.MAX_FAILED_SIGNIN;
+                    options.Lockout.DefaultLockoutTimeSpan = UserConstants.LOCKOUT_TIME;
                 })
                 .AddEntityFrameworkStores<OrderContext>()
                 .AddDefaultTokenProviders();

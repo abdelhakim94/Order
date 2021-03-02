@@ -6,7 +6,7 @@
 @namespace Order.Client.Pages
 
 
-<EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition>
+<EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition @onclick=@(() => modalRef.Close())>
 
     <ObjectGraphDataAnnotationsValidator />
 
@@ -45,6 +45,11 @@
         <div class="redirection">
             @M.AskForAccountAbsence <a href="/SignUp" class="redirect">@M.SignUpRedirect</a>
         </div>
+
+        <Modal @ref=@modalRef CssClass="error-modal" OnClose=@(() => errorMessage=string.Empty) @onclick=@(() =>
+            modalRef.Close())>
+            <p>@errorMessage</p>
+        </Modal>
 
     </div>
 

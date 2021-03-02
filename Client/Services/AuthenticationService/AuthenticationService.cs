@@ -46,7 +46,7 @@ namespace Order.Client.Services
                     await response.Content.ReadAsStringAsync(),
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                if (!response.IsSuccessStatusCode)
+                if (!signInResult.Successful)
                 {
                     return signInResult;
                 }
