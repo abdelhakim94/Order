@@ -2,6 +2,38 @@
 
 @using Order.Client.Constants
 
-<div class=@CSSCLasses.ComponentContainer>
-    <p>This is a model</p>
-</div>
+@if (ShowModal)
+{
+    <div @attributes=@AdditionalAttributes class="@CSSCLasses.ComponentContainer @CssClass">
+        @ChildContent
+    </div>
+}
+
+@code{
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+
+    public bool ShowModal { get; set; }
+
+    public void Show()
+    {
+        ShowModal = true;
+        StateHasChanged();
+    }
+
+    public async Task Close()
+    {
+        ShowModal = false;
+        await OnClose.InvokeAsync();
+        StateHasChanged();
+    }
+}

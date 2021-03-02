@@ -47,8 +47,8 @@ namespace Order.Server.Services.UserService
 
             if (!result.Succeeded)
             {
-                var errors = result.Errors.Select(x => x.Code);
-                return new SignUpResultDto { Successful = false, Errors = errors };
+                var error = result.Errors.Select(x => x.Code).FirstOrDefault();
+                return new SignUpResultDto { Successful = false, Error = error };
             }
 
             var registeredUser = await userManager.FindByEmailAsync(userInfo.Email);

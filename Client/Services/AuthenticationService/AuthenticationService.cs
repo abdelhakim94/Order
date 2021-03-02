@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Order.Client.Constants;
 using Order.Shared.Dto.Users;
 using Order.Shared.Interfaces;
 
@@ -31,7 +32,7 @@ namespace Order.Client.Services
             }
             catch (System.Exception)
             {
-                return new() { Successful = false, Errors = new[] { "ServerError" } };
+                return new() { Successful = false, Error = Errors.ServerError };
             }
         }
 

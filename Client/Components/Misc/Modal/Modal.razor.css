@@ -1,3 +1,5 @@
 .component-container {
   background-color: blanchedalmond;
+  border: none;
+  border-radius: 1em;
 }
