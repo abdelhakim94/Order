@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Order.Server.Dto.Jwt;
+using Order.Server.Dto.Users;
 using Order.Server.Persistence;
 
 namespace Order.Server.CQRS.User.Queries

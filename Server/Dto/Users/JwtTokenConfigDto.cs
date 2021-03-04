@@ -1,4 +1,4 @@
-namespace Order.Server.Dto.Jwt
+namespace Order.Server.Dto.Users
 {
     public class JwtTokenConfigDto
     {

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using MediatR;
-using Order.Server.Dto.Jwt;
+using Order.Server.Dto.Users;
 using Order.Shared.Interfaces;
 using Order.Shared.Dto.Users;
 using Order.Server.CQRS.User.Commands;

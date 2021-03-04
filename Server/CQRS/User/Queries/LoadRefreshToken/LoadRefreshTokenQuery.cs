@@ -1,5 +1,5 @@
 using MediatR;
-using Order.Server.Dto.Jwt;
+using Order.Server.Dto.Users;
 
 namespace Order.Server.CQRS.User.Queries
 {

@@ -1,12 +1,11 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Order.Shared.Dto.Users;
 using Order.Server.Services;
-using Order.Shared.Security.Policies;
 using Order.Shared.Security;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Order.Server.Dto.Users;
 
 namespace Order.Server.Controllers
 {
@@ -25,7 +24,22 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public async Task<SignUpResultDto> SignUp([FromBody] UserSignUpDto userInfo)
         {
-            return await userService.SignUp(userInfo);
+            return await userService.SignUp(userInfo, Url, Request.Scheme);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(EmailConfirmationDto confirmation)
+        {
+            try
+            {
+                await userService.ConfirmEmail(confirmation);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
+            return Redirect("/");
         }
 
         [HttpPost]

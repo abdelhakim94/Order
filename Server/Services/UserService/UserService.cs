@@ -3,12 +3,16 @@ using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Order.DomainModel;
 using Order.Shared.Dto.Users;
 using Order.Shared.Security.Claims;
 using Order.Server.Services.JwtAuthenticationService;
 using Order.Shared.Interfaces;
+using Order.Server.Services.EmailService;
+using Order.Server.Dto.Users;
+using Order.Shared.Constants;
 
 namespace Order.Server.Services.UserService
 {
@@ -17,18 +21,21 @@ namespace Order.Server.Services.UserService
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly IJwtAuthenticationService jwtAuthenticationService;
+        private readonly IEmailService emailService;
 
         public UserService(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IJwtAuthenticationService jwtAuthenticationService)
+            IJwtAuthenticationService jwtAuthenticationService,
+            IEmailService emailService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.jwtAuthenticationService = jwtAuthenticationService;
+            this.emailService = emailService;
         }
 
-        public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo)
+        public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo, IUrlHelper url, string scheme)
         {
             var newUser = new User
             {
@@ -44,20 +51,47 @@ namespace Order.Server.Services.UserService
             };
 
             var result = await userManager.CreateAsync(newUser, userInfo.Password);
-
             if (!result.Succeeded)
             {
                 var error = result.Errors.Select(x => x.Code).FirstOrDefault();
                 return new SignUpResultDto { Successful = false, Error = error };
             }
 
-            var registeredUser = await userManager.FindByEmailAsync(userInfo.Email);
-            await userManager.AddClaimsAsync(registeredUser, new Claim[]
+            try
             {
-                new(ClaimTypes.NameIdentifier, registeredUser.Id.ToString())
-            });
+                var registeredUser = await userManager.FindByEmailAsync(userInfo.Email);
+                await userManager.AddClaimsAsync(registeredUser, new Claim[]
+                {
+                    new(ClaimTypes.NameIdentifier, registeredUser.Id.ToString())
+                });
+
+                var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(registeredUser);
+                var confirmationUrl = url.Action(
+                    "ConfirmEmail",
+                    "User",
+                    new EmailConfirmationDto
+                    {
+                        confirmationToken = confirmationToken,
+                        userEmail = registeredUser.Email,
+                    },
+                    scheme);
+
+                await emailService.SendEmailConfirmationMail(registeredUser.Email, confirmationUrl);
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                await userManager.DeleteAsync(newUser);
+                return new SignUpResultDto { Successful = false, Error = SignUpErrors.FailureSendingEmail };
+            }
 
             return new SignUpResultDto { Successful = true };
+        }
+
+        public async Task ConfirmEmail(EmailConfirmationDto confirmation)
+        {
+            var user = await userManager.FindByEmailAsync(confirmation.userEmail);
+            await userManager.ConfirmEmailAsync(user, confirmation.confirmationToken);
         }
 
         public async Task<SignInResultDto> SignIn(UserSignInDto userInfo)
@@ -84,7 +118,7 @@ namespace Order.Server.Services.UserService
 
             var claims = user.Claims.Select(c => new Claim(c.ClaimType, c.ClaimValue));
 
-            var tokenPair = await jwtAuthenticationService.GenerateTokens(
+            var tokenPairAsync = jwtAuthenticationService.GenerateTokens(
                 user.Id,
                 claims,
                 DateTime.Now
@@ -93,7 +127,7 @@ namespace Order.Server.Services.UserService
             return new SignInResultDto
             {
                 Successful = true,
-                TokenPair = tokenPair,
+                TokenPair = await tokenPairAsync,
             };
         }
 

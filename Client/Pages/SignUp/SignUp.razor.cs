@@ -6,6 +6,7 @@ using Order.Client.Services;
 using Order.Shared.Dto.Users;
 using Order.Client.Constants;
 using Order.Client.Components.Misc;
+using Order.Shared.Constants;
 
 namespace Order.Client.Pages
 {
@@ -52,7 +53,11 @@ namespace Order.Client.Pages
             {
                 errorMessage = UIMessages.InvalidEmailAdress;
             }
-            else if (result.Error == Errors.ServerError)
+            else if (result.Error == SignUpErrors.FailureSendingEmail)
+            {
+                errorMessage = UIMessages.FailureSendingEmail;
+            }
+            else if (result.Error == SignUpErrors.ServerError)
             {
                 errorMessage = UIMessages.ServerErrorDuringSignUp;
             }

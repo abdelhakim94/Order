@@ -17,7 +17,7 @@ using MediatR;
 using Order.DomainModel;
 using Order.Server.Persistence;
 using Order.Shared.Interfaces;
-using Order.Server.Dto.Jwt;
+using Order.Server.Dto.Users;
 using Order.Shared.Security.Policies;
 using Order.Shared.Security.Constants;
 
@@ -55,7 +55,9 @@ namespace Order.Server
                 provider.GetRequiredService<IOrderContext>() as OrderContext);
 
             var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
+            var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
             services.AddSingleton(jwtTokenConfig);
+            services.AddSingleton(emailBoxConfig);
 
             services.AddIdentity<User, Role>(options =>
                 {
@@ -162,6 +164,7 @@ namespace Order.Server
             }
 
             app.UseHttpsRedirection();
+            // app.Use(options => options.Request);
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
@@ -177,7 +180,7 @@ namespace Order.Server
                     .RequireAuthorization(IsGuest.Name);
 
                 // Map hubs here
-                // endpoints.MapHub<AccountHub>("/Account");
+                // endpoints.MapHub<AccountHub>("/Account").RequireAuthorization(IsGuest.Name);
 
                 endpoints.MapFallbackToFile("index.html");
             });
