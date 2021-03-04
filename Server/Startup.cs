@@ -128,14 +128,15 @@ namespace Order.Server
 
             });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddControllersAsServices();
             services.AddRazorPages();
             services.AddSignalR().AddMessagePackProtocol();
             services.AddResponseCompression(opts =>
-                    {
-                        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                            new[] { "application/octet-stream" });
-                    });
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -164,7 +165,7 @@ namespace Order.Server
             }
 
             app.UseHttpsRedirection();
-            // app.Use(options => options.Request);
+
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 

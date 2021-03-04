@@ -27,9 +27,9 @@ namespace Order.Server.Controllers
             return await userService.SignUp(userInfo, Url, Request.Scheme);
         }
 
-        [HttpPost]
+        [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(EmailConfirmationDto confirmation)
+        public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmationDto confirmation)
         {
             try
             {
