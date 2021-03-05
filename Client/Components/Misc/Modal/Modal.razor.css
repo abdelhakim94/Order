@@ -1,5 +1,10 @@
 .component-container {
-  background-color: blanchedalmond;
+  /* background-color: blanchedalmond; */
+  background-color: whitesmoke;
   border: none;
   border-radius: 1em;
+}
+
+.danger-modal {
+  background-color: red;
 }

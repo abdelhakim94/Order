@@ -1,7 +1,5 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
@@ -13,18 +11,25 @@ namespace Order.Client.Pages
     public partial class SignIn : ComponentBase
     {
         private bool isLoading { get; set; }
-        private Modal modalRef { get; set; }
+        private bool isHidden { get; set; }
+        private Modal errorModal { get; set; }
+        private Modal pwRecoveryModal { get; set; }
         private string errorMessage { get; set; }
 
-        private string pageClass
+        private string disabled
         {
-            get => isLoading ? CSSCLasses.PageBlur : string.Empty;
+            get => isLoading ? CSSCLasses.PageDisabled : string.Empty;
+        }
+
+        private string hidden
+        {
+            get => isHidden ? CSSCLasses.PageBlured : string.Empty;
         }
 
         public UserSignInDto UserSignInData { get; set; } = new UserSignInDto();
 
         [Inject]
-        public IAuthenticationService authenticationService { get; set; }
+        public IAuthenticationService AuthenticationService { get; set; }
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -34,10 +39,34 @@ namespace Order.Client.Pages
             get => "/icons/social-media-sprite.png";
         }
 
+        public void PasswordRecoveryModalShow()
+        {
+            isHidden = true;
+            pwRecoveryModal.Show();
+        }
+
+        public async Task OnPasswordRecoverySend()
+        {
+            var result = await AuthenticationService.RequestRecoverPassword(UserSignInData.Email);
+            if (!result)
+            {
+                errorMessage = UIMessages.ServerUnreachable;
+                errorModal.Show();
+            }
+            await pwRecoveryModal.Close();
+            isHidden = false;
+        }
+
+        public async Task OnPasswordRecoveryCancel()
+        {
+            await pwRecoveryModal.Close();
+            isHidden = false;
+        }
+
         public async Task HandleFormSubmition(EditContext context)
         {
             isLoading = true;
-            var result = await authenticationService.SignIn(context.Model as UserSignInDto);
+            var result = await AuthenticationService.SignIn(context.Model as UserSignInDto);
             isLoading = false;
 
             if (result.Successful)
@@ -61,7 +90,7 @@ namespace Order.Client.Pages
                 errorMessage = UIMessages.DefaultSignInErrorMessage;
             }
 
-            modalRef.Show();
+            errorModal.Show();
         }
     }
 }

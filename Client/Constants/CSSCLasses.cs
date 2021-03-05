@@ -2,7 +2,8 @@ namespace Order.Client.Constants
 {
     public static class CSSCLasses
     {
-        public const string PageBlur = "page-blur";
+        public const string PageDisabled = "page-disabled";
+        public const string PageBlured = "page-blured";
         public const string ComponentContainer = "component-container";
     }
 }

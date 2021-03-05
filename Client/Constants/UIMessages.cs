@@ -10,7 +10,7 @@ namespace Order.Client.Constants
         public static string ConfirmPassword { get => "Confirmer mot de passe"; }
         public static string ForgotPassword { get => "Mot de passe oublié?"; }
 
-        public static string SignIn { get => "Connection"; }
+        public static string SignIn { get => "Connexion"; }
         public static string SignUp { get => "Inscription"; }
 
         public static string Login { get => "Se connecter"; }
@@ -29,13 +29,23 @@ namespace Order.Client.Constants
         public static string EmailAlreadyHasAccount { get => "L'email fourni est déjà associé à un compte. Considérez de vous connecter avec ce compte ou de fournir un autre email"; }
         public static string InvalidEmailAdress { get => "L'email fourni n'est pas valide. Veuillez fournir une adresse email valide"; }
         public static string FailureSendingEmail { get => "le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support."; }
-        public static string ServerErrorDuringSignUp { get => "Ouups! Il semble que le serveur n'est pas accessible. Veuillez vérifier votre connexion internet ou réessayer plus tard."; }
+        public static string ServerUnreachable { get => "Ouups! Il semble que le serveur ne soit pas accessible. Veuillez vérifier votre connexion internet ou réessayer plus tard."; }
         public static string PasswordNotSecure { get => "Le mot de passe ne répond pas aux exigences de sécurité. veuillez envisager de l'allonger ou d'utiliser des caractères spéciaux"; }
+        public static string PasswordMismatch { get => "Le mot de passe et sa confirmation ne correspondent pas. Veuillez saisir à nouveau le mot de passe."; }
         public static string DefaultSignUpErrorMessage { get => "Ouups! Il semble que le compte n'a pas pu être créé. Veuillez réessayer plus tard"; }
 
         public static string EmailNotConfirmed { get => "Votre email n'a pas été confirmé. Veuillez suivre le lien reçu par email pour confirmer l'adresse"; }
         public static string AccountLockedOut(DateTimeOffset? remainning) => $"Votre compte est bloqué car {UserConstants.MAX_FAILED_SIGNIN} tentatives infructueuses de connexion. Veuillez réessayer dans {remainning.Value.ToLocalTime().Subtract(DateTime.Now).Minutes + 1} minutes";
         public static string WrongEmailOrPassword { get => "Email ou mot de passe incorrect, veuillez réessayer"; }
         public static string DefaultSignInErrorMessage { get => "impossible de vous connecter. Veuillez envisager de créer un compte ou de continuer avec un compte de réseau social"; }
+
+        public static string Send { get => "Envoyer"; }
+        public static string Cancel { get => "Annuler"; }
+
+        public static string Reset { get => "Réinitialiser"; }
+        public static string DefaultPasswordRecoveryMessage { get => "Ouups! Il semple que le mot de passe n'a pas pu être réinitialiser.  Veuillez réessayer plus tard"; }
+
+        public static string ComeBackTo { get => "Revenir à"; }
+        public static string SignInPage { get => "la page de connexion"; }
     }
 }

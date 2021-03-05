@@ -10,5 +10,7 @@ namespace Order.Client.Services
         Task<SignInResultDto> SignIn(UserSignInDto userSignInData);
         Task SignOut();
         Task RefreshTokens(string refreshToken);
+        Task<bool> RequestRecoverPassword(string userEmail);
+        Task<RecoverPasswordResultDto> RecoverPassword(RecoverPasswordDto password);
     }
 }

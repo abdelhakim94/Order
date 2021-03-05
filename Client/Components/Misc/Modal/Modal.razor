@@ -4,7 +4,7 @@
 
 @if (ShowModal)
 {
-    <div @attributes=@AdditionalAttributes class="@CSSCLasses.ComponentContainer @CssClass">
+    <div @attributes=@AdditionalAttributes class="@CSSCLasses.ComponentContainer @dangerModal @CssClass">
         @ChildContent
     </div>
 }
@@ -18,6 +18,11 @@
 
     [Parameter]
     public string CssClass { get; set; }
+
+    [Parameter]
+    public bool Danger { get; set; }
+
+    private string dangerModal { get => Danger ? "danger-modal" : string.Empty; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, Object> AdditionalAttributes { get; set; }

@@ -68,8 +68,39 @@ a {
 ::deep .error-modal {
   text-align: center;
   position: fixed;
-  top: 5vh;
   width: 90vw;
+  top: 3vh;
+  left: 5vw;
+}
+
+::deep .pw-recovery-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+
+  position: fixed;
+  width: 80vw;
+  height: 20vh;
+  top: 40vh;
+  left: 10vw;
+}
+
+::deep .pw-recovery-input {
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
+}
+
+::deep .pw-recovery-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+  height: 2em;
+  width: 100%;
+}
+
+::deep .pw-recovery-button {
+  width: 30%;
 }

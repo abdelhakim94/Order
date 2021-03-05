@@ -66,7 +66,6 @@ namespace Order.Client.Services
             {
                 await httpClient.GetAsync("api/user/SignOut");
             }
-            catch (System.Exception) { }
             finally
             {
                 await authenticationStateProvider.MarkUserAsSignedOut();
@@ -86,6 +85,38 @@ namespace Order.Client.Services
             catch (System.Exception)
             {
                 await authenticationStateProvider.MarkUserAsSignedOut();
+            }
+        }
+
+        public async Task<bool> RequestRecoverPassword(string userEmail)
+        {
+            try
+            {
+                var result = await httpClient.PostAsJsonAsync<string>("api/user/RequestRecoverPassword", userEmail);
+                return JsonSerializer.Deserialize<bool>(
+                    await result.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<RecoverPasswordResultDto> RecoverPassword(RecoverPasswordDto password)
+        {
+            try
+            {
+                var result = await httpClient.PostAsJsonAsync<RecoverPasswordDto>("api/user/RecoverPassword", password);
+                return JsonSerializer.Deserialize<RecoverPasswordResultDto>(
+                    await result.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+            }
+            catch (System.Exception)
+            {
+                return new() { Successful = false, Error = SignUpErrors.ServerError };
             }
         }
     }

@@ -22,21 +22,29 @@ namespace Order.Server.Services.UserService
         private readonly SignInManager<User> signInManager;
         private readonly IJwtAuthenticationService jwtAuthenticationService;
         private readonly IEmailService emailService;
+        private readonly IdentityErrorDescriber errorDescriber;
 
         public UserService(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IJwtAuthenticationService jwtAuthenticationService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IdentityErrorDescriber errorDescriber)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.jwtAuthenticationService = jwtAuthenticationService;
             this.emailService = emailService;
+            this.errorDescriber = errorDescriber;
         }
 
         public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo, IUrlHelper url, string scheme)
         {
+            if (userInfo.Password != userInfo.ConfirmPassword)
+            {
+                return new SignUpResultDto { Successful = false, Error = errorDescriber.PasswordMismatch().Code };
+            }
+
             var newUser = new User
             {
                 UserName = userInfo.Email,
