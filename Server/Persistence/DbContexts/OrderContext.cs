@@ -33,5 +33,6 @@ namespace Order.Server.Persistence
         }
 
         public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
+        public override DbSet<User> Users { get; set; }
     }
 }

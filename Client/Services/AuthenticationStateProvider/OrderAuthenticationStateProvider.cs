@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 using Order.Shared.Dto.Users;
 
 namespace Order.Client.Services

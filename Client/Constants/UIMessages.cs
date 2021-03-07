@@ -5,6 +5,16 @@ namespace Order.Client.Constants
 {
     public static class UIMessages
     {
+        // Http error default messages.
+        public static string DefaultHttpNotFoundError { get => "La ressource demandée n'a pas été trouvée"; }
+        public static string DefaultHttpBadRequestError { get => "La requête n'a pas pu être construite correctement"; }
+        public static string DefaultHttpUnauthorizedError { get => "Vous n'êtes pas autorisé à accéder à la ressource demandée. Vous reconnecter peut résoudre le problème"; }
+        public static string DefaultHttpServerError { get => "Une erreur s'est produite sur le serveur. Veuillez réessayer ou contactez le support"; }
+        public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion Internet"; }
+        public static string DefaultInternalError { get => "Une erreur interne est survenue. Veuillez réessayer ou contacter le support"; }
+
+        public static string SignUpSuccess { get => "Veuillez suivre le lien reçu par email pour finaliser votre inscription"; }
+
         public static string Email { get => "Email"; }
         public static string Password { get => "Mot de passe"; }
         public static string ConfirmPassword { get => "Confirmer mot de passe"; }
@@ -47,5 +57,8 @@ namespace Order.Client.Constants
 
         public static string ComeBackTo { get => "Revenir à"; }
         public static string SignInPage { get => "la page de connexion"; }
+        public static string CannotRequestPwRecover { get => "Ouups! Impossible de demander la récupération du mot de passe. Veuillez réessayer ultérieurement."; }
+        public static string FollowResetPasswordLink { get => "Veuillez suivre le lien que vous avez reçu par e-mail pour réinitialiser votre mot de passe."; }
+        public static string ResetPasswordsuccess { get => "Votre mot de passe a été réinitialisé avec succès"; }
     }
 }

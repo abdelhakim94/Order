@@ -1,0 +1,57 @@
+@namespace Order.Client.Components.Misc
+
+@if (showModal)
+{
+    <div class="notification-modal @errorModal">
+        <p>@content</p>
+    </div>
+}
+
+@code{
+    /// <summary>
+    /// Will be executed when Close() is called
+    /// </summary>
+    public Action OnClose { get; set; }
+
+    /// <summary>
+    /// Will be executed when CloseAsync() is called
+    /// </summary>
+    public Func<Task> OnCloseAsync { get; set; }
+
+    private bool isError { get; set; }
+    private string errorModal { get => isError ? "error-modal" : string.Empty; }
+    private bool showModal { get; set; }
+    private string content { get; set; }
+
+    public void Show(string content)
+    {
+        isError = false;
+        this.content = content;
+        showModal = true;
+        StateHasChanged();
+    }
+
+    public void ShowError(string content)
+    {
+        isError = true;
+        this.content = content;
+        showModal = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        showModal = false;
+        content = string.Empty;
+        OnClose();
+        StateHasChanged();
+    }
+
+    public async Task CloseAsync()
+    {
+        showModal = false;
+        content = string.Empty;
+        await OnCloseAsync();
+        StateHasChanged();
+    }
+}

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Order.Shared.Dto.Users
 {
-    public class UserSignUpDto
+    public class SignUpDto
     {
         [Required(ErrorMessage = "Un nom est requis")]
         [RegularExpression("^([A-Za-z]).{2,}", ErrorMessage = "Nécessite au moin 3 caractères commençant par une lettre")]

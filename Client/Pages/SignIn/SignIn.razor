@@ -6,7 +6,7 @@
 @namespace Order.Client.Pages
 
 
-<EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition @onclick=@(() => errorModal.Close())>
+<EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition @onclick=@(() => NotificationModal.Close())>
 
     <ObjectGraphDataAnnotationsValidator />
 
@@ -28,7 +28,7 @@
         <Button CssClass="form-submit" Type="submit" Label=@M.Login />
 
         <div class="redirection">
-            <a href="" @onclick=@PasswordRecoveryModalShow>@M.ForgotPassword</a>
+            <a href="" @onclick=@ResetPasswordModalShow>@M.ForgotPassword</a>
         </div>
 
         <LineTextSeparator Text=@M.ContinueWith />
@@ -48,20 +48,15 @@
 
     </div>
 
-    <div>
-        <Modal @ref=@errorModal CssClass="error-modal" OnClose=@(() => errorMessage=string.Empty) @onclick=@(() =>
-            errorModal.Close()) Danger=@true>
-            <p>@errorMessage</p>
-        </Modal>
-
-        <Modal @ref=@pwRecoveryModal CssClass="pw-recovery-modal">
+    <div class=@disabled>
+        <Modal @ref=@resetPasswordModal CssClass="pw-recovery-modal">
             <div>
                 <OInputText CssClass="form-input pw-recovery-input" PlaceHolder=@M.Email
                     @bind-Value=@UserSignInData.Email />
                 <ValidationMessage For=@( () => UserSignInData.Email ) />
             </div>
             <div class="pw-recovery-buttons">
-                <Button CssClass="pw-recovery-button" Label=@M.Send @onclick=@OnPasswordRecoverySend />
+                <Button CssClass="pw-recovery-button" Label=@M.Send @onclick=@OnResetPasswordSend />
                 <Button CssClass="pw-recovery-button" Label=@M.Cancel @onclick=@OnPasswordRecoveryCancel Danger=@true />
             </div>
         </Modal>

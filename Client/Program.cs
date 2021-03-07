@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Blazored.LocalStorage;
 using Order.Client.Services;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 using Order.Shared.Security.Policies;
 
 namespace Order.Client

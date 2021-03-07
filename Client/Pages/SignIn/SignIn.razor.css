@@ -65,14 +65,6 @@ a {
   text-shadow: 0 0 0.1em #1b6ec2;
 }
 
-::deep .error-modal {
-  text-align: center;
-  position: fixed;
-  width: 90vw;
-  top: 3vh;
-  left: 5vw;
-}
-
 ::deep .pw-recovery-modal {
   display: flex;
   flex-direction: column;
@@ -82,8 +74,8 @@ a {
   position: fixed;
   width: 80vw;
   height: 20vh;
-  top: 40vh;
-  left: 10vw;
+  top: 50%;
+  left: 50%;
 }
 
 ::deep .pw-recovery-input {

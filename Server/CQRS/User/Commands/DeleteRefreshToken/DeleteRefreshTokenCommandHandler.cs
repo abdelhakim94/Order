@@ -16,15 +16,10 @@ namespace Order.Server.CQRS.User.Commands
         public async Task<bool> Handle(DeleteRefreshTokenCommand command, CancellationToken ct)
         {
             var token = await context.UserRefreshToken
-                .FirstOrDefaultAsync(rt => rt.UserId == command.UserId);
+                .SingleOrDefaultAsync(rt => rt.UserId == command.UserId);
 
-            if (token is not null)
-            {
-                context.UserRefreshToken.Remove(token);
-                return (await context.SaveChangesAsync(ct)) > 0;
-            }
-
-            return false;
+            context.UserRefreshToken.Remove(token);
+            return (await context.SaveChangesAsync(ct)) > 0;
         }
     }
 }

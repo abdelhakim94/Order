@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 
 namespace Order.Client.Services
 {

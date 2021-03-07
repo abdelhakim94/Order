@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
+using Order.Client.Extensions;
 using Order.Client.Services;
 using Order.Shared.Dto.Users;
 
@@ -11,22 +12,14 @@ namespace Order.Client.Pages
     public partial class SignIn : ComponentBase
     {
         private bool isLoading { get; set; }
+        private string disabled { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
+
         private bool isHidden { get; set; }
-        private Modal errorModal { get; set; }
-        private Modal pwRecoveryModal { get; set; }
-        private string errorMessage { get; set; }
+        private string hidden { get => isHidden ? CSSCLasses.PageBlured : string.Empty; }
 
-        private string disabled
-        {
-            get => isLoading ? CSSCLasses.PageDisabled : string.Empty;
-        }
+        private Modal resetPasswordModal { get; set; }
 
-        private string hidden
-        {
-            get => isHidden ? CSSCLasses.PageBlured : string.Empty;
-        }
-
-        public UserSignInDto UserSignInData { get; set; } = new UserSignInDto();
+        public SignInDto UserSignInData { get; set; } = new SignInDto();
 
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
@@ -34,39 +27,61 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        [CascadingParameter]
+        public NotificationModal NotificationModal { get; set; }
+
+        [CascadingParameter]
+        public HttpErrorNotifier HttpErrorNotifier { get; set; }
+
         public string SocialSpritePath
         {
             get => "/icons/social-media-sprite.png";
         }
 
-        public void PasswordRecoveryModalShow()
+        public void ResetPasswordModalShow()
         {
             isHidden = true;
-            pwRecoveryModal.Show();
+            resetPasswordModal.Show();
         }
 
-        public async Task OnPasswordRecoverySend()
+        public async Task OnResetPasswordSend()
         {
-            var result = await AuthenticationService.RequestRecoverPassword(UserSignInData.Email);
-            if (!result)
+            isLoading = true;
+            var result = await AuthenticationService.RequestResetPassword(new RequestResetPasswordDto
             {
-                errorMessage = UIMessages.ServerUnreachable;
-                errorModal.Show();
+                Email = UserSignInData.Email
+            });
+            if (!result.IsHttpClientSuccessful())
+            {
+                if (result.IsHttpClientError())
+                {
+                    HttpErrorNotifier.Notify(result);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
+                }
             }
-            await pwRecoveryModal.Close();
+            else
+            {
+                NotificationModal.Show(UIMessages.FollowResetPasswordLink);
+            }
+
+            await resetPasswordModal.Close();
+            isLoading = false;
             isHidden = false;
         }
 
         public async Task OnPasswordRecoveryCancel()
         {
-            await pwRecoveryModal.Close();
+            await resetPasswordModal.Close();
             isHidden = false;
         }
 
         public async Task HandleFormSubmition(EditContext context)
         {
             isLoading = true;
-            var result = await AuthenticationService.SignIn(context.Model as UserSignInDto);
+            var result = await AuthenticationService.SignIn(context.Model as SignInDto);
             isLoading = false;
 
             if (result.Successful)
@@ -75,22 +90,24 @@ namespace Order.Client.Pages
             }
             else if (result.IsNotAllowed)
             {
-                errorMessage = UIMessages.EmailNotConfirmed;
+                NotificationModal.ShowError(UIMessages.EmailNotConfirmed);
             }
             else if (result.IsLockedOut)
             {
-                errorMessage = UIMessages.AccountLockedOut(result.LockoutEndDate);
+                NotificationModal.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
             }
             else if (result.IsEmailOrPasswordIncorrect)
             {
-                errorMessage = UIMessages.WrongEmailOrPassword;
+                NotificationModal.ShowError(UIMessages.WrongEmailOrPassword);
+            }
+            else if (result.AdditionalError is not null && result.AdditionalError.IsHttpClientError())
+            {
+                HttpErrorNotifier.Notify(result.AdditionalError);
             }
             else
             {
-                errorMessage = UIMessages.DefaultSignInErrorMessage;
+                NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
             }
-
-            errorModal.Show();
         }
     }
 }

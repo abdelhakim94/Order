@@ -47,11 +47,3 @@ a {
 .redirect:active {
   text-shadow: 0 0 0.1em #1b6ec2;
 }
-
-::deep .error-modal {
-  text-align: center;
-  position: fixed;
-  width: 90vw;
-  top: 3vh;
-  left: 5vw;
-}

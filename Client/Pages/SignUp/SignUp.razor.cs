@@ -5,23 +5,24 @@ using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Services;
 using Order.Shared.Dto.Users;
 using Order.Client.Constants;
-using Order.Client.Components.Misc;
 using Order.Shared.Constants;
+using Order.Client.Components.Misc;
+using Order.Client.Extensions;
 
 namespace Order.Client.Pages
 {
     public partial class SignUp : ComponentBase
     {
         private bool isLoading { get; set; }
-        private Modal errorModal { get; set; }
-        private string errorMessage { get; set; }
+        private string disabled { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
 
-        private string disabled
-        {
-            get => isLoading ? CSSCLasses.PageDisabled : string.Empty;
-        }
+        public SignUpDto SignUpData { get; set; } = new SignUpDto();
 
-        public UserSignUpDto SignUpData { get; set; } = new UserSignUpDto();
+        [CascadingParameter]
+        public NotificationModal NotificationModal { get; set; }
+
+        [CascadingParameter]
+        public HttpErrorNotifier HttpErrorNotifier { get; set; }
 
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
@@ -35,33 +36,29 @@ namespace Order.Client.Pages
         public async Task HandleFormSubmition(EditContext context)
         {
             isLoading = true;
-            var result = await AuthenticationService.SignUp(context.Model as UserSignUpDto);
+            var result = await AuthenticationService.SignUp(context.Model as SignUpDto);
             isLoading = false;
 
             if (result.Successful)
             {
+                NotificationModal.Show(UIMessages.SignUpSuccess);
                 NavigationManager.NavigateTo("/");
             }
             else if (result.Error == ErrorDescriber.DuplicateEmail(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.DuplicateUserName(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.LoginAlreadyAssociated().Code)
             {
-                errorMessage = UIMessages.EmailAlreadyHasAccount;
+                NotificationModal.ShowError(UIMessages.EmailAlreadyHasAccount);
             }
             else if (result.Error == ErrorDescriber.InvalidUserName(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.InvalidEmail(SignUpData.Email).Code)
             {
-                errorMessage = UIMessages.InvalidEmailAdress;
+                NotificationModal.ShowError(UIMessages.InvalidEmailAdress);
             }
             else if (result.Error == SignUpErrors.FailureSendingEmail)
             {
-                errorMessage = UIMessages.FailureSendingEmail;
+                NotificationModal.ShowError(UIMessages.FailureSendingEmail);
             }
-            else if (result.Error == SignUpErrors.ServerError)
-            {
-                errorMessage = UIMessages.ServerUnreachable;
-            }
-            // this should not be reachable because validation is done on form
             else if (result.Error == ErrorDescriber.PasswordTooShort(default(int)).Code
                   || result.Error == ErrorDescriber.PasswordRequiresUniqueChars(default(int)).Code
                   || result.Error == ErrorDescriber.PasswordRequiresNonAlphanumeric().Code
@@ -69,18 +66,20 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.PasswordRequiresLower().Code
                   || result.Error == ErrorDescriber.PasswordRequiresUpper().Code)
             {
-                errorMessage = UIMessages.PasswordNotSecure;
+                NotificationModal.ShowError(UIMessages.PasswordNotSecure);
             }
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
-                errorMessage = UIMessages.PasswordMismatch;
+                NotificationModal.ShowError(UIMessages.PasswordMismatch);
+            }
+            else if (result.Error.IsHttpClientError())
+            {
+                HttpErrorNotifier.Notify(result.Error);
             }
             else
             {
-                errorMessage = UIMessages.DefaultSignUpErrorMessage;
+                NotificationModal.ShowError(UIMessages.DefaultSignUpErrorMessage);
             }
-
-            errorModal.Show();
         }
     }
 }

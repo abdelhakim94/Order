@@ -1,11 +1,10 @@
 @page "/SignUp/"
 
 @using Order.Client.Components.Form
-@using Order.Client.Components.Misc
 
 @namespace Order.Client.Pages
 
-<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition @onclick=@(() => errorModal.Close())>
+<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition @onclick=@(() => NotificationModal.Close())>
 
     <ObjectGraphDataAnnotationsValidator />
 
@@ -46,13 +45,6 @@
             @M.AskForAccountExistance <a href="/" class="redirect">@M.SignInRedirect</a>
         </div>
 
-    </div>
-
-    <div>
-        <Modal @ref=@errorModal CssClass="error-modal" OnClose=@(() => errorMessage=string.Empty) @onclick=@(() =>
-            errorModal.Close()) Danger=@true>
-            <p>@errorMessage</p>
-        </Modal>
     </div>
 
 </EditForm>

@@ -4,16 +4,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Order.Server.Dto.Users;
 using Order.Shared.Dto.Users;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 
 namespace Order.Server.Services
 {
     public interface IUserService : IService
     {
-        Task<SignUpResultDto> SignUp(UserSignUpDto userInfo, IUrlHelper url, string scheme);
-        Task ConfirmEmail(EmailConfirmationDto confirmation);
-        Task<SignInResultDto> SignIn(UserSignInDto userInfo);
-        Task SignOut(int userId);
+        Task<SignUpResultDto> SignUp(SignUpDto userInfo, IUrlHelper url, string scheme);
+        Task ConfirmEmail(EmailConfirmationDto confirmation, IUrlHelper urlHelper, string scheme);
+
+        Task<SignInResultDto> SignIn(SignInDto userInfo);
         Task<TokenPairDto> RefreshTokens(string userRefreshToken, int userId, IEnumerable<Claim> claims);
+        Task RequestResetPassword(RequestResetPasswordDto request, IUrlHelper url, string scheme);
+        Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto resetPwInfo, IUrlHelper urlHelper, string scheme);
+
+        Task SignOut(int userId);
+
     }
 }

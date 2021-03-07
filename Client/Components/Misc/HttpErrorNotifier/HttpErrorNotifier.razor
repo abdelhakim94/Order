@@ -1,0 +1,35 @@
+@namespace Order.Client.Components.Misc
+
+@using Order.Client.Constants
+
+@code{
+    [CascadingParameter]
+    public NotificationModal NotificationModal { get; set; }
+
+    public void Notify(string errorCode)
+    {
+        switch (errorCode)
+        {
+            case HttpClientResponse.BadRequest:
+                NotificationModal.ShowError(UIMessages.DefaultHttpBadRequestError);
+                break;
+            case HttpClientResponse.Unauthorized:
+                NotificationModal.ShowError(UIMessages.DefaultHttpUnauthorizedError);
+                break;
+            case HttpClientResponse.NotFound:
+                NotificationModal.ShowError(UIMessages.DefaultHttpNotFoundError);
+                break;
+            case HttpClientResponse.ServerError:
+                NotificationModal.ShowError(UIMessages.DefaultHttpServerError);
+                break;
+            case HttpClientResponse.RequestTimedOut:
+                NotificationModal.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                break;
+            case HttpClientResponse.InternalError:
+                NotificationModal.ShowError(UIMessages.DefaultInternalError);
+                break;
+            default:
+                break;
+        }
+    }
+}

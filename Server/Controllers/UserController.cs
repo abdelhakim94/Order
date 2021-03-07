@@ -6,6 +6,7 @@ using Order.Shared.Dto.Users;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;
+using System;
 
 namespace Order.Server.Controllers
 {
@@ -22,9 +23,9 @@ namespace Order.Server.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<SignUpResultDto> SignUp([FromBody] UserSignUpDto userInfo)
+        public Task<SignUpResultDto> SignUp([FromBody] SignUpDto userInfo)
         {
-            return await userService.SignUp(userInfo, Url, Request.Scheme);
+            return userService.SignUp(userInfo, Url, Request.Scheme);
         }
 
         [HttpGet]
@@ -33,7 +34,7 @@ namespace Order.Server.Controllers
         {
             try
             {
-                await userService.ConfirmEmail(confirmation);
+                await userService.ConfirmEmail(confirmation, Url, Request.Scheme);
             }
             catch (System.Exception)
             {
@@ -44,7 +45,7 @@ namespace Order.Server.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<SignInResultDto> SignIn([FromBody] UserSignInDto userInfo)
+        public async Task<SignInResultDto> SignIn([FromBody] SignInDto userInfo)
         {
             // SignInManager adds cookies to the response when it
             // successfully authenticates the user. We rely on JWT
@@ -54,23 +55,44 @@ namespace Order.Server.Controllers
             return result;
         }
 
-        [HttpGet]
-        public new async Task SignOut()
+        [HttpPost]
+        [AllowAnonymous]
+        public Task RequestResetPassword([FromBody] RequestResetPasswordDto request)
         {
-            await userService.SignOut(User.GetUserId());
+            return userService.RequestResetPassword(request, Url, Request.Scheme);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RedirectToResetPassword([FromQuery] RequestResetPasswordTokenDto resetInfo)
+        {
+            return Redirect($"/ResetPassword/{resetInfo.UserEmail}/{resetInfo.ResetPasswordToken}");
         }
 
         [HttpPost]
-        public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] string userRefreshToken)
+        [AllowAnonymous]
+        public Task<ResetPasswordResultDto> ResetPassword([FromBody] ResetPasswordDto resetPwInfo)
+        {
+            return userService.ResetPassword(resetPwInfo, Url, Request.Scheme);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] RefreshTokensDto refreshInfo)
         {
             try
             {
-                return Ok(await userService.RefreshTokens(userRefreshToken, User.GetUserId(), User.Claims));
+                return Ok(await userService.RefreshTokens(refreshInfo.RefreshToken, User.GetUserId().Value, User.Claims));
             }
             catch (System.Exception)
             {
                 return Unauthorized();
             }
+        }
+
+        [HttpGet]
+        public new async Task SignOut()
+        {
+            await userService.SignOut(User.GetUserId().Value);
         }
     }
 }

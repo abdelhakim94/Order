@@ -1,10 +1,12 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Order.Shared.Constants;
 using Order.Shared.Dto.Users;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
+using Order.Client.Constants;
 
 namespace Order.Client.Services
 {
@@ -21,27 +23,46 @@ namespace Order.Client.Services
             this.authenticationStateProvider = authenticationStateProvider;
         }
 
-        public async Task<SignUpResultDto> SignUp(UserSignUpDto userInfo)
+        public async Task<SignUpResultDto> SignUp(SignUpDto userInfo)
         {
             try
             {
-                var response = await httpClient.PostAsJsonAsync<UserSignUpDto>("api/user/SignUp", userInfo);
+                var response = await httpClient.PostAsJsonAsync<SignUpDto>("api/user/SignUp", userInfo);
+                response.EnsureSuccessStatusCode();
                 return JsonSerializer.Deserialize<SignUpResultDto>(
                     await response.Content.ReadAsStringAsync(),
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
+            catch (HttpRequestException ex)
+            {
+                switch (ex.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
+                    case HttpStatusCode.NotFound:
+                        return new() { Successful = false, Error = HttpClientResponse.NotFound };
+                    case HttpStatusCode.InternalServerError:
+                        return new() { Successful = false, Error = HttpClientResponse.ServerError };
+                    default:
+                        throw;
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
+            }
             catch (System.Exception)
             {
-                return new() { Successful = false, Error = SignUpErrors.ServerError };
+                return new() { Successful = false, Error = HttpClientResponse.InternalError };
             }
         }
 
-        public async Task<SignInResultDto> SignIn(UserSignInDto userInfo)
+        public async Task<SignInResultDto> SignIn(SignInDto userInfo)
         {
             try
             {
-                var response = await httpClient.PostAsJsonAsync<UserSignInDto>("api/user/SignIn", userInfo);
-
+                var response = await httpClient.PostAsJsonAsync<SignInDto>("api/user/SignIn", userInfo);
+                response.EnsureSuccessStatusCode();
                 var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
                     await response.Content.ReadAsStringAsync(),
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -54,9 +75,27 @@ namespace Order.Client.Services
                 await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
                 return signInResult;
             }
+            catch (HttpRequestException ex)
+            {
+                switch (ex.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return new() { Successful = false, AdditionalError = HttpClientResponse.Unauthorized };
+                    case HttpStatusCode.NotFound:
+                        return new() { Successful = false, AdditionalError = HttpClientResponse.NotFound };
+                    case HttpStatusCode.InternalServerError:
+                        return new() { Successful = false, AdditionalError = HttpClientResponse.ServerError };
+                    default:
+                        throw;
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return new() { Successful = false, AdditionalError = HttpClientResponse.RequestTimedOut };
+            }
             catch (System.Exception)
             {
-                return new() { Successful = false };
+                return new() { Successful = false, AdditionalError = HttpClientResponse.InternalError };
             }
         }
 
@@ -72,15 +111,20 @@ namespace Order.Client.Services
             }
         }
 
-        public async Task RefreshTokens(string refreshToken)
+        public async Task RefreshTokens(RefreshTokensDto refreshToken)
         {
             try
             {
-                var response = await httpClient.PostAsJsonAsync<string>("api/user/RefreshTokens", refreshToken);
+                var response = await httpClient.PostAsJsonAsync<RefreshTokensDto>("api/user/RefreshTokens", refreshToken);
+                response.EnsureSuccessStatusCode();
                 var tokenPair = JsonSerializer.Deserialize<TokenPairDto>(
                     await response.Content.ReadAsStringAsync(),
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 await authenticationStateProvider.MarkUserAsSignedIn(tokenPair.AccessToken, tokenPair.RefreshToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
             }
             catch (System.Exception)
             {
@@ -88,35 +132,70 @@ namespace Order.Client.Services
             }
         }
 
-        public async Task<bool> RequestRecoverPassword(string userEmail)
+        public async Task<string> RequestResetPassword(RequestResetPasswordDto userEmail)
         {
             try
             {
-                var result = await httpClient.PostAsJsonAsync<string>("api/user/RequestRecoverPassword", userEmail);
-                return JsonSerializer.Deserialize<bool>(
-                    await result.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
+                var response = await httpClient.PostAsJsonAsync<RequestResetPasswordDto>("api/user/RequestResetPassword", userEmail);
+                response.EnsureSuccessStatusCode();
+                return HttpClientResponse.Success;
+            }
+            catch (HttpRequestException ex)
+            {
+                switch (ex.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return HttpClientResponse.Unauthorized;
+                    case HttpStatusCode.NotFound:
+                        return HttpClientResponse.NotFound;
+                    case HttpStatusCode.InternalServerError:
+                        return HttpClientResponse.ServerError;
+                    default:
+                        throw;
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return HttpClientResponse.RequestTimedOut;
             }
             catch (System.Exception)
             {
-                return false;
+                return HttpClientResponse.InternalError;
             }
         }
 
-        public async Task<RecoverPasswordResultDto> RecoverPassword(RecoverPasswordDto password)
+        public async Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto password)
         {
             try
             {
-                var result = await httpClient.PostAsJsonAsync<RecoverPasswordDto>("api/user/RecoverPassword", password);
-                return JsonSerializer.Deserialize<RecoverPasswordResultDto>(
+                var result = await httpClient.PostAsJsonAsync<ResetPasswordDto>("api/user/ResetPassword", password);
+                result.EnsureSuccessStatusCode();
+                return JsonSerializer.Deserialize<ResetPasswordResultDto>(
                     await result.Content.ReadAsStringAsync(),
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
                 );
             }
+            catch (HttpRequestException ex)
+            {
+                switch (ex.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
+                    case HttpStatusCode.NotFound:
+                        return new() { Successful = false, Error = HttpClientResponse.NotFound };
+                    case HttpStatusCode.InternalServerError:
+                        return new() { Successful = false, Error = HttpClientResponse.ServerError };
+                    default:
+                        throw;
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
+            }
             catch (System.Exception)
             {
-                return new() { Successful = false, Error = SignUpErrors.ServerError };
+                return new() { Successful = false, Error = HttpClientResponse.InternalError };
             }
         }
     }

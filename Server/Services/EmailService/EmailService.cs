@@ -3,7 +3,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Order.Server.Dto.Users;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 
 namespace Order.Server.Services.EmailService
 {
@@ -36,16 +36,57 @@ namespace Order.Server.Services.EmailService
             return client.SendMailAsync(mailMessage);
         }
 
-        public Task SendEmailConfirmationMail(string receiver, string confirmationLink)
+        public Task SendEmailConfirmationMail(string receiver, string confirmationUrl)
         {
-            var subject = "Confirmation de l'adresse mail";
+            var subject = "Confirmation de votre adresse mail";
             var body = new StringBuilder();
             body.AppendLine("<p>Félicitations! vous êtes à une étape de la finalisation de la création de votre compte.</p>");
             body.AppendLine("<p>Veuillez suivre le lien ci-dessous pour confirmer votre adresse mail.</p>");
-            body.AppendLine($"<p>{confirmationLink}</p>");
+            body.AppendLine($"<p>{confirmationUrl}</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");
             body.AppendLine("<p>l'équipe Order</p>");
+            return SendMail(receiver, subject, body.ToString());
+        }
+
+        public Task ReSendEmailConfirmationMail(string receiver, string confirmationUrl)
+        {
+            var subject = "Confirmation de votre adresse mail";
+            var body = new StringBuilder();
+            body.AppendLine("<p>Il semble que vous ayez essayé de confirmer votre e-mail avec un lien expiré.</p>");
+            body.AppendLine("<p>Veuillez suivre le nouveau lien ci-dessous pour confirmer votre adresse mail.</p>");
+            body.AppendLine($"<p>{confirmationUrl}</p>");
+            body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
+            body.AppendLine("<p>Cordialement,</p>");
+            body.AppendLine("<p>L'équipe Order</p>");
+            return SendMail(receiver, subject, body.ToString());
+        }
+
+        public Task SendResetPasswordMail(string receiver, string resetPwUrl)
+        {
+            var subject = "Réinitialisation de votre mot de passe";
+            var body = new StringBuilder();
+            body.AppendLine("<p>Vous avez demander à réinitialiser votre mot de passe <em>Order</em></p>");
+            body.AppendLine("<p>Veuillez suivre le lien ci-dessous afin de finaliser la réinitialisation</p>");
+            body.AppendLine($"<p>{resetPwUrl}</p>");
+            body.AppendLine("<p>Si vous n'êtes pas à l'origine de cette activité, veuillez ignorer ce mail.</p>");
+            body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
+            body.AppendLine("<p>Cordialement,</p>");
+            body.AppendLine("<p>L'équipe Order</p>");
+            return SendMail(receiver, subject, body.ToString());
+        }
+
+        public Task ReSendResetPasswordMail(string receiver, string resetPwUrl)
+        {
+            var subject = "Réinitialisation de votre mot de passe";
+            var body = new StringBuilder();
+            body.AppendLine("<p>Il semble que vous ayez essayé de réinitialiser votre mot de passe avec un lien expiré.</p>");
+            body.AppendLine("<p>Veuillez suivre le nouveau lien ci-dessous afin de finaliser la réinitialisation</p>");
+            body.AppendLine($"<p>{resetPwUrl}</p>");
+            body.AppendLine("<p>Si vous n'êtes pas à l'origine de cette activité, veuillez ignorer ce mail.</p>");
+            body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
+            body.AppendLine("<p>Cordialement,</p>");
+            body.AppendLine("<p>L'équipe Order</p>");
             return SendMail(receiver, subject, body.ToString());
         }
     }

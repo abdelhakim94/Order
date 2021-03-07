@@ -16,10 +16,13 @@ using Microsoft.IdentityModel.Tokens;
 using MediatR;
 using Order.DomainModel;
 using Order.Server.Persistence;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 using Order.Server.Dto.Users;
 using Order.Shared.Security.Policies;
 using Order.Shared.Security.Constants;
+using Order.Server.Exceptions;
+using Order.Server.CQRS;
+using FluentValidation;
 
 namespace Order.Server
 {
@@ -35,10 +38,12 @@ namespace Order.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_antony")
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_colombes")
             ));
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             services.Scan(scan => scan
                .FromCallingAssembly()
@@ -143,6 +148,7 @@ namespace Order.Server
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
+            app.UseResponseExceptionHandler();
 
             if (env.IsDevelopment())
             {
@@ -152,14 +158,12 @@ namespace Order.Server
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order");
                 });
-                app.UseDeveloperExceptionPage();
+
                 app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
-
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

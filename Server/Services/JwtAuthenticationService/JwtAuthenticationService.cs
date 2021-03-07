@@ -9,10 +9,11 @@ using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using MediatR;
 using Order.Server.Dto.Users;
-using Order.Shared.Interfaces;
+using Order.Shared.Contracts;
 using Order.Shared.Dto.Users;
 using Order.Server.CQRS.User.Commands;
 using Order.Server.CQRS.User.Queries;
+using Order.Server.Exceptions;
 
 namespace Order.Server.Services.JwtAuthenticationService
 {
@@ -59,18 +60,18 @@ namespace Order.Server.Services.JwtAuthenticationService
             };
         }
 
-        public async Task<TokenPairDto> RefreshTokens(string userRefreshToken, int userId, IEnumerable<Claim> claims, DateTime now)
+        public async Task<TokenPairDto> RefreshTokens(string refreshToken, int userId, IEnumerable<Claim> claims, DateTime now)
         {
-            if (string.IsNullOrWhiteSpace(userRefreshToken))
+            if (string.IsNullOrWhiteSpace(refreshToken))
             {
-                throw new SecurityTokenException("Refresh token can't be null");
+                throw new BadRequestException("Refresh token can't be null");
             }
 
             var previousRefreshToken = await mediator.Send(new LoadRefreshTokenQuery(userId));
 
-            if (previousRefreshToken is null || previousRefreshToken.Token != userRefreshToken || previousRefreshToken.ExpireAt < now)
+            if (previousRefreshToken is null || previousRefreshToken.Token != refreshToken || previousRefreshToken.ExpireAt < now)
             {
-                throw new SecurityTokenException("Invalid refresh token");
+                throw new BadRequestException("Invalid refresh token");
             }
 
             return await GenerateTokens(userId, claims, now);

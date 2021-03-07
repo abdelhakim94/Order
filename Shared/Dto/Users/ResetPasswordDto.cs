@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Order.Shared.Dto.Users
 {
-    public class RecoverPasswordDto
+    public class ResetPasswordDto
     {
+        public string Email { get; set; }
+        public string ResetToken { get; set; }
+
         [Required(ErrorMessage = "Un mot de passe est requis")]
         [PasswordPropertyText(true)]
         [RegularExpression("^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$",

@@ -1,4 +1,4 @@
-namespace Order.Shared.Interfaces
+namespace Order.Shared.Contracts
 {
     public interface IService { }
 }

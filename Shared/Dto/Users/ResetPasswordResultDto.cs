@@ -1,6 +1,6 @@
 namespace Order.Shared.Dto.Users
 {
-    public class RecoverPasswordResultDto
+    public class ResetPasswordResultDto
     {
         public bool Successful { get; set; }
         public string Error { get; set; }

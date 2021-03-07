@@ -5,18 +5,24 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData">
-                <NotAuthorized>
-                    @if (!context.User.Identity.IsAuthenticated)
-                        {
-                    <Redirect Route="/" />
-                    }
-                        else
-                        {
-                    <p>Ouups! Vous n'êtes pas autorisé à accéder à cette ressource :(</p>
-                    }
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            <NotificationModal @ref=@NotificationModal />
+            <CascadingValue Value=@NotificationModal IsFixed=@true>
+                <HttpErrorNotifier @ref=@HttpErrorNotifier />
+                <CascadingValue Value=@HttpErrorNotifier IsFixed=@true>
+                    <AuthorizeRouteView RouteData="@routeData">
+                        <NotAuthorized>
+                            @if (!context.User.Identity.IsAuthenticated)
+                                {
+                            <Redirect Route="/" />
+                            }
+                                else
+                                {
+                            <p>Ouups! Vous n'êtes pas autorisé à accéder à cette ressource :(</p>
+                            }
+                        </NotAuthorized>
+                    </AuthorizeRouteView>
+                </CascadingValue>
+            </CascadingValue>
         </Found>
         <NotFound>
             <LayoutView>
@@ -25,3 +31,8 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code{
+    public NotificationModal NotificationModal { get; set; }
+    public HttpErrorNotifier HttpErrorNotifier { get; set; }
+}
