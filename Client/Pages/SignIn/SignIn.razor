@@ -5,8 +5,9 @@
 
 @namespace Order.Client.Pages
 
+@* ========================================== SignIn Form ============================================================= *@
 
-<EditForm Model=@UserSignInData OnValidSubmit=@HandleFormSubmition @onclick=@(() => NotificationModal.Close())>
+<EditForm Model=@UserSignInData OnValidSubmit=@HandleSignInFormSubmition @onclick=@(() => NotificationModal.Close())>
 
     <ObjectGraphDataAnnotationsValidator />
 
@@ -47,17 +48,24 @@
         </div>
 
     </div>
+</EditForm>
 
-    <div>
+@* ========================================== Reset Password Form ===================================================== *@
+
+<EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
+
+    <ObjectGraphDataAnnotationsValidator />
+
+    <div class="@disabledPage">
         <Modal @ref=@resetPasswordModal CssClass="reset-pw-modal">
-            <div>
-                <OInputText CssClass="form-input reset-pw-input" PlaceHolder=@M.Email
-                    @bind-Value=@UserSignInData.Email />
-                <ValidationMessage For=@( () => UserSignInData.Email ) />
+            <div class="reset-pw-input">
+                <OInputText CssClass="form-input" PlaceHolder=@M.Email
+                    @bind-Value=@RequestResetPassword.Email />
+                <ValidationMessage For=@( () => RequestResetPassword.Email ) />
             </div>
             <div class="reset-pw-buttons">
-                <Button CssClass="reset-pw-button" Label=@M.Send @onclick=@OnResetPasswordSend />
-                <Button CssClass="reset-pw-button" Label=@M.Cancel @onclick=@OnPasswordRecoveryCancel Danger=@true />
+                <Button CssClass="reset-pw-button" Type="submit" Label=@M.Send />
+                <Button CssClass="reset-pw-button" Label=@M.Cancel @onclick=@HandleResetPasswordCanceled Danger=@true />
             </div>
         </Modal>
     </div>

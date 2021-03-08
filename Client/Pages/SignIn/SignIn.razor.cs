@@ -20,6 +20,7 @@ namespace Order.Client.Pages
         private Modal resetPasswordModal { get; set; }
 
         public SignInDto UserSignInData { get; set; } = new SignInDto();
+        public RequestResetPasswordDto RequestResetPassword { get; set; } = new RequestResetPasswordDto();
 
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
@@ -38,59 +39,7 @@ namespace Order.Client.Pages
             get => "/icons/social-media-sprite.png";
         }
 
-        public void ResetPasswordModalShow()
-        {
-            isResetingPassword = true;
-            resetPasswordModal.Show();
-        }
-
-        public async Task OnResetPasswordSend()
-        {
-            isLoading = true;
-            string result;
-            try
-            {
-                result = await AuthenticationService.RequestResetPassword(new RequestResetPasswordDto
-                {
-                    Email = UserSignInData.Email
-                });
-            }
-            catch (System.Exception)
-            {
-                NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
-                isLoading = false;
-                isResetingPassword = false;
-                return;
-            }
-
-            if (!result.IsHttpClientSuccessful())
-            {
-                if (result.IsHttpClientError())
-                {
-                    HttpErrorNotifier.Notify(result);
-                }
-                else
-                {
-                    NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
-                }
-            }
-            else
-            {
-                NotificationModal.Show(UIMessages.FollowResetPasswordLink);
-            }
-
-            await resetPasswordModal.Close();
-            isLoading = false;
-            isResetingPassword = false;
-        }
-
-        public async Task OnPasswordRecoveryCancel()
-        {
-            await resetPasswordModal.Close();
-            isResetingPassword = false;
-        }
-
-        public async Task HandleFormSubmition(EditContext context)
+        public async Task HandleSignInFormSubmition(EditContext context)
         {
             isLoading = true;
             SignInResultDto result;
@@ -130,6 +79,57 @@ namespace Order.Client.Pages
             {
                 NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
             }
+        }
+
+        // ==================================== Reset password ========================================== //
+
+        public void ResetPasswordModalShow()
+        {
+            isResetingPassword = true;
+            resetPasswordModal.Show();
+        }
+
+        public async Task HandleResetPasswordFormSubmit(EditContext context)
+        {
+            isLoading = true;
+            string result;
+            try
+            {
+                result = await AuthenticationService.RequestResetPassword(context.Model as RequestResetPasswordDto);
+            }
+            catch (System.Exception)
+            {
+                NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
+                isLoading = false;
+                isResetingPassword = false;
+                return;
+            }
+
+            if (!result.IsHttpClientSuccessful())
+            {
+                if (result.IsHttpClientError())
+                {
+                    HttpErrorNotifier.Notify(result);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
+                }
+            }
+            else
+            {
+                NotificationModal.Show(UIMessages.FollowResetPasswordLink);
+            }
+
+            await resetPasswordModal.Close();
+            isLoading = false;
+            isResetingPassword = false;
+        }
+
+        public async Task HandleResetPasswordCanceled()
+        {
+            await resetPasswordModal.Close();
+            isResetingPassword = false;
         }
     }
 }
