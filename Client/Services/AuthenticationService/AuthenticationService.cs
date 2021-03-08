@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Order.Shared.Constants;
 using Order.Shared.Dto.Users;
 using Order.Shared.Contracts;
 using Order.Client.Constants;
@@ -37,12 +36,17 @@ namespace Order.Client.Services
             {
                 switch (ex.StatusCode)
                 {
+                    case HttpStatusCode.BadRequest:
+                        return new() { Successful = false, Error = HttpClientResponse.BadRequest };
                     case HttpStatusCode.Unauthorized:
                         return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
                     case HttpStatusCode.NotFound:
                         return new() { Successful = false, Error = HttpClientResponse.NotFound };
                     case HttpStatusCode.InternalServerError:
                         return new() { Successful = false, Error = HttpClientResponse.ServerError };
+                    case HttpStatusCode.RequestTimeout:
+                    case null:
+                        return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
                     default:
                         throw;
                 }
@@ -79,12 +83,17 @@ namespace Order.Client.Services
             {
                 switch (ex.StatusCode)
                 {
+                    case HttpStatusCode.BadRequest:
+                        return new() { Successful = false, AdditionalError = HttpClientResponse.BadRequest };
                     case HttpStatusCode.Unauthorized:
                         return new() { Successful = false, AdditionalError = HttpClientResponse.Unauthorized };
                     case HttpStatusCode.NotFound:
                         return new() { Successful = false, AdditionalError = HttpClientResponse.NotFound };
                     case HttpStatusCode.InternalServerError:
                         return new() { Successful = false, AdditionalError = HttpClientResponse.ServerError };
+                    case HttpStatusCode.RequestTimeout:
+                    case null:
+                        return new() { Successful = false, AdditionalError = HttpClientResponse.RequestTimedOut };
                     default:
                         throw;
                 }
@@ -144,12 +153,17 @@ namespace Order.Client.Services
             {
                 switch (ex.StatusCode)
                 {
+                    case HttpStatusCode.BadRequest:
+                        return HttpClientResponse.BadRequest;
                     case HttpStatusCode.Unauthorized:
                         return HttpClientResponse.Unauthorized;
                     case HttpStatusCode.NotFound:
                         return HttpClientResponse.NotFound;
                     case HttpStatusCode.InternalServerError:
                         return HttpClientResponse.ServerError;
+                    case HttpStatusCode.RequestTimeout:
+                    case null:
+                        return HttpClientResponse.RequestTimedOut;
                     default:
                         throw;
                 }
@@ -179,12 +193,17 @@ namespace Order.Client.Services
             {
                 switch (ex.StatusCode)
                 {
+                    case HttpStatusCode.BadRequest:
+                        return new() { Successful = false, Error = HttpClientResponse.BadRequest };
                     case HttpStatusCode.Unauthorized:
                         return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
                     case HttpStatusCode.NotFound:
                         return new() { Successful = false, Error = HttpClientResponse.NotFound };
                     case HttpStatusCode.InternalServerError:
                         return new() { Successful = false, Error = HttpClientResponse.ServerError };
+                    case HttpStatusCode.RequestTimeout:
+                    case null:
+                        return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
                     default:
                         throw;
                 }

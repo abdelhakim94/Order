@@ -36,7 +36,17 @@ namespace Order.Client.Pages
         public async Task HandleFormSubmition(EditContext context)
         {
             isLoading = true;
-            var result = await AuthenticationService.SignUp(context.Model as SignUpDto);
+            SignUpResultDto result;
+            try
+            {
+                result = await AuthenticationService.SignUp(context.Model as SignUpDto);
+            }
+            catch (System.Exception)
+            {
+                NotificationModal.ShowError(UIMessages.DefaultSignUpErrorMessage);
+                isLoading = false;
+                return;
+            }
             isLoading = false;
 
             if (result.Successful)

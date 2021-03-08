@@ -47,10 +47,22 @@ namespace Order.Client.Pages
         public async Task OnResetPasswordSend()
         {
             isLoading = true;
-            var result = await AuthenticationService.RequestResetPassword(new RequestResetPasswordDto
+            string result;
+            try
             {
-                Email = UserSignInData.Email
-            });
+                result = await AuthenticationService.RequestResetPassword(new RequestResetPasswordDto
+                {
+                    Email = UserSignInData.Email
+                });
+            }
+            catch (System.Exception)
+            {
+                NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
+                isLoading = false;
+                isHidden = false;
+                return;
+            }
+
             if (!result.IsHttpClientSuccessful())
             {
                 if (result.IsHttpClientError())
@@ -81,7 +93,17 @@ namespace Order.Client.Pages
         public async Task HandleFormSubmition(EditContext context)
         {
             isLoading = true;
-            var result = await AuthenticationService.SignIn(context.Model as SignInDto);
+            SignInResultDto result;
+            try
+            {
+                result = await AuthenticationService.SignIn(context.Model as SignInDto);
+            }
+            catch (System.Exception)
+            {
+                NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
+                isLoading = false;
+                return;
+            }
             isLoading = false;
 
             if (result.Successful)

@@ -43,7 +43,10 @@
     {
         showModal = false;
         content = string.Empty;
-        OnClose();
+        if (OnClose is not null)
+        {
+            OnClose();
+        }
         StateHasChanged();
     }
 
@@ -51,7 +54,10 @@
     {
         showModal = false;
         content = string.Empty;
-        await OnCloseAsync();
+        if (OnCloseAsync is not null)
+        {
+            await OnCloseAsync();
+        }
         StateHasChanged();
     }
 }

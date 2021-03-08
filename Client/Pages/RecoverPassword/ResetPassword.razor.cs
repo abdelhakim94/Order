@@ -43,12 +43,22 @@ namespace Order.Client.Pages
         {
 
             isLoading = true;
+            ResetPasswordResultDto result;
+            try
+            {
+                var recoverPwDto = context.Model as ResetPasswordDto;
+                recoverPwDto.Email = UserEmail;
+                recoverPwDto.ResetToken = ResetPasswordToken;
 
-            var recoverPwDto = context.Model as ResetPasswordDto;
-            recoverPwDto.Email = UserEmail;
-            recoverPwDto.ResetToken = ResetPasswordToken;
+                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto);
+            }
+            catch (System.Exception)
+            {
+                NotificationModal.ShowError(UIMessages.DefaultPasswordRecoveryMessage);
+                isLoading = false;
+                return;
+            }
 
-            var result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto);
             isLoading = false;
 
             if (result.Successful)

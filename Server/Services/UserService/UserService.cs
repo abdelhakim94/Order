@@ -205,7 +205,7 @@ namespace Order.Server.Services.UserService
             var user = await userManager.FindByEmailAsync(request.Email);
             if (user is null)
             {
-                throw new BadRequestException("User not found");
+                throw new BadRequestException("L'email fournit ne correspond à aucun utilisateur");
             }
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
