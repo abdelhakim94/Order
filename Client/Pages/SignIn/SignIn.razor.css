@@ -65,34 +65,48 @@ a {
   text-shadow: 0 0 0.1em #1b6ec2;
 }
 
-::deep .pw-recovery-modal {
+.modal-container {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: stretch;
-
-  position: fixed;
-  width: 80vw;
-  height: 20vh;
-  top: 50%;
-  left: 50%;
+  height: 95vh;
+  width: 90vw;
+  margin: auto;
+  overflow: visible;
 }
 
-::deep .pw-recovery-input {
+::deep .reset-pw-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  width: 80%;
+}
+
+::deep .reset-pw-input {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
-::deep .pw-recovery-buttons {
+::deep .reset-pw-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: stretch;
   height: 2em;
   width: 100%;
+  margin-bottom: 1em;
 }
 
-::deep .pw-recovery-button {
+::deep .reset-pw-button {
   width: 30%;
 }

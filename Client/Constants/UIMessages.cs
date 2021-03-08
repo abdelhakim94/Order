@@ -5,13 +5,21 @@ namespace Order.Client.Constants
 {
     public static class UIMessages
     {
-        // Http error default messages.
+        // Http default error messages. To use if the Http error messages beneath are null.
         public static string DefaultHttpNotFoundError { get => "La ressource demandée n'a pas été trouvée"; }
         public static string DefaultHttpBadRequestError { get => "La demande n'a pas pu être construit correctement"; }
         public static string DefaultHttpUnauthorizedError { get => "Vous n'êtes pas autorisé à accéder à la ressource demandée. Vous reconnecter peut résoudre le problème"; }
         public static string DefaultHttpServerError { get => "Une erreur s'est produite sur le serveur. Veuillez réessayer ou contactez le support"; }
         public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion Internet"; }
         public static string DefaultInternalError { get => "Une erreur interne est survenue. Veuillez réessayer ou contacter le support"; }
+
+        // If not null, the HttpErrorNotifier will display these messages. Otherwise, falls back to the default messages.
+        public static string HttpNotFoundError { get; set; }
+        public static string HttpBadRequestError { get; set; }
+        public static string HttpUnauthorizedError { get; set; }
+        public static string HttpServerError { get; set; }
+        public static string HttpRequestTimedOut { get; set; }
+        public static string InternalError { get; set; }
 
         public static string SignUpSuccess { get => "Veuillez suivre le lien reçu par email pour finaliser votre inscription"; }
 

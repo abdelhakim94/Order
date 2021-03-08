@@ -11,22 +11,70 @@
         switch (errorCode)
         {
             case HttpClientResponse.BadRequest:
-                NotificationModal.ShowError(UIMessages.DefaultHttpBadRequestError);
+                if (string.IsNullOrWhiteSpace(UIMessages.HttpBadRequestError))
+                {
+                    NotificationModal.ShowError(UIMessages.DefaultHttpBadRequestError);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.HttpBadRequestError);
+                    UIMessages.HttpBadRequestError = string.Empty;
+                }
                 break;
             case HttpClientResponse.Unauthorized:
-                NotificationModal.ShowError(UIMessages.DefaultHttpUnauthorizedError);
+                if (string.IsNullOrWhiteSpace(UIMessages.HttpUnauthorizedError))
+                {
+                    NotificationModal.ShowError(UIMessages.DefaultHttpUnauthorizedError);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.HttpUnauthorizedError);
+                    UIMessages.HttpUnauthorizedError = string.Empty;
+                }
                 break;
             case HttpClientResponse.NotFound:
-                NotificationModal.ShowError(UIMessages.DefaultHttpNotFoundError);
+                if (string.IsNullOrWhiteSpace(UIMessages.HttpNotFoundError))
+                {
+                    NotificationModal.ShowError(UIMessages.DefaultHttpNotFoundError);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.HttpNotFoundError);
+                    UIMessages.HttpNotFoundError = string.Empty;
+                }
                 break;
             case HttpClientResponse.ServerError:
-                NotificationModal.ShowError(UIMessages.DefaultHttpServerError);
+                if (string.IsNullOrWhiteSpace(UIMessages.HttpServerError))
+                {
+                    NotificationModal.ShowError(UIMessages.DefaultHttpServerError);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.HttpServerError);
+                    UIMessages.HttpServerError = string.Empty;
+                }
                 break;
             case HttpClientResponse.RequestTimedOut:
-                NotificationModal.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                if (string.IsNullOrWhiteSpace(UIMessages.HttpRequestTimedOut))
+                {
+                    NotificationModal.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.HttpRequestTimedOut);
+                    UIMessages.HttpRequestTimedOut = string.Empty;
+                }
                 break;
             case HttpClientResponse.InternalError:
-                NotificationModal.ShowError(UIMessages.DefaultInternalError);
+                if (string.IsNullOrWhiteSpace(UIMessages.InternalError))
+                {
+                    NotificationModal.ShowError(UIMessages.DefaultInternalError);
+                }
+                else
+                {
+                    NotificationModal.ShowError(UIMessages.InternalError);
+                    UIMessages.InternalError = string.Empty;
+                }
                 break;
             default:
                 break;

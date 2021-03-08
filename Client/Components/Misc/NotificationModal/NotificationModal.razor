@@ -2,7 +2,7 @@
 
 @if (showModal)
 {
-    <div class="notification-modal @errorModal">
+    <div class="notification-modal @errorModal" @onclick=@(async () => {Close(); await CloseAsync();})>
         <p>@content</p>
     </div>
 }

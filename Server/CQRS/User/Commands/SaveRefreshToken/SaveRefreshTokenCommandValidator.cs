@@ -9,6 +9,8 @@ namespace Order.Server.CQRS.User.Commands
     {
         public SaveRefreshTokenCommandValidator(IOrderContext context)
         {
+            CascadeMode = CascadeMode.Stop;
+
             RuleFor(cmd => cmd.UserId)
                 .MustAsync((userId, ct) => context.Users.AnyAsync(u => u.Id == userId, ct))
                 .WithMessage((cmd, userId) => $"L'utilisateur d'ID {userId} n'existe pas");

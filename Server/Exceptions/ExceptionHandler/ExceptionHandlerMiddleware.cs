@@ -28,24 +28,25 @@ namespace Order.Server.Exceptions
             {
                 logger.LogError(ex.ToString(), ex);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/json";
-                var errors = ex.Errors
-                    .Select(e => new
-                    {
-                        e.Severity,
-                        e.ErrorMessage,
-                    });
-                await context.Response.WriteAsync(JsonSerializer.Serialize(errors));
+                context.Response.ContentType = "text/plain";
+                var error = ex.Errors
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+                await context.Response.WriteAsync(error);
             }
             catch (BadRequestException ex)
             {
                 logger.LogError(ex.ToString());
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync(ex.Message);
             }
             catch (NotFoundException ex)
             {
                 logger.LogError(ex.ToString());
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync(ex.Message);
             }
             catch (InvalidEnumArgumentException ex)
             {

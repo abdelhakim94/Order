@@ -38,7 +38,7 @@ namespace Order.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_colombes")
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_antony")
             ));
 
             services.AddMediatR(Assembly.GetExecutingAssembly());

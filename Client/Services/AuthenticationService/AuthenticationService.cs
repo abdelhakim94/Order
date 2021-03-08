@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -27,16 +28,16 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync<SignUpDto>("api/user/SignUp", userInfo);
-                response.EnsureSuccessStatusCode();
-                return JsonSerializer.Deserialize<SignUpResultDto>(
-                    await response.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-            catch (HttpRequestException ex)
-            {
-                switch (ex.StatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonSerializer.Deserialize<SignUpResultDto>(
+                        await response.Content.ReadAsStringAsync(),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+                switch (response.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
+                        UIMessages.HttpBadRequestError = await response.Content.ReadAsStringAsync();
                         return new() { Successful = false, Error = HttpClientResponse.BadRequest };
                     case HttpStatusCode.Unauthorized:
                         return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
@@ -45,13 +46,12 @@ namespace Order.Client.Services
                     case HttpStatusCode.InternalServerError:
                         return new() { Successful = false, Error = HttpClientResponse.ServerError };
                     case HttpStatusCode.RequestTimeout:
-                    case null:
                         return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
                     default:
-                        throw;
+                        throw new Exception();
                 }
             }
-            catch (TaskCanceledException)
+            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
                 return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
             }
@@ -66,24 +66,24 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync<SignInDto>("api/user/SignIn", userInfo);
-                response.EnsureSuccessStatusCode();
-                var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
-                    await response.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                if (!signInResult.Successful)
+                if (response.IsSuccessStatusCode)
                 {
+                    var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
+                        await response.Content.ReadAsStringAsync(),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (!signInResult.Successful)
+                    {
+                        return signInResult;
+                    }
+
+                    await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
                     return signInResult;
                 }
-
-                await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
-                return signInResult;
-            }
-            catch (HttpRequestException ex)
-            {
-                switch (ex.StatusCode)
+                switch (response.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
+                        UIMessages.HttpBadRequestError = await response.Content.ReadAsStringAsync();
                         return new() { Successful = false, AdditionalError = HttpClientResponse.BadRequest };
                     case HttpStatusCode.Unauthorized:
                         return new() { Successful = false, AdditionalError = HttpClientResponse.Unauthorized };
@@ -92,13 +92,12 @@ namespace Order.Client.Services
                     case HttpStatusCode.InternalServerError:
                         return new() { Successful = false, AdditionalError = HttpClientResponse.ServerError };
                     case HttpStatusCode.RequestTimeout:
-                    case null:
                         return new() { Successful = false, AdditionalError = HttpClientResponse.RequestTimedOut };
                     default:
-                        throw;
+                        throw new Exception();
                 }
             }
-            catch (TaskCanceledException)
+            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
                 return new() { Successful = false, AdditionalError = HttpClientResponse.RequestTimedOut };
             }
@@ -125,13 +124,19 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync<RefreshTokensDto>("api/user/RefreshTokens", refreshToken);
-                response.EnsureSuccessStatusCode();
-                var tokenPair = JsonSerializer.Deserialize<TokenPairDto>(
-                    await response.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                await authenticationStateProvider.MarkUserAsSignedIn(tokenPair.AccessToken, tokenPair.RefreshToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    var tokenPair = JsonSerializer.Deserialize<TokenPairDto>(
+                        await response.Content.ReadAsStringAsync(),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    await authenticationStateProvider.MarkUserAsSignedIn(tokenPair.AccessToken, tokenPair.RefreshToken);
+                }
+                else
+                {
+                    await authenticationStateProvider.MarkUserAsSignedOut();
+                }
             }
-            catch (TaskCanceledException)
+            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
                 return;
             }
@@ -146,14 +151,14 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync<RequestResetPasswordDto>("api/user/RequestResetPassword", userEmail);
-                response.EnsureSuccessStatusCode();
-                return HttpClientResponse.Success;
-            }
-            catch (HttpRequestException ex)
-            {
-                switch (ex.StatusCode)
+                if (response.IsSuccessStatusCode)
+                {
+                    return HttpClientResponse.Success;
+                }
+                switch (response.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
+                        UIMessages.HttpBadRequestError = await response.Content.ReadAsStringAsync();
                         return HttpClientResponse.BadRequest;
                     case HttpStatusCode.Unauthorized:
                         return HttpClientResponse.Unauthorized;
@@ -162,13 +167,12 @@ namespace Order.Client.Services
                     case HttpStatusCode.InternalServerError:
                         return HttpClientResponse.ServerError;
                     case HttpStatusCode.RequestTimeout:
-                    case null:
                         return HttpClientResponse.RequestTimedOut;
                     default:
-                        throw;
+                        throw new Exception();
                 }
             }
-            catch (TaskCanceledException)
+            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
                 return HttpClientResponse.RequestTimedOut;
             }
@@ -182,16 +186,15 @@ namespace Order.Client.Services
         {
             try
             {
-                var result = await httpClient.PostAsJsonAsync<ResetPasswordDto>("api/user/ResetPassword", password);
-                result.EnsureSuccessStatusCode();
-                return JsonSerializer.Deserialize<ResetPasswordResultDto>(
-                    await result.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-            }
-            catch (HttpRequestException ex)
-            {
-                switch (ex.StatusCode)
+                var response = await httpClient.PostAsJsonAsync<ResetPasswordDto>("api/user/ResetPassword", password);
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonSerializer.Deserialize<ResetPasswordResultDto>(
+                        await response.Content.ReadAsStringAsync(),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                }
+                switch (response.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
                         return new() { Successful = false, Error = HttpClientResponse.BadRequest };
@@ -202,13 +205,12 @@ namespace Order.Client.Services
                     case HttpStatusCode.InternalServerError:
                         return new() { Successful = false, Error = HttpClientResponse.ServerError };
                     case HttpStatusCode.RequestTimeout:
-                    case null:
                         return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
                     default:
-                        throw;
+                        throw new Exception();
                 }
             }
-            catch (TaskCanceledException)
+            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
                 return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
             }

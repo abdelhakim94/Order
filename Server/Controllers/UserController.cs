@@ -1,4 +1,3 @@
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +5,6 @@ using Order.Shared.Dto.Users;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;
-using System;
 
 namespace Order.Server.Controllers
 {

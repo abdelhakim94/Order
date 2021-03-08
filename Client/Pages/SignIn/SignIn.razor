@@ -10,7 +10,7 @@
 
     <ObjectGraphDataAnnotationsValidator />
 
-    <div class="form-container @disabled @hidden">
+    <div class="form-container @disabledPage @bluredPage">
 
         <h1 class="form-header">@M.SignIn</h1>
 
@@ -48,16 +48,16 @@
 
     </div>
 
-    <div class=@disabled>
-        <Modal @ref=@resetPasswordModal CssClass="pw-recovery-modal">
+    <div>
+        <Modal @ref=@resetPasswordModal CssClass="reset-pw-modal">
             <div>
-                <OInputText CssClass="form-input pw-recovery-input" PlaceHolder=@M.Email
+                <OInputText CssClass="form-input reset-pw-input" PlaceHolder=@M.Email
                     @bind-Value=@UserSignInData.Email />
                 <ValidationMessage For=@( () => UserSignInData.Email ) />
             </div>
-            <div class="pw-recovery-buttons">
-                <Button CssClass="pw-recovery-button" Label=@M.Send @onclick=@OnResetPasswordSend />
-                <Button CssClass="pw-recovery-button" Label=@M.Cancel @onclick=@OnPasswordRecoveryCancel Danger=@true />
+            <div class="reset-pw-buttons">
+                <Button CssClass="reset-pw-button" Label=@M.Send @onclick=@OnResetPasswordSend />
+                <Button CssClass="reset-pw-button" Label=@M.Cancel @onclick=@OnPasswordRecoveryCancel Danger=@true />
             </div>
         </Modal>
     </div>

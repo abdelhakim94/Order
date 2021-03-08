@@ -12,10 +12,10 @@ namespace Order.Client.Pages
     public partial class SignIn : ComponentBase
     {
         private bool isLoading { get; set; }
-        private string disabled { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
+        private string disabledPage { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
 
-        private bool isHidden { get; set; }
-        private string hidden { get => isHidden ? CSSCLasses.PageBlured : string.Empty; }
+        private bool isResetingPassword { get; set; }
+        private string bluredPage { get => isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
 
         private Modal resetPasswordModal { get; set; }
 
@@ -40,7 +40,7 @@ namespace Order.Client.Pages
 
         public void ResetPasswordModalShow()
         {
-            isHidden = true;
+            isResetingPassword = true;
             resetPasswordModal.Show();
         }
 
@@ -59,7 +59,7 @@ namespace Order.Client.Pages
             {
                 NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
                 isLoading = false;
-                isHidden = false;
+                isResetingPassword = false;
                 return;
             }
 
@@ -81,13 +81,13 @@ namespace Order.Client.Pages
 
             await resetPasswordModal.Close();
             isLoading = false;
-            isHidden = false;
+            isResetingPassword = false;
         }
 
         public async Task OnPasswordRecoveryCancel()
         {
             await resetPasswordModal.Close();
-            isHidden = false;
+            isResetingPassword = false;
         }
 
         public async Task HandleFormSubmition(EditContext context)
