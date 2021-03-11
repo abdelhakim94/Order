@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
-using Order.Client.Extensions;
 using Order.Client.Services;
 using Order.Shared.Dto.Users;
 
@@ -30,9 +29,6 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public NotificationModal NotificationModal { get; set; }
 
-        [CascadingParameter]
-        public HttpErrorNotifier HttpErrorNotifier { get; set; }
-
         public ResetPasswordDto PasswordReset { get; set; } = new ResetPasswordDto();
 
 
@@ -50,21 +46,25 @@ namespace Order.Client.Pages
                 recoverPwDto.Email = UserEmail;
                 recoverPwDto.ResetToken = ResetPasswordToken;
 
-                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto);
+                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, NotificationModal);
+                if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.DefaultPasswordRecoveryMessage);
-                isLoading = false;
+                NotificationModal.ShowError(UIMessages.DefaultResetPasswordFailed);
                 return;
             }
-
-            isLoading = false;
+            finally
+            {
+                isLoading = false;
+                StateHasChanged();
+            }
 
             if (result.Successful)
             {
                 NotificationModal.Show(UIMessages.ResetPasswordsuccess);
                 NavigationManager.NavigateTo("/");
+                return;
             }
             else if (result.Error == ErrorDescriber.PasswordTooShort(default(int)).Code
                   || result.Error == ErrorDescriber.PasswordRequiresUniqueChars(default(int)).Code
@@ -79,13 +79,9 @@ namespace Order.Client.Pages
             {
                 NotificationModal.ShowError(UIMessages.PasswordMismatch);
             }
-            else if (result.Error.IsHttpClientError())
-            {
-                HttpErrorNotifier.Notify(result.Error);
-            }
             else
             {
-                NotificationModal.ShowError(UIMessages.DefaultPasswordRecoveryMessage);
+                NotificationModal.ShowError(UIMessages.DefaultResetPasswordFailed);
             }
         }
     }

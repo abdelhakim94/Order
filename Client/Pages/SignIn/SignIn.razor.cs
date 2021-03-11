@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
-using Order.Client.Extensions;
 using Order.Client.Services;
 using Order.Shared.Dto.Users;
 using Order.Shared.Security.Claims;
@@ -35,9 +34,6 @@ namespace Order.Client.Pages
         public NotificationModal NotificationModal { get; set; }
 
         [CascadingParameter]
-        public HttpErrorNotifier HttpErrorNotifier { get; set; }
-
-        [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; }
 
         public string SocialSpritePath
@@ -62,21 +58,27 @@ namespace Order.Client.Pages
         {
             isLoading = true;
             SignInResultDto result;
+
             try
             {
-                result = await AuthenticationService.SignIn(context.Model as SignInDto);
+                result = await AuthenticationService.SignIn(context.Model as SignInDto, NotificationModal);
+                if (result is null) return;
             }
             catch (System.Exception)
             {
                 NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
-                isLoading = false;
                 return;
             }
-            isLoading = false;
+            finally
+            {
+                isLoading = false;
+                StateHasChanged();
+            }
 
             if (result.Successful)
             {
                 NavigationManager.NavigateTo("/home/");
+                return;
             }
             else if (result.IsNotAllowed)
             {
@@ -89,10 +91,6 @@ namespace Order.Client.Pages
             else if (result.IsEmailOrPasswordIncorrect)
             {
                 NotificationModal.ShowError(UIMessages.WrongEmailOrPassword);
-            }
-            else if (result.AdditionalError is not null && result.AdditionalError.IsHttpClientError())
-            {
-                HttpErrorNotifier.Notify(result.AdditionalError);
             }
             else
             {
@@ -111,44 +109,58 @@ namespace Order.Client.Pages
         public async Task HandleResetPasswordFormSubmit(EditContext context)
         {
             isLoading = true;
-            string result;
+            bool result;
             try
             {
-                result = await AuthenticationService.RequestResetPassword(context.Model as RequestResetPasswordDto);
+                result = await AuthenticationService.RequestResetPassword(
+                    context.Model as RequestResetPasswordDto,
+                    NotificationModal);
+                if (!result) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
-                isLoading = false;
-                isResetingPassword = false;
+                NotificationModal.ShowError(UIMessages.CannotRequestResetPassword);
                 return;
             }
-
-            if (!result.IsHttpClientSuccessful())
+            finally
             {
-                if (result.IsHttpClientError())
-                {
-                    HttpErrorNotifier.Notify(result);
-                }
-                else
-                {
-                    NotificationModal.ShowError(UIMessages.CannotRequestPwRecover);
-                }
-            }
-            else
-            {
-                NotificationModal.Show(UIMessages.FollowResetPasswordLink);
+                isLoading = false;
+                isResetingPassword = false;
+                RequestResetPassword.Email = string.Empty;
+                await resetPasswordModal.Close();
+                StateHasChanged();
             }
 
-            await resetPasswordModal.Close();
-            isLoading = false;
-            isResetingPassword = false;
+            NotificationModal.Show(UIMessages.FollowResetPasswordLink);
         }
 
         public async Task HandleResetPasswordCanceled()
         {
             await resetPasswordModal.Close();
             isResetingPassword = false;
+        }
+
+        // =================================== External identity providers ============================================= //
+
+        public async Task SocialSignIn(ExternalProviderSignInDto provider)
+        {
+            isLoading = true;
+            bool result;
+            try
+            {
+                result = await AuthenticationService.ExternalProvidersSignIn(provider, NotificationModal);
+                if (!result) return;
+            }
+            catch (System.Exception)
+            {
+                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Provider));
+                return;
+            }
+            finally
+            {
+                isLoading = false;
+                StateHasChanged();
+            }
         }
     }
 }

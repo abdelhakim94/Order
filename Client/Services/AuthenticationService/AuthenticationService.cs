@@ -1,223 +1,118 @@
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Order.Shared.Dto.Users;
 using Order.Shared.Contracts;
-using Order.Client.Constants;
+using Order.Client.Components.Misc;
 
 namespace Order.Client.Services
 {
     public class AuthenticationService : IAuthenticationService, IService
     {
-        private readonly HttpClient httpClient;
+        private readonly IHttpClientService httpClientService;
         private readonly IOrderAuthenticationStateProvider authenticationStateProvider;
+        private readonly NavigationManager navigationManager;
 
         public AuthenticationService(
-            HttpClient httpClient,
-            IOrderAuthenticationStateProvider authenticationStateProvider)
+            IHttpClientService httpClientService,
+            IOrderAuthenticationStateProvider authenticationStateProvider,
+            NavigationManager navigationManager)
         {
-            this.httpClient = httpClient;
+            this.httpClientService = httpClientService;
             this.authenticationStateProvider = authenticationStateProvider;
+            this.navigationManager = navigationManager;
         }
 
-        public async Task<SignUpResultDto> SignUp(SignUpDto userInfo)
+        public Task<SignUpResultDto> SignUp(
+            SignUpDto userInfo,
+            NotificationModal notificationModal = default(NotificationModal))
         {
-            try
-            {
-                var response = await httpClient.PostAsJsonAsync<SignUpDto>("api/user/SignUp", userInfo);
-                if (response.IsSuccessStatusCode)
-                {
-                    return JsonSerializer.Deserialize<SignUpResultDto>(
-                        await response.Content.ReadAsStringAsync(),
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                }
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.BadRequest:
-                        UIMessages.HttpBadRequestError = await response.Content.ReadAsStringAsync();
-                        return new() { Successful = false, Error = HttpClientResponse.BadRequest };
-                    case HttpStatusCode.Unauthorized:
-                        return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
-                    case HttpStatusCode.NotFound:
-                        return new() { Successful = false, Error = HttpClientResponse.NotFound };
-                    case HttpStatusCode.InternalServerError:
-                        return new() { Successful = false, Error = HttpClientResponse.ServerError };
-                    case HttpStatusCode.RequestTimeout:
-                        return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
-                    default:
-                        throw new Exception();
-                }
-            }
-            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
-            }
-            catch (System.Exception)
-            {
-                return new() { Successful = false, Error = HttpClientResponse.InternalError };
-            }
+            return httpClientService.Post<SignUpDto, SignUpResultDto>(
+                "api/user/SignUp",
+                userInfo,
+                notificationModal);
         }
 
-        public async Task<SignInResultDto> SignIn(SignInDto userInfo)
+        public async Task<SignInResultDto> SignIn(
+            SignInDto userInfo,
+            NotificationModal notificationModal = default(NotificationModal))
         {
-            try
+            var result = await httpClientService.Post<SignInDto, SignInResultDto>(
+                "api/user/SignIn",
+                userInfo,
+                notificationModal);
+            if (result is not null && result.Successful)
             {
-                var response = await httpClient.PostAsJsonAsync<SignInDto>("api/user/SignIn", userInfo);
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    var signInResult = JsonSerializer.Deserialize<SignInResultDto>(
-                        await response.Content.ReadAsStringAsync(),
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                    if (!signInResult.Successful)
-                    {
-                        return signInResult;
-                    }
-
-                    await authenticationStateProvider.MarkUserAsSignedIn(signInResult.TokenPair.AccessToken, signInResult.TokenPair.RefreshToken);
-                    return signInResult;
+                    await authenticationStateProvider.MarkUserAsSignedIn(
+                        result.TokenPair.AccessToken,
+                        result.TokenPair.RefreshToken);
                 }
-                switch (response.StatusCode)
+                catch (System.Exception)
                 {
-                    case HttpStatusCode.BadRequest:
-                        UIMessages.HttpBadRequestError = await response.Content.ReadAsStringAsync();
-                        return new() { Successful = false, AdditionalError = HttpClientResponse.BadRequest };
-                    case HttpStatusCode.Unauthorized:
-                        return new() { Successful = false, AdditionalError = HttpClientResponse.Unauthorized };
-                    case HttpStatusCode.NotFound:
-                        return new() { Successful = false, AdditionalError = HttpClientResponse.NotFound };
-                    case HttpStatusCode.InternalServerError:
-                        return new() { Successful = false, AdditionalError = HttpClientResponse.ServerError };
-                    case HttpStatusCode.RequestTimeout:
-                        return new() { Successful = false, AdditionalError = HttpClientResponse.RequestTimedOut };
-                    default:
-                        throw new Exception();
+                    result.Successful = false;
                 }
             }
-            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                return new() { Successful = false, AdditionalError = HttpClientResponse.RequestTimedOut };
-            }
-            catch (System.Exception)
-            {
-                return new() { Successful = false, AdditionalError = HttpClientResponse.InternalError };
-            }
+            return result;
         }
 
-        public async Task SignOut()
+        public async Task SignOut(NotificationModal notificationModal = default(NotificationModal))
         {
+            await httpClientService.Get("api/user/SignOut", notificationModal);
             try
-            {
-                await httpClient.GetAsync("api/user/SignOut");
-            }
-            finally
             {
                 await authenticationStateProvider.MarkUserAsSignedOut();
             }
+            catch (System.Exception) { }
+            navigationManager.NavigateTo("/");
         }
 
-        public async Task RefreshTokens(RefreshTokensDto refreshToken)
+        public async Task RefreshTokens(
+            RefreshTokensDto refreshToken,
+            NotificationModal notificationModal = default(NotificationModal))
         {
-            try
+            var result = await httpClientService.Post<RefreshTokensDto, TokenPairDto>(
+                "api/user/RefreshTokens",
+                refreshToken,
+                notificationModal);
+            if (result is not null)
             {
-                var response = await httpClient.PostAsJsonAsync<RefreshTokensDto>("api/user/RefreshTokens", refreshToken);
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    var tokenPair = JsonSerializer.Deserialize<TokenPairDto>(
-                        await response.Content.ReadAsStringAsync(),
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    await authenticationStateProvider.MarkUserAsSignedIn(tokenPair.AccessToken, tokenPair.RefreshToken);
+                    await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
                 }
-                else
-                {
-                    await authenticationStateProvider.MarkUserAsSignedOut();
-                }
-            }
-            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                return;
-            }
-            catch (System.Exception)
-            {
-                await authenticationStateProvider.MarkUserAsSignedOut();
+                catch (System.Exception) { }
             }
         }
 
-        public async Task<string> RequestResetPassword(RequestResetPasswordDto userEmail)
+        public Task<bool> RequestResetPassword(
+            RequestResetPasswordDto userEmail,
+            NotificationModal notificationModal = default(NotificationModal))
         {
-            try
-            {
-                var response = await httpClient.PostAsJsonAsync<RequestResetPasswordDto>("api/user/RequestResetPassword", userEmail);
-                if (response.IsSuccessStatusCode)
-                {
-                    return HttpClientResponse.Success;
-                }
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.BadRequest:
-                        UIMessages.HttpBadRequestError = await response.Content.ReadAsStringAsync();
-                        return HttpClientResponse.BadRequest;
-                    case HttpStatusCode.Unauthorized:
-                        return HttpClientResponse.Unauthorized;
-                    case HttpStatusCode.NotFound:
-                        return HttpClientResponse.NotFound;
-                    case HttpStatusCode.InternalServerError:
-                        return HttpClientResponse.ServerError;
-                    case HttpStatusCode.RequestTimeout:
-                        return HttpClientResponse.RequestTimedOut;
-                    default:
-                        throw new Exception();
-                }
-            }
-            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                return HttpClientResponse.RequestTimedOut;
-            }
-            catch (System.Exception)
-            {
-                return HttpClientResponse.InternalError;
-            }
+            return httpClientService.Post<RequestResetPasswordDto>(
+                "api/user/RequestResetPassword",
+                userEmail,
+                notificationModal);
         }
 
-        public async Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto password)
+        public async Task<ResetPasswordResultDto> ResetPassword(
+            ResetPasswordDto password,
+            NotificationModal notificationModal)
         {
-            try
-            {
-                var response = await httpClient.PostAsJsonAsync<ResetPasswordDto>("api/user/ResetPassword", password);
-                if (response.IsSuccessStatusCode)
-                {
-                    return JsonSerializer.Deserialize<ResetPasswordResultDto>(
-                        await response.Content.ReadAsStringAsync(),
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                    );
-                }
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.BadRequest:
-                        return new() { Successful = false, Error = HttpClientResponse.BadRequest };
-                    case HttpStatusCode.Unauthorized:
-                        return new() { Successful = false, Error = HttpClientResponse.Unauthorized };
-                    case HttpStatusCode.NotFound:
-                        return new() { Successful = false, Error = HttpClientResponse.NotFound };
-                    case HttpStatusCode.InternalServerError:
-                        return new() { Successful = false, Error = HttpClientResponse.ServerError };
-                    case HttpStatusCode.RequestTimeout:
-                        return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
-                    default:
-                        throw new Exception();
-                }
-            }
-            catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                return new() { Successful = false, Error = HttpClientResponse.RequestTimedOut };
-            }
-            catch (System.Exception)
-            {
-                return new() { Successful = false, Error = HttpClientResponse.InternalError };
-            }
+            return await httpClientService.Post<ResetPasswordDto, ResetPasswordResultDto>(
+                "api/user/ResetPassword",
+                password,
+                notificationModal);
+        }
+
+        public Task<bool> ExternalProvidersSignIn(
+            ExternalProviderSignInDto provider,
+            NotificationModal notificationModal)
+        {
+            return httpClientService.Post<ExternalProviderSignInDto>(
+                "api/user/ExternalProviderSignIn",
+                provider,
+                notificationModal);
         }
     }
 }

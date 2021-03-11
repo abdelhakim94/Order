@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
 using MediatR;
 using Order.DomainModel;
 using Order.Shared.Dto.Users;
@@ -16,6 +17,7 @@ using Order.Server.Services.EmailService;
 using Order.Server.Dto.Users;
 using Order.Shared.Constants;
 using Order.Server.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Order.Server.Services.UserService
 {
@@ -247,8 +249,8 @@ namespace Order.Server.Services.UserService
             if (!result.Succeeded)
             {
                 var didTokenExpire = result.Errors
-                .Select(e => e.Code)
-                .Contains(errorDescriber.InvalidToken().Code);
+                    .Select(e => e.Code)
+                    .Contains(errorDescriber.InvalidToken().Code);
 
                 if (didTokenExpire)
                 {
@@ -291,6 +293,13 @@ namespace Order.Server.Services.UserService
             }
 
             return new ResetPasswordResultDto { Successful = true };
+        }
+
+        // ===================================== External identity providers ========================================= //
+
+        public AuthenticationProperties ConfigureSignInWithExternalProvider(string provider, string redirectUrl)
+        {
+            return signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
         }
     }
 }

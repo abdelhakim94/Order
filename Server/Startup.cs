@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MediatR;
+using FluentValidation;
 using Order.DomainModel;
 using Order.Server.Persistence;
 using Order.Shared.Contracts;
@@ -22,7 +23,6 @@ using Order.Shared.Security.Policies;
 using Order.Shared.Security.Constants;
 using Order.Server.Exceptions;
 using Order.Server.CQRS;
-using FluentValidation;
 
 namespace Order.Server
 {
@@ -37,6 +37,14 @@ namespace Order.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Configuration
+            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
+            var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
+            var googleCredentials = Configuration.GetSection("GoogleCredentials").Get<GoogleCredentials>();
+            services.AddSingleton(jwtTokenConfig);
+            services.AddSingleton(emailBoxConfig);
+            #endregion
+
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_antony")
             ));
@@ -58,11 +66,6 @@ namespace Order.Server
             // of DbContext, we need to add "OrderContext" in this way.
             services.AddScoped<OrderContext>(provider =>
                 provider.GetRequiredService<IOrderContext>() as OrderContext);
-
-            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
-            var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
-            services.AddSingleton(jwtTokenConfig);
-            services.AddSingleton(emailBoxConfig);
 
             services.AddIdentity<User, Role>(options =>
                 {
@@ -98,6 +101,11 @@ namespace Order.Server
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(1),
                     };
+                })
+                .AddGoogle(options =>
+                {
+                    options.ClientId = googleCredentials.ClientId;
+                    options.ClientSecret = googleCredentials.ClientSecret;
                 });
 
             services.AddAuthorization(options =>

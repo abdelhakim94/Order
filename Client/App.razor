@@ -8,27 +8,24 @@
         <Found Context="routeData">
             <NotificationModal @ref=@NotificationModal />
             <CascadingValue Value=@NotificationModal IsFixed=@true>
-                <HttpErrorNotifier @ref=@HttpErrorNotifier />
-                <CascadingValue Value=@HttpErrorNotifier IsFixed=@true>
-                    <AuthorizeRouteView RouteData="@routeData">
-                        <NotAuthorized>
-                            @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
-                            nameof(Profile) && c.Value == nameof(Profile.GUEST))))
-                                {
-                            <Redirect Route="/" />
-                            }
-                                else
-                                {
-                            <Redirect Route="/Unauthorized" />
-                            }
-                        </NotAuthorized>
-                    </AuthorizeRouteView>
-                </CascadingValue>
+                <AuthorizeRouteView RouteData="@routeData">
+                    <NotAuthorized>
+                        @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
+                        nameof(Profile) && c.Value == nameof(Profile.GUEST))))
+                            {
+                        <Redirect Route="/" />
+                        }
+                            else
+                            {
+                        <Redirect Route="/Unauthorized" />
+                        }
+                    </NotAuthorized>
+                </AuthorizeRouteView>
             </CascadingValue>
         </Found>
         <NotFound>
             <LayoutView>
-                <p>Ouups! Il n'y a rien à cette adresse :(</p>
+                <Redirect Route="/NotFound" />
             </LayoutView>
         </NotFound>
     </Router>
@@ -36,5 +33,4 @@
 
 @code{
     public NotificationModal NotificationModal { get; set; }
-    public HttpErrorNotifier HttpErrorNotifier { get; set; }
 }

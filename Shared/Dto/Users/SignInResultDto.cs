@@ -11,6 +11,5 @@ namespace Order.Shared.Dto.Users
         public bool IsLockedOut { get; set; }
         public DateTimeOffset? LockoutEndDate { get; set; }
         public bool IsEmailOrPasswordIncorrect { get; set; }
-        public string AdditionalError { get; set; }
     }
 }

@@ -10,16 +10,8 @@ namespace Order.Client.Constants
         public static string DefaultHttpBadRequestError { get => "La demande n'a pas pu être construit correctement"; }
         public static string DefaultHttpUnauthorizedError { get => "Vous n'êtes pas autorisé à accéder à la ressource demandée. Vous reconnecter peut résoudre le problème"; }
         public static string DefaultHttpServerError { get => "Une erreur s'est produite sur le serveur. Veuillez réessayer ou contactez le support"; }
-        public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion Internet"; }
+        public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
         public static string DefaultInternalError { get => "Une erreur interne est survenue. Veuillez réessayer ou contacter le support"; }
-
-        // If not null, the HttpErrorNotifier will display these messages. Otherwise, falls back to the default messages.
-        public static string HttpNotFoundError { get; set; }
-        public static string HttpBadRequestError { get; set; }
-        public static string HttpUnauthorizedError { get; set; }
-        public static string HttpServerError { get; set; }
-        public static string HttpRequestTimedOut { get; set; }
-        public static string InternalError { get; set; }
 
         public static string SignUpSuccess { get => "Veuillez suivre le lien reçu par email pour finaliser votre inscription"; }
 
@@ -47,7 +39,6 @@ namespace Order.Client.Constants
         public static string EmailAlreadyHasAccount { get => "L'email fourni est déjà associé à un compte. Considérez de vous connecter avec ce compte ou de fournir un autre email"; }
         public static string InvalidEmailAdress { get => "L'email fourni n'est pas valide. Veuillez fournir une adresse email valide"; }
         public static string FailureSendingEmail { get => "le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support."; }
-        public static string ServerUnreachable { get => "Ouups! Il semble que le serveur ne soit pas accessible. Veuillez vérifier votre connexion internet ou réessayer plus tard."; }
         public static string PasswordNotSecure { get => "Le mot de passe ne répond pas aux exigences de sécurité. veuillez envisager de l'allonger ou d'utiliser des caractères spéciaux"; }
         public static string PasswordMismatch { get => "Le mot de passe et sa confirmation ne correspondent pas. Veuillez saisir à nouveau le mot de passe."; }
         public static string DefaultSignUpErrorMessage { get => "Ouups! Il semble que le compte n'a pas pu être créé. Veuillez réessayer plus tard"; }
@@ -61,12 +52,14 @@ namespace Order.Client.Constants
         public static string Cancel { get => "Annuler"; }
 
         public static string Reset { get => "Réinitialiser"; }
-        public static string DefaultPasswordRecoveryMessage { get => "Ouups! Il semple que le mot de passe n'a pas pu être réinitialiser.  Veuillez réessayer plus tard"; }
+        public static string DefaultResetPasswordFailed { get => "Ouups! Il semple que le mot de passe n'a pas pu être réinitialiser.  Veuillez réessayer plus tard"; }
 
         public static string ComeBackTo { get => "Revenir à"; }
         public static string SignInPage { get => "la page de connexion"; }
-        public static string CannotRequestPwRecover { get => "Ouups! Impossible de demander la récupération du mot de passe. Veuillez réessayer ultérieurement."; }
+        public static string CannotRequestResetPassword { get => "Ouups! Impossible de demander la récupération du mot de passe. Veuillez réessayer ultérieurement."; }
         public static string FollowResetPasswordLink { get => "Veuillez suivre le lien que vous avez reçu par e-mail pour réinitialiser votre mot de passe."; }
         public static string ResetPasswordsuccess { get => "Votre mot de passe a été réinitialisé avec succès"; }
+
+        public static string CannotSignInWithSocialProvider(string provider) => $"Ouups! Impossible de se connecter avec {provider}. Veuillez réessayer ultérieurement.";
     }
 }

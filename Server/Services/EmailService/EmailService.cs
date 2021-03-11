@@ -41,8 +41,7 @@ namespace Order.Server.Services.EmailService
             var subject = "Confirmation de votre adresse mail";
             var body = new StringBuilder();
             body.AppendLine("<p>Félicitations! vous êtes à une étape de la finalisation de la création de votre compte.</p>");
-            body.AppendLine("<p>Veuillez suivre le lien ci-dessous pour confirmer votre adresse mail.</p>");
-            body.AppendLine($"<p>{confirmationUrl}</p>");
+            body.AppendLine($"<p>Veuillez cliquer <a href=\"{ confirmationUrl}\">ici</a> afin de confirmer votre adresse mail.</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");
             body.AppendLine("<p>l'équipe Order</p>");
@@ -54,8 +53,7 @@ namespace Order.Server.Services.EmailService
             var subject = "Confirmation de votre adresse mail";
             var body = new StringBuilder();
             body.AppendLine("<p>Il semble que vous ayez essayé de confirmer votre e-mail avec un lien expiré.</p>");
-            body.AppendLine("<p>Veuillez suivre le nouveau lien ci-dessous pour confirmer votre adresse mail.</p>");
-            body.AppendLine($"<p>{confirmationUrl}</p>");
+            body.AppendLine($"<p>Veuillez cliquer <a href=\"{confirmationUrl}\">ici</a> afin de confirmer votre adresse mail.</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");
             body.AppendLine("<p>L'équipe Order</p>");
@@ -67,8 +65,7 @@ namespace Order.Server.Services.EmailService
             var subject = "Réinitialisation de votre mot de passe";
             var body = new StringBuilder();
             body.AppendLine("<p>Vous avez demander à réinitialiser votre mot de passe <em>Order</em></p>");
-            body.AppendLine("<p>Veuillez suivre le lien ci-dessous afin de finaliser la réinitialisation</p>");
-            body.AppendLine($"<p>{resetPwUrl}</p>");
+            body.AppendLine($"<p>Veuillez cliquer <a href=\"{resetPwUrl}\">ici</a> afin de finaliser la réinitialisation.</p>");
             body.AppendLine("<p>Si vous n'êtes pas à l'origine de cette activité, veuillez ignorer ce mail.</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");
@@ -81,8 +78,7 @@ namespace Order.Server.Services.EmailService
             var subject = "Réinitialisation de votre mot de passe";
             var body = new StringBuilder();
             body.AppendLine("<p>Il semble que vous ayez essayé de réinitialiser votre mot de passe avec un lien expiré.</p>");
-            body.AppendLine("<p>Veuillez suivre le nouveau lien ci-dessous afin de finaliser la réinitialisation</p>");
-            body.AppendLine($"<p>{resetPwUrl}</p>");
+            body.AppendLine($"<p>Veuillez cliquer <a href=\"{resetPwUrl}\">ici</a> afin de finaliser la réinitialisation.</p>");
             body.AppendLine("<p>Si vous n'êtes pas à l'origine de cette activité, veuillez ignorer ce mail.</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");

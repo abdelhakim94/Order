@@ -7,7 +7,6 @@ using Order.Shared.Dto.Users;
 using Order.Client.Constants;
 using Order.Shared.Constants;
 using Order.Client.Components.Misc;
-using Order.Client.Extensions;
 
 namespace Order.Client.Pages
 {
@@ -20,9 +19,6 @@ namespace Order.Client.Pages
 
         [CascadingParameter]
         public NotificationModal NotificationModal { get; set; }
-
-        [CascadingParameter]
-        public HttpErrorNotifier HttpErrorNotifier { get; set; }
 
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
@@ -37,22 +33,28 @@ namespace Order.Client.Pages
         {
             isLoading = true;
             SignUpResultDto result;
+
             try
             {
-                result = await AuthenticationService.SignUp(context.Model as SignUpDto);
+                result = await AuthenticationService.SignUp(context.Model as SignUpDto, NotificationModal);
+                if (result is null) return;
             }
             catch (System.Exception)
             {
                 NotificationModal.ShowError(UIMessages.DefaultSignUpErrorMessage);
-                isLoading = false;
                 return;
             }
-            isLoading = false;
+            finally
+            {
+                isLoading = false;
+                StateHasChanged();
+            }
 
             if (result.Successful)
             {
                 NotificationModal.Show(UIMessages.SignUpSuccess);
                 NavigationManager.NavigateTo("/");
+                return;
             }
             else if (result.Error == ErrorDescriber.DuplicateEmail(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.DuplicateUserName(SignUpData.Email).Code
@@ -81,10 +83,6 @@ namespace Order.Client.Pages
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
                 NotificationModal.ShowError(UIMessages.PasswordMismatch);
-            }
-            else if (result.Error.IsHttpClientError())
-            {
-                HttpErrorNotifier.Notify(result.Error);
             }
             else
             {
