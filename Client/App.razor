@@ -1,4 +1,5 @@
 ﻿@using Order.Client.Components.Misc
+@using Order.Shared.Security.Claims
 
 @* Read more about authentication/authorozation in blazor here: *@
 @* https://docs.microsoft.com/en-us/aspnet/core/blazor/security/?view=aspnetcore-5.0#authorization *@
@@ -11,13 +12,14 @@
                 <CascadingValue Value=@HttpErrorNotifier IsFixed=@true>
                     <AuthorizeRouteView RouteData="@routeData">
                         <NotAuthorized>
-                            @if (!context.User.Identity.IsAuthenticated)
+                            @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
+                            nameof(Profile) && c.Value == nameof(Profile.GUEST))))
                                 {
                             <Redirect Route="/" />
                             }
                                 else
                                 {
-                            <p>Ouups! Vous n'êtes pas autorisé à accéder à cette ressource :(</p>
+                            <Redirect Route="/Unauthorized" />
                             }
                         </NotAuthorized>
                     </AuthorizeRouteView>

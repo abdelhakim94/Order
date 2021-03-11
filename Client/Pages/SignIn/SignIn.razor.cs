@@ -1,11 +1,14 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Extensions;
 using Order.Client.Services;
 using Order.Shared.Dto.Users;
+using Order.Shared.Security.Claims;
 
 namespace Order.Client.Pages
 {
@@ -34,9 +37,25 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public HttpErrorNotifier HttpErrorNotifier { get; set; }
 
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthenticationState { get; set; }
+
         public string SocialSpritePath
         {
             get => "/icons/social-media-sprite.png";
+        }
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+            var state = await AuthenticationState;
+            if (
+                state.User.Identity.IsAuthenticated &&
+                state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
+            {
+                NavigationManager.NavigateTo("/home");
+            }
+
         }
 
         public async Task HandleSignInFormSubmition(EditContext context)
@@ -57,7 +76,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NavigationManager.NavigateTo("/logout/");
+                NavigationManager.NavigateTo("/home/");
             }
             else if (result.IsNotAllowed)
             {
