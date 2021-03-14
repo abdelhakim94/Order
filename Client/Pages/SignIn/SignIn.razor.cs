@@ -145,11 +145,11 @@ namespace Order.Client.Pages
         public async Task SocialSignIn(ExternalProviderSignInDto provider)
         {
             isLoading = true;
-            bool result;
+            SignInResultDto result;
             try
             {
                 result = await AuthenticationService.ExternalProvidersSignIn(provider, NotificationModal);
-                if (!result) return;
+                if (result is null) return;
             }
             catch (System.Exception)
             {
@@ -160,6 +160,28 @@ namespace Order.Client.Pages
             {
                 isLoading = false;
                 StateHasChanged();
+            }
+
+            if (result.Successful)
+            {
+                NavigationManager.NavigateTo("/home/");
+                return;
+            }
+            else if (result.IsNotAllowed)
+            {
+                NotificationModal.ShowError(UIMessages.EmailNotConfirmed);
+            }
+            else if (result.IsLockedOut)
+            {
+                NotificationModal.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
+            }
+            else if (result.IsEmailOrPasswordIncorrect)
+            {
+                NotificationModal.ShowError(UIMessages.WrongEmailOrPassword);
+            }
+            else
+            {
+                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Provider));
             }
         }
     }

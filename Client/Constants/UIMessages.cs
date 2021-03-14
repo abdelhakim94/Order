@@ -38,7 +38,6 @@ namespace Order.Client.Constants
 
         public static string EmailAlreadyHasAccount { get => "L'email fourni est déjà associé à un compte. Considérez de vous connecter avec ce compte ou de fournir un autre email"; }
         public static string InvalidEmailAdress { get => "L'email fourni n'est pas valide. Veuillez fournir une adresse email valide"; }
-        public static string FailureSendingEmail { get => "le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support."; }
         public static string PasswordNotSecure { get => "Le mot de passe ne répond pas aux exigences de sécurité. veuillez envisager de l'allonger ou d'utiliser des caractères spéciaux"; }
         public static string PasswordMismatch { get => "Le mot de passe et sa confirmation ne correspondent pas. Veuillez saisir à nouveau le mot de passe."; }
         public static string DefaultSignUpErrorMessage { get => "Ouups! Il semble que le compte n'a pas pu être créé. Veuillez réessayer plus tard"; }

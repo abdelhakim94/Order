@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,7 +6,7 @@ using Order.Shared.Dto.Users;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;
-using System;
+using Order.Server.Exceptions;
 
 namespace Order.Server.Controllers
 {
@@ -24,7 +25,12 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public Task<SignUpResultDto> SignUp([FromBody] SignUpDto userInfo)
         {
-            return userService.SignUp(userInfo, Url, Request.Scheme);
+            return userService.SignUp(userInfo, p => Url.Action(
+                "ConfirmEmail",
+                "User",
+                p,
+                Request.Scheme
+            ));
         }
 
         [HttpGet]
@@ -33,7 +39,12 @@ namespace Order.Server.Controllers
         {
             try
             {
-                await userService.ConfirmEmail(confirmation, Url, Request.Scheme);
+                await userService.ConfirmEmail(confirmation, p => Url.Action(
+                    "ConfirmEmail",
+                    "User",
+                    p,
+                    Request.Scheme
+                ));
             }
             catch (System.Exception)
             {
@@ -58,7 +69,12 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public Task RequestResetPassword([FromBody] RequestResetPasswordDto request)
         {
-            return userService.RequestResetPassword(request, Url, Request.Scheme);
+            return userService.RequestResetPassword(request, p => Url.Action(
+                "RedirectToResetPassword",
+                "User",
+                p,
+                Request.Scheme)
+            );
         }
 
         [HttpGet]
@@ -72,7 +88,12 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public Task<ResetPasswordResultDto> ResetPassword([FromBody] ResetPasswordDto resetPwInfo)
         {
-            return userService.ResetPassword(resetPwInfo, Url, Request.Scheme);
+            return userService.ResetPassword(resetPwInfo, p => Url.Action(
+                "RedirectToResetPassword",
+                "User",
+                p,
+                Request.Scheme)
+            );
         }
 
         [HttpPost]
@@ -95,6 +116,7 @@ namespace Order.Server.Controllers
         }
 
         // ====================================== External identity providers =========================================//
+        // https://chsakell.com/2019/07/28/asp-net-core-identity-series-external-provider-authentication-registration-strategy/
 
         [HttpPost]
         [AllowAnonymous]
@@ -107,72 +129,44 @@ namespace Order.Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ExternalProviderSignInCallback(string returnUrl = null, string remoteError = null)
+        public async Task<SignInResultDto> ExternalProviderSignInCallback(string returnUrl = null, string remoteError = null)
         {
-            Console.WriteLine("Callback called successfully");
-            Console.WriteLine(returnUrl);
-            Console.WriteLine(remoteError);
-            return Ok();
-            // var info = await signInManager.GetExternalLoginInfoAsync();
-            // if (info == null)
-            // {
-            //     return RedirectToPage("./", new { ReturnUrl = returnUrl });
-            // }
+            if (remoteError is not null)
+            {
+                throw new UnauthorizedException("Nous n'avons pas réussi à vous connecter avec le fournisseur selectionné.");
+            }
 
-            // // Sign in the user with this external login provider if the user already has a login.
-            // var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
-            //     isPersistent: false, bypassTwoFactor: true);
-            // if (result.Succeeded)
-            // {
-            //     return LocalRedirect(returnUrl);
-            // }
+            var info = await userService.GetExternalLoginInfoAsync();
+            if (info is null)
+            {
+                throw new UnauthorizedException("Nous n'avons pas réussi à vous connecter avec le fournisseur selectionné.");
+            }
 
-            // var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var signInResult = await userService.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey);
+            if (signInResult.Successful)
+            {
+                return signInResult;
+            }
 
-            // if (string.IsNullOrEmpty(userEmail))
-            // {
-            //     return LocalRedirect(
-            //         $"{returnUrl}?message=Email scope access is required to add {info.ProviderDisplayName} provider&type=danger");
-            // }
+            var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(userEmail))
+            {
+                throw new UnauthorizedException($"Votre email n'a pas pu être recupéré auprés de {info.LoginProvider}");
+            }
 
-            // var userDb = await userManager.FindByEmailAsync(userEmail);
+            return await userService.HandleFirstExternalSignIn(
+                userEmail,
+                info,
+                p => Url.Action("ConfirmExternalProviderAssociation", "User", p, Request.Scheme)
+            );
+        }
 
-            // if (userDb != null)
-            // {
-            //     // RULE #5
-            //     if (!userDb.EmailConfirmed)
-            //     {
-            //         var token = await userManager.GenerateEmailConfirmationTokenAsync(userDb);
-
-            //         var callbackUrl = Url.Action("ConfirmExternalProvider", "Account",
-            //             values: new
-            //             {
-            //                 userId = userDb.Id,
-            //                 code = token,
-            //                 loginProvider = info.LoginProvider,
-            //                 providerDisplayName = info.LoginProvider,
-            //                 providerKey = info.ProviderKey
-            //             },
-            //             protocol: Request.Scheme);
-
-            //         await emailSender.SendEmailAsync(userDb.Email, $"Confirm {info.ProviderDisplayName} external login",
-            //             $"Please confirm association of your {info.ProviderDisplayName} account by clicking <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>here</a>.");
-
-            //         return LocalRedirect(
-            //             $"{returnUrl}?message=External account association with {info.ProviderDisplayName} is pending.Please check your email");
-            //     }
-
-            //     // Add the external provider
-            //     await userManager.AddLoginAsync(userDb, info);
-
-            //     await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
-            //        isPersistent: false, bypassTwoFactor: true);
-
-            //     return LocalRedirect(
-            //         $"{returnUrl}?message={info.ProviderDisplayName} has been added successfully");
-            // }
-
-            // return LocalRedirect($"/register?associate={userEmail}&loginProvider={info.LoginProvider}&providerDisplayName={info.ProviderDisplayName}&providerKey={info.ProviderKey}");
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmExternalProviderAssociation([FromQuery] ConfirmExternalProviderAssociationDto info)
+        {
+            await userService.ConfirmExternalProviderAssociation(info);
+            return Redirect("/");
         }
     }
 }

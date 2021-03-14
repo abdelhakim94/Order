@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Services;
 using Order.Shared.Dto.Users;
 using Order.Client.Constants;
-using Order.Shared.Constants;
 using Order.Client.Components.Misc;
 
 namespace Order.Client.Pages
@@ -66,10 +65,6 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.InvalidEmail(SignUpData.Email).Code)
             {
                 NotificationModal.ShowError(UIMessages.InvalidEmailAdress);
-            }
-            else if (result.Error == SignUpErrors.FailureSendingEmail)
-            {
-                NotificationModal.ShowError(UIMessages.FailureSendingEmail);
             }
             else if (result.Error == ErrorDescriber.PasswordTooShort(default(int)).Code
                   || result.Error == ErrorDescriber.PasswordRequiresUniqueChars(default(int)).Code

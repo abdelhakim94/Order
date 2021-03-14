@@ -48,6 +48,20 @@ namespace Order.Server.Exceptions
                 context.Response.ContentType = "text/plain";
                 await context.Response.WriteAsync(ex.Message);
             }
+            catch (UnauthorizedException ex)
+            {
+                logger.LogError(ex.ToString());
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync(ex.Message);
+            }
+            catch (ApplicationException ex)
+            {
+                logger.LogError(ex.ToString());
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync(ex.Message);
+            }
             catch (InvalidEnumArgumentException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;

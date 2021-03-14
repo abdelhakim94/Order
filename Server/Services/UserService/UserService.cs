@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
@@ -15,9 +14,7 @@ using Order.Server.Services.JwtAuthenticationService;
 using Order.Shared.Contracts;
 using Order.Server.Services.EmailService;
 using Order.Server.Dto.Users;
-using Order.Shared.Constants;
 using Order.Server.Exceptions;
-using Microsoft.Extensions.Logging;
 
 namespace Order.Server.Services.UserService
 {
@@ -49,7 +46,7 @@ namespace Order.Server.Services.UserService
             this.mediator = mediator;
         }
 
-        public async Task<SignUpResultDto> SignUp(SignUpDto userInfo, IUrlHelper urlHelper, string scheme)
+        public async Task<SignUpResultDto> SignUp(SignUpDto userInfo, Func<object, string> emailConfirmationUrlBuilder)
         {
             if (userInfo.Password != userInfo.ConfirmPassword)
             {
@@ -79,19 +76,16 @@ namespace Order.Server.Services.UserService
             var registeredUser = await userManager.FindByEmailAsync(userInfo.Email);
             await userManager.AddClaimsAsync(registeredUser, new Claim[]
             {
-                    new(ClaimTypes.NameIdentifier, registeredUser.Id.ToString())
+                new(ClaimTypes.NameIdentifier, registeredUser.Id.ToString())
             });
 
             var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(registeredUser);
-            var confirmationUrl = urlHelper.Action(
-                "ConfirmEmail",
-                "User",
-                new EmailConfirmationDto
-                {
-                    ConfirmationToken = confirmationToken,
-                    UserEmail = registeredUser.Email,
-                },
-                scheme);
+            var confirmationUrl = emailConfirmationUrlBuilder(new EmailConfirmationDto
+            {
+                ConfirmationToken = confirmationToken,
+                UserEmail = registeredUser.Email,
+            });
+
             try
             {
                 await emailService.SendEmailConfirmationMail(registeredUser.Email, confirmationUrl);
@@ -99,13 +93,13 @@ namespace Order.Server.Services.UserService
             catch (System.Exception)
             {
                 await userManager.DeleteAsync(newUser);
-                return new SignUpResultDto { Successful = false, Error = SignUpErrors.FailureSendingEmail };
+                throw new ApplicationException("Le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support.");
             }
 
             return new SignUpResultDto { Successful = true };
         }
 
-        public async Task ConfirmEmail(EmailConfirmationDto confirmation, IUrlHelper urlHelper, string scheme)
+        public async Task ConfirmEmail(EmailConfirmationDto confirmation, Func<object, string> emailConfirmationUrlBuilder)
         {
             if (string.IsNullOrWhiteSpace(confirmation.UserEmail))
             {
@@ -115,7 +109,7 @@ namespace Order.Server.Services.UserService
             var user = await userManager.FindByEmailAsync(confirmation.UserEmail);
             if (user is null)
             {
-                throw new NotFoundException("L'adresse email fourni ne correspond à aucun compte!");
+                throw new NotFoundException("L'adresse email fourni ne correspond à aucun utilisateur!");
             }
 
             var result = await userManager.ConfirmEmailAsync(user, confirmation.ConfirmationToken);
@@ -128,26 +122,39 @@ namespace Order.Server.Services.UserService
                 if (didTokenExpire)
                 {
                     var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var confirmationUrl = urlHelper.Action(
-                        "ConfirmEmail",
-                        "User",
-                        new EmailConfirmationDto
-                        {
-                            ConfirmationToken = confirmationToken,
-                            UserEmail = user.Email,
-                        },
-                        scheme);
-                    await emailService.ReSendEmailConfirmationMail(user.Email, confirmationUrl);
+                    var confirmationUrl = emailConfirmationUrlBuilder(new EmailConfirmationDto
+                    {
+                        ConfirmationToken = confirmationToken,
+                        UserEmail = user.Email,
+                    });
+
+                    try
+                    {
+                        await emailService.ReSendEmailConfirmationMail(user.Email, confirmationUrl);
+                    }
+                    catch (System.Exception)
+                    {
+                        throw new ApplicationException("Le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support.");
+                    }
                 }
                 else
                 {
-                    throw new Exception("L'adresse email n'a pas pu être confirmé!");
+                    throw new ApplicationException("L'adresse email n'a pas pu être confirmé!");
                 }
             }
         }
 
         public async Task<SignInResultDto> SignIn(SignInDto userInfo)
         {
+            if (string.IsNullOrWhiteSpace(userInfo.Password))
+            {
+                return new SignInResultDto
+                {
+                    Successful = false,
+                    IsEmailOrPasswordIncorrect = true,
+                };
+            }
+
             var result = await signInManager.PasswordSignInAsync(
                 userInfo.Email,
                 userInfo.Password,
@@ -202,7 +209,7 @@ namespace Order.Server.Services.UserService
             }
         }
 
-        public async Task RequestResetPassword(RequestResetPasswordDto request, IUrlHelper url, string scheme)
+        public async Task RequestResetPassword(RequestResetPasswordDto request, Func<object, string> resetPasswordUrlBuilder)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
             if (user is null)
@@ -212,23 +219,18 @@ namespace Order.Server.Services.UserService
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
-            var resetPwUrl = url.Action(
-                "RedirectToResetPassword",
-                "User",
-                new RequestResetPasswordTokenDto
-                {
-                    UserEmail = user.Email,
-                    ResetPasswordToken = token,
-                },
-                scheme);
+            var resetPwUrl = resetPasswordUrlBuilder(new RequestResetPasswordTokenDto
+            {
+                UserEmail = user.Email,
+                ResetPasswordToken = token,
+            });
 
             await emailService.SendResetPasswordMail(user.Email, resetPwUrl);
         }
 
         public async Task<ResetPasswordResultDto> ResetPassword(
             ResetPasswordDto resetPwInfo,
-            IUrlHelper urlHelper,
-            string scheme)
+            Func<object, string> resetPasswordUrlBuilder)
         {
 
             if (resetPwInfo.Password != resetPwInfo.ConfirmPassword)
@@ -255,15 +257,11 @@ namespace Order.Server.Services.UserService
                 if (didTokenExpire)
                 {
                     var resetPwToken = await userManager.GeneratePasswordResetTokenAsync(user);
-                    var resetPwUrl = urlHelper.Action(
-                        "RedirectToResetPassword",
-                        "User",
-                        new RequestResetPasswordTokenDto
-                        {
-                            UserEmail = user.Email,
-                            ResetPasswordToken = resetPwToken,
-                        },
-                        scheme);
+                    var resetPwUrl = resetPasswordUrlBuilder(new RequestResetPasswordTokenDto
+                    {
+                        UserEmail = user.Email,
+                        ResetPasswordToken = resetPwToken,
+                    });
 
                     try
                     {
@@ -271,11 +269,7 @@ namespace Order.Server.Services.UserService
                     }
                     catch (System.Exception)
                     {
-                        return new ResetPasswordResultDto
-                        {
-                            Successful = false,
-                            Error = SignUpErrors.FailureSendingEmail,
-                        };
+                        throw new ApplicationException("Le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support.");
                     }
 
                     return new ResetPasswordResultDto
@@ -300,6 +294,163 @@ namespace Order.Server.Services.UserService
         public AuthenticationProperties ConfigureSignInWithExternalProvider(string provider, string redirectUrl)
         {
             return signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+        }
+
+        public Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            return signInManager.GetExternalLoginInfoAsync();
+        }
+
+        public async Task<SignInResultDto> ExternalLoginSignInAsync(string provider, string providerKey)
+        {
+            var result = await signInManager.ExternalLoginSignInAsync(provider, providerKey, isPersistent: false, bypassTwoFactor: true);
+
+            if (result.Succeeded)
+            {
+                var user = await userManager.FindByLoginAsync(provider, providerKey);
+                if (user is not null)
+                {
+                    var tokenPair = await jwtAuthenticationService.GenerateTokens(
+                        user.Id,
+                        await userManager.GetClaimsAsync(user),
+                        DateTime.Now
+                    );
+
+                    return new SignInResultDto
+                    {
+                        Successful = true,
+                        TokenPair = tokenPair
+                    };
+                }
+            }
+
+            return new SignInResultDto { Successful = false };
+        }
+
+        public async Task<SignInResultDto> HandleFirstExternalSignIn(
+            string userEmail,
+            ExternalLoginInfo info,
+            Func<object, string> emailConfirmationUrlBuilder)
+        {
+            var existingUser = await userManager.FindByEmailAsync(userEmail);
+            if (existingUser is null)
+            {
+                var newUser = new User
+                {
+                    UserName = userEmail,
+                    Email = userEmail,
+                    FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                    LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
+                    EmailConfirmed = true,
+                    TwoFactorEnabled = false,
+                    Claims = {
+                        new UserClaim { ClaimType = ClaimTypes.Email, ClaimValue = userEmail },
+                        new UserClaim { ClaimType = nameof(Profile), ClaimValue = nameof(Profile.GUEST) }
+                    },
+                };
+
+                var createResult = await userManager.CreateAsync(newUser);
+                if (!createResult.Succeeded)
+                {
+                    var error = createResult.Errors.Select(x => x.Code).FirstOrDefault();
+                    throw new ApplicationException($"La connection à travers {info.ProviderDisplayName} a échouer avec le code \"{error}\".");
+                }
+
+                existingUser = await userManager.FindByEmailAsync(userEmail);
+                await userManager.AddClaimsAsync(existingUser, new Claim[]
+                {
+                    new(ClaimTypes.NameIdentifier, existingUser.Id.ToString())
+                });
+            }
+
+            if (!existingUser.EmailConfirmed)
+            {
+                var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(existingUser);
+                var confirmationUrl = emailConfirmationUrlBuilder(new ConfirmExternalProviderAssociationDto
+                {
+                    UserEmail = existingUser.Email,
+                    ConfirmationToken = confirmationToken,
+                    LoginProvider = info.LoginProvider,
+                    ProviderDisplayName = info.ProviderDisplayName,
+                    ProviderKey = info.ProviderKey
+                });
+
+                try
+                {
+                    await emailService.SendExternalProviderEmailConfirmationEmail(
+                        existingUser.Email,
+                        confirmationUrl,
+                        info.ProviderDisplayName);
+                }
+                catch (System.Exception)
+                {
+                    throw new ApplicationException("Le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support.");
+                }
+
+                return new SignInResultDto { Successful = false, IsNotAllowed = true };
+            }
+            else
+            {
+                await userManager.AddLoginAsync(existingUser, info);
+                var signInResult = await signInManager.ExternalLoginSignInAsync(
+                    info.LoginProvider,
+                    info.ProviderKey,
+                    isPersistent: false,
+                    bypassTwoFactor: true);
+
+                if (signInResult.Succeeded)
+                {
+                    return new SignInResultDto
+                    {
+                        Successful = signInResult.Succeeded,
+                        TokenPair = await jwtAuthenticationService.GenerateTokens(
+                            existingUser.Id,
+                            await userManager.GetClaimsAsync(existingUser),
+                            DateTime.Now)
+                    };
+                }
+
+                return new SignInResultDto
+                {
+                    Successful = signInResult.Succeeded,
+                    IsNotAllowed = signInResult.IsNotAllowed,
+                    IsLockedOut = signInResult.IsLockedOut,
+                    LockoutEndDate = signInResult.IsLockedOut ? await userManager.GetLockoutEndDateAsync(existingUser) : null,
+                    IsEmailOrPasswordIncorrect = !(signInResult.IsNotAllowed || signInResult.IsLockedOut || signInResult.RequiresTwoFactor),
+                };
+            }
+        }
+
+        public async Task ConfirmExternalProviderAssociation(ConfirmExternalProviderAssociationDto info)
+        {
+            var user = await userManager.FindByEmailAsync(info.UserEmail);
+            var confirmationResult = await userManager.ConfirmEmailAsync(user, info.ConfirmationToken);
+            if (!confirmationResult.Succeeded)
+            {
+                throw new ApplicationException($"L'association de votre compte {info.ProviderDisplayName} à échoué. Veuillez réessayer.");
+            }
+
+            var newLoginresult = await userManager.AddLoginAsync(
+                user,
+                new ExternalLoginInfo
+                (
+                    null,
+                    info.LoginProvider,
+                    info.ProviderKey,
+                    info.ProviderDisplayName
+                ));
+
+            if (!newLoginresult.Succeeded)
+            {
+                throw new ApplicationException($"L'association de votre compte {info.ProviderDisplayName} à échoué. Veuillez réessayer.");
+            }
+
+            var signInResult = await signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider,
+                info.ProviderKey,
+                isPersistent: false,
+                bypassTwoFactor: true
+            );
         }
     }
 }

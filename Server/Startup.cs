@@ -46,7 +46,7 @@ namespace Order.Server
             #endregion
 
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_antony")
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_colombes")
             ));
 
             services.AddMediatR(Assembly.GetExecutingAssembly());

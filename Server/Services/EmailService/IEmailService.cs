@@ -12,5 +12,7 @@ namespace Order.Server.Services.EmailService
 
         Task SendResetPasswordMail(string receiver, string resetPwUrl);
         Task ReSendResetPasswordMail(string receiver, string resetPwUrl);
+
+        Task SendExternalProviderEmailConfirmationEmail(string receiver, string confirmationUrl, string provider);
     }
 }

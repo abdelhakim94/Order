@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using Order.Shared.Dto.Users;
 using Order.Shared.Contracts;
 using Order.Client.Components.Misc;
@@ -10,16 +9,13 @@ namespace Order.Client.Services
     {
         private readonly IHttpClientService httpClientService;
         private readonly IOrderAuthenticationStateProvider authenticationStateProvider;
-        private readonly NavigationManager navigationManager;
 
         public AuthenticationService(
             IHttpClientService httpClientService,
-            IOrderAuthenticationStateProvider authenticationStateProvider,
-            NavigationManager navigationManager)
+            IOrderAuthenticationStateProvider authenticationStateProvider)
         {
             this.httpClientService = httpClientService;
             this.authenticationStateProvider = authenticationStateProvider;
-            this.navigationManager = navigationManager;
         }
 
         public Task<SignUpResultDto> SignUp(
@@ -59,12 +55,7 @@ namespace Order.Client.Services
         public async Task SignOut(NotificationModal notificationModal = default(NotificationModal))
         {
             await httpClientService.Get("api/user/SignOut", notificationModal);
-            try
-            {
-                await authenticationStateProvider.MarkUserAsSignedOut();
-            }
-            catch (System.Exception) { }
-            navigationManager.NavigateTo("/");
+            await authenticationStateProvider.MarkUserAsSignedOut();
         }
 
         public async Task RefreshTokens(
@@ -105,14 +96,29 @@ namespace Order.Client.Services
                 notificationModal);
         }
 
-        public Task<bool> ExternalProvidersSignIn(
+        public async Task<SignInResultDto> ExternalProvidersSignIn(
             ExternalProviderSignInDto provider,
             NotificationModal notificationModal)
         {
-            return httpClientService.Post<ExternalProviderSignInDto>(
+            var result = await httpClientService.Post<ExternalProviderSignInDto, SignInResultDto>(
                 "api/user/ExternalProviderSignIn",
                 provider,
                 notificationModal);
+
+            if (result is not null && result.Successful)
+            {
+                try
+                {
+                    await authenticationStateProvider.MarkUserAsSignedIn(
+                        result.TokenPair.AccessToken,
+                        result.TokenPair.RefreshToken);
+                }
+                catch (System.Exception)
+                {
+                    result.Successful = false;
+                }
+            }
+            return result;
         }
     }
 }

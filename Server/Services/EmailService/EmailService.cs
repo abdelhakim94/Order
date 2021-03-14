@@ -85,5 +85,16 @@ namespace Order.Server.Services.EmailService
             body.AppendLine("<p>L'équipe Order</p>");
             return SendMail(receiver, subject, body.ToString());
         }
+
+        public Task SendExternalProviderEmailConfirmationEmail(string receiver, string confirmationUrl, string provider)
+        {
+            var subject = $"Confirmer la connexion avec le compte {provider}";
+            var body = new StringBuilder();
+            body.Append($"<p>Veuillez confirmer l'association de votre compte {provider} en cliquant <a href=\"{ confirmationUrl}\">ici</a>.</p>");
+            body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
+            body.AppendLine("<p>Cordialement,</p>");
+            body.AppendLine("<p>L'équipe Order</p>");
+            return SendMail(receiver, subject, body.ToString());
+        }
     }
 }

@@ -17,6 +17,6 @@ namespace Order.Client.Services
         Task<bool> RequestResetPassword(RequestResetPasswordDto userEmail, NotificationModal notificationModal = default(NotificationModal));
         Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto password, NotificationModal notificationModal = default(NotificationModal));
 
-        Task<bool> ExternalProvidersSignIn(ExternalProviderSignInDto provider, NotificationModal notificationModal = default(NotificationModal));
+        Task<SignInResultDto> ExternalProvidersSignIn(ExternalProviderSignInDto provider, NotificationModal notificationModal = default(NotificationModal));
     }
 }
