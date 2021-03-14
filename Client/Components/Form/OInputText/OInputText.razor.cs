@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Order.Client.Components.Form
 {
-    public partial class OInputText
+    public partial class OInputText : ComponentBase
     {
         [Parameter]
         public string Value { get; set; }

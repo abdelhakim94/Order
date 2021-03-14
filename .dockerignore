@@ -2,3 +2,4 @@
 **/obj/
 **/.vscode/
 .github/
+Server/Persistence/Migrations/

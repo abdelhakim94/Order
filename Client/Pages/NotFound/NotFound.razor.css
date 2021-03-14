@@ -1,0 +1,25 @@
+.page-container {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+img {
+  width: 60%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: #52affa;
+  font-weight: bold;
+}
+
+a:active {
+  text-shadow: 0 0 0.1em #1b6ec2;
+}

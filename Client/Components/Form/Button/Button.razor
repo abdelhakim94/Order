@@ -1,6 +1,7 @@
 @namespace Order.Client.Components.Form
 
-<button @attributes=@AdditionalAttributes class="component-container @CssClass" type=@Type>@Label</button>
+<button @attributes=@AdditionalAttributes class="@ComponentContainer @dangerButton @CssClass"
+    type=@Type>@Label</button>
 
 @code{
     [Parameter]
@@ -8,6 +9,11 @@
 
     [Parameter]
     public string Label { get; set; }
+
+    [Parameter]
+    public bool Danger { get; set; }
+    
+    private string dangerButton { get => Danger ? "danger-button" : string.Empty; }
 
     [Parameter]
     public string CssClass { get; set; }

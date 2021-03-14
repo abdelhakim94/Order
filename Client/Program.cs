@@ -5,8 +5,16 @@ using System.Threading.Tasks;
 using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
+using Blazored.LocalStorage;
+using Order.Client.Services;
+using Order.Shared.Contracts;
+using Order.Shared.Security.Policies;
 
 namespace Order.Client
 {
@@ -17,7 +25,28 @@ namespace Order.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton<HttpClient>(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            });
+
+            builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+                sp.GetRequiredService<IOrderAuthenticationStateProvider>() as AuthenticationStateProvider);
+
+            builder.Services.AddOptions();
+            builder.Services.AddAuthorizationCore(options =>
+            {
+                options.AddPolicy(IsGuest.Name, IsGuest.Policy);
+            });
+
+            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.Scan(scan => scan
+               .FromCallingAssembly()
+               .AddClasses(classes => classes.AssignableTo<IService>())
+               .AsImplementedInterfaces()
+               .WithScopedLifetime());
+
+            builder.Services.AddScoped<IdentityErrorDescriber>();
 
             await builder.Build().RunAsync();
         }

@@ -5,6 +5,7 @@ WORKDIR /src
 COPY ./Shared/Order.Shared.csproj Shared/
 COPY ./Client/Order.Client.csproj Client/
 COPY ./Server/Order.Server.csproj Server/
+COPY ./DomainModel/Order.DomainModel.csproj DomainModel/
 COPY ./Order.sln .
 
 RUN dotnet restore
