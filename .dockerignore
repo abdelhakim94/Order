@@ -2,4 +2,4 @@
 **/obj/
 **/.vscode/
 .github/
-Server/Model/Migrations
+Server/Persistence/Migrations/
