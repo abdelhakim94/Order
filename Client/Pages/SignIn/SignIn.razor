@@ -44,7 +44,8 @@
                 Translate=50 @onclick=@(() => SocialSignIn(new ExternalProviderSignInDto{Provider =
                 ExternalIdentityProviders.GOOGLE})) />
             <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=100 />
+                Translate=100 @onclick=@(() => SocialSignIn(new ExternalProviderSignInDto{Provider =
+                ExternalIdentityProviders.LINKEDIN})) />
         </div>
 
         <div class="redirection">

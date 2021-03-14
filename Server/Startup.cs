@@ -40,7 +40,7 @@ namespace Order.Server
             #region Configuration
             var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
             var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
-            var googleCredentials = Configuration.GetSection("GoogleCredentials").Get<GoogleCredentials>();
+            var OAuthCredentials = Configuration.GetSection("OAuthCredentials").Get<OAuthCredentials>();
             services.AddSingleton(jwtTokenConfig);
             services.AddSingleton(emailBoxConfig);
             #endregion
@@ -104,8 +104,18 @@ namespace Order.Server
                 })
                 .AddGoogle(options =>
                 {
-                    options.ClientId = googleCredentials.ClientId;
-                    options.ClientSecret = googleCredentials.ClientSecret;
+                    options.ClientId = OAuthCredentials.GoogleCredentials.ClientId;
+                    options.ClientSecret = OAuthCredentials.GoogleCredentials.ClientSecret;
+                })
+                .AddLinkedIn(options =>
+                {
+                    options.ClientId = OAuthCredentials.LinkedInCredentials.ClientId;
+                    options.ClientSecret = OAuthCredentials.LinkedInCredentials.ClientSecret;
+                })
+                .AddFacebook(options =>
+                {
+                    options.AppId = OAuthCredentials.FacebookCredentials.ClientId;
+                    options.AppSecret = OAuthCredentials.FacebookCredentials.ClientSecret;
                 });
 
             services.AddAuthorization(options =>
