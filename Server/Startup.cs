@@ -111,12 +111,12 @@ namespace Order.Server
                 {
                     options.ClientId = OAuthCredentials.LinkedInCredentials.ClientId;
                     options.ClientSecret = OAuthCredentials.LinkedInCredentials.ClientSecret;
-                })
-                .AddFacebook(options =>
-                {
-                    options.AppId = OAuthCredentials.FacebookCredentials.ClientId;
-                    options.AppSecret = OAuthCredentials.FacebookCredentials.ClientSecret;
                 });
+            // .AddFacebook(options =>
+            // {
+            //     options.AppId = OAuthCredentials.FacebookCredentials.ClientId;
+            //     options.AppSecret = OAuthCredentials.FacebookCredentials.ClientSecret;
+            // });
 
             services.AddAuthorization(options =>
             {
