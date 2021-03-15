@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -32,7 +31,7 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.GetAsync(url);
-                if (response.IsSuccessStatusCode) return true;
+                if (response is not null && response.IsSuccessStatusCode) return true;
                 await HandleHttpError(response, notificationModal);
                 return false;
             }
@@ -54,7 +53,7 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.GetAsync(url);
-                if (response.IsSuccessStatusCode)
+                if (response is not null && response.IsSuccessStatusCode)
                 {
                     return JsonSerializer.Deserialize<T>(
                         await response.Content.ReadAsStringAsync(),
@@ -80,7 +79,7 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync<T>(url, toSend);
-                if (response.IsSuccessStatusCode) return true;
+                if (response is not null && response.IsSuccessStatusCode) return true;
                 await HandleHttpError(response, notificationModal);
                 return false;
             }
@@ -101,7 +100,7 @@ namespace Order.Client.Services
             try
             {
                 var response = await httpClient.PostAsJsonAsync<T>(url, toSend);
-                if (response.IsSuccessStatusCode)
+                if (response is not null && response.IsSuccessStatusCode)
                 {
                     return JsonSerializer.Deserialize<U>(
                         await response.Content.ReadAsStringAsync(),
@@ -112,13 +111,11 @@ namespace Order.Client.Services
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                Console.WriteLine("inside time out exception");
                 notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return default(U);
             }
             catch (System.Exception)
             {
-                Console.WriteLine("inside general exception");
                 notificationModal?.ShowError(UIMessages.DefaultInternalError);
                 return default(U);
             }
@@ -127,7 +124,6 @@ namespace Order.Client.Services
         private async Task HandleHttpError(HttpResponseMessage response, NotificationModal notificationModal)
         {
             var errorMessage = await response?.Content?.ReadAsStringAsync();
-            Console.WriteLine("inside http error handler");
             switch (response?.StatusCode)
             {
                 case HttpStatusCode.BadRequest:
@@ -150,13 +146,12 @@ namespace Order.Client.Services
                 case HttpStatusCode.InternalServerError:
                     notificationModal?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
-                        : UIMessages.DefaultInternalError);
+                        : UIMessages.DefaultHttpServerError);
                     return;
                 case HttpStatusCode.RequestTimeout:
                     notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                     return;
                 default:
-                    Console.WriteLine("made it to default case");
                     throw new System.Exception();
             }
         }
