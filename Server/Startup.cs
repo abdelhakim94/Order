@@ -38,15 +38,15 @@ namespace Order.Server
         public void ConfigureServices(IServiceCollection services)
         {
             #region Configuration
-            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
-            var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
-            var OAuthCredentials = Configuration.GetSection("OAuthCredentials").Get<OAuthCredentials>();
+            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig_dev").Get<JwtTokenConfigDto>();
+            var emailBoxConfig = Configuration.GetSection("EmailBox_dev").Get<EmailBox>();
+            var OAuthCredentials = Configuration.GetSection("OAuthCredentials_dev").Get<OAuthCredentials>();
             services.AddSingleton(jwtTokenConfig);
             services.AddSingleton(emailBoxConfig);
             #endregion
 
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order_colombes")
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
             ));
 
             services.AddMediatR(Assembly.GetExecutingAssembly());

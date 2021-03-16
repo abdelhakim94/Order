@@ -224,8 +224,14 @@ namespace Order.Server.Services.UserService
                 UserEmail = user.Email,
                 ResetPasswordToken = token,
             });
-
-            await emailService.SendResetPasswordMail(user.Email, resetPwUrl);
+            try
+            {
+                await emailService.SendResetPasswordMail(user.Email, resetPwUrl);
+            }
+            catch (System.Exception)
+            {
+                throw new ApplicationException("Le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support.");
+            }
         }
 
         public async Task<ResetPasswordResultDto> ResetPassword(
