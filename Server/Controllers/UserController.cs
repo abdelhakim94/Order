@@ -1,12 +1,14 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Order.Shared.Dto.Users;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;
 using Order.Server.Exceptions;
+using Order.Shared.Dto;
 
 namespace Order.Server.Controllers
 {
@@ -15,10 +17,12 @@ namespace Order.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly ILogger<UserController> logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             this.userService = userService;
+            this.logger = logger;
         }
 
         [HttpPost]
@@ -97,11 +101,11 @@ namespace Order.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] RefreshTokensDto refreshInfo)
+        public async Task<ActionResult<TokenPairDto>> RefreshTokens([FromBody] ValueWrapperDto<string> refreshInfo)
         {
             try
             {
-                return Ok(await userService.RefreshTokens(refreshInfo.RefreshToken, User.GetUserId().Value, User.Claims));
+                return Ok(await userService.RefreshTokens(refreshInfo.Value, User.GetUserId().Value, User.Claims));
             }
             catch (System.Exception)
             {
@@ -120,19 +124,20 @@ namespace Order.Server.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult ExternalProviderSignIn(ExternalProviderSignInDto provider)
+        public IActionResult ExternalProviderSignIn(ValueWrapperDto<string> provider)
         {
             var redirectUrl = Url.Action("ExternalProviderSignInCallback", "User");
-            var properties = userService.ConfigureSignInWithExternalProvider(provider.Provider, redirectUrl);
-            return new ChallengeResult(provider.Provider, properties);
+            var properties = userService.ConfigureSignInWithExternalProvider(provider.Value, redirectUrl);
+            return new ChallengeResult(provider.Value, properties);
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<SignInResultDto> ExternalProviderSignInCallback(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalProviderSignInCallback(string returnUrl = null, string remoteError = null)
         {
             if (remoteError is not null)
             {
+                logger.LogError(remoteError);
                 throw new UnauthorizedException("Nous n'avons pas réussi à vous connecter avec le fournisseur selectionné.");
             }
 
@@ -145,7 +150,7 @@ namespace Order.Server.Controllers
             var signInResult = await userService.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey);
             if (signInResult.Successful)
             {
-                return signInResult;
+                return Redirect($"/{signInResult.TokenPair.AccessToken}/{signInResult.TokenPair.RefreshToken}");
             }
 
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
@@ -154,11 +159,13 @@ namespace Order.Server.Controllers
                 throw new UnauthorizedException($"Votre email n'a pas pu être recupéré auprés de {info.LoginProvider}");
             }
 
-            return await userService.HandleFirstExternalSignIn(
+            var result = await userService.HandleFirstExternalSignIn(
                 userEmail,
                 info,
                 p => Url.Action("ConfirmExternalProviderAssociation", "User", p, "Https")
             );
+
+            return Redirect($"/{result.TokenPair.AccessToken}/{result.TokenPair.RefreshToken}");
         }
 
         [HttpGet]

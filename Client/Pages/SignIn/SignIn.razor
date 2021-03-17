@@ -1,8 +1,9 @@
 @page "/"
+@page "/{AccessToken}/{*RefreshToken}"
 
 @using Order.Client.Components.Form
 @using Order.Client.Components.Misc
-@using Order.Shared.Dto.Users
+@using Order.Shared.Dto
 @using Order.Shared.Constants.Users
 
 @namespace Order.Client.Pages
@@ -39,13 +40,14 @@
 
         <div class="social-logins">
             <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=0 />
+                Translate=0 @onclick=@(() => CheckoutConsentScreen(new
+                ValueWrapperDto<string>(ExternalIdentityProviders.FACEBOOK))) />
             <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=50 @onclick=@(() => SocialSignIn(new ExternalProviderSignInDto{Provider =
-                ExternalIdentityProviders.GOOGLE})) />
+                Translate=50 @onclick=@(() => CheckoutConsentScreen(new
+                ValueWrapperDto<string>(ExternalIdentityProviders.GOOGLE))) />
             <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=100 @onclick=@(() => SocialSignIn(new ExternalProviderSignInDto{Provider =
-                ExternalIdentityProviders.LINKEDIN})) />
+                Translate=100 @onclick=@(() => CheckoutConsentScreen(new
+                ValueWrapperDto<string>(ExternalIdentityProviders.LINKEDIN))) />
         </div>
 
         <div class="redirection">

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Order.Shared.Dto.Users;
 using Order.Shared.Contracts;
 using Order.Client.Components.Misc;
+using Order.Shared.Dto;
 
 namespace Order.Client.Services
 {
@@ -59,10 +60,10 @@ namespace Order.Client.Services
         }
 
         public async Task RefreshTokens(
-            RefreshTokensDto refreshToken,
+            ValueWrapperDto<string> refreshToken,
             NotificationModal notificationModal = default(NotificationModal))
         {
-            var result = await httpClientService.Post<RefreshTokensDto, TokenPairDto>(
+            var result = await httpClientService.Post<ValueWrapperDto<string>, TokenPairDto>(
                 "api/user/RefreshTokens",
                 refreshToken,
                 notificationModal);
@@ -96,29 +97,19 @@ namespace Order.Client.Services
                 notificationModal);
         }
 
-        public async Task<SignInResultDto> ExternalProvidersSignIn(
-            ExternalProviderSignInDto provider,
+        public Task<ValueWrapperDto<string>> GetConsentScreenUrl(
+            ValueWrapperDto<string> provider,
             NotificationModal notificationModal)
         {
-            var result = await httpClientService.Post<ExternalProviderSignInDto, SignInResultDto>(
+            return httpClientService.Post<ValueWrapperDto<string>, ValueWrapperDto<string>>(
                 "api/user/ExternalProviderSignIn",
                 provider,
                 notificationModal);
+        }
 
-            if (result is not null && result.Successful)
-            {
-                try
-                {
-                    await authenticationStateProvider.MarkUserAsSignedIn(
-                        result.TokenPair.AccessToken,
-                        result.TokenPair.RefreshToken);
-                }
-                catch (System.Exception)
-                {
-                    result.Successful = false;
-                }
-            }
-            return result;
+        public Task MarkUserAsSignedIn(string accessToken, string refreshToken)
+        {
+            return authenticationStateProvider.MarkUserAsSignedIn(accessToken, refreshToken);
         }
     }
 }

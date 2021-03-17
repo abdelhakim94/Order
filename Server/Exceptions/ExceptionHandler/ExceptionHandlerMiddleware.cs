@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using FluentValidation;
@@ -11,18 +10,18 @@ namespace Order.Server.Exceptions
 {
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate _requestDelegate;
+        private readonly RequestDelegate requestDelegate;
 
         public ExceptionHandlerMiddleware(RequestDelegate requestDelegate)
         {
-            _requestDelegate = requestDelegate;
+            this.requestDelegate = requestDelegate;
         }
 
         public async Task Invoke(HttpContext context, ILogger<ExceptionHandlerMiddleware> logger)
         {
             try
             {
-                await _requestDelegate(context);
+                await requestDelegate(context);
             }
             catch (ValidationException ex)
             {
