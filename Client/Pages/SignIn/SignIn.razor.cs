@@ -57,15 +57,21 @@ namespace Order.Client.Pages
                 state.User.Identity.IsAuthenticated &&
                 state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
             {
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("/");
             }
 
             if (!string.IsNullOrWhiteSpace(AccessToken) && !(string.IsNullOrWhiteSpace(RefreshToken)))
             {
-                await AuthenticationService.MarkUserAsSignedIn(AccessToken, RefreshToken);
-                NavigationManager.NavigateTo("/home");
+                try
+                {
+                    await AuthenticationService.MarkUserAsSignedIn(AccessToken, RefreshToken);
+                    NavigationManager.NavigateTo("/");
+                }
+                catch (System.Exception)
+                {
+                    NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
+                }
             }
-
         }
 
         public async Task HandleSignInFormSubmition(EditContext context)
@@ -91,7 +97,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NavigationManager.NavigateTo("/home/");
+                NavigationManager.NavigateTo("/");
                 return;
             }
             else if (result.IsNotAllowed)

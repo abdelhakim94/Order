@@ -13,7 +13,7 @@
                         @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
                         nameof(Profile) && c.Value == nameof(Profile.GUEST))))
                             {
-                        <Redirect Route="/" />
+                        <Redirect Route="/SignIn" />
                         }
                             else
                             {

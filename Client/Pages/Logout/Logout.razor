@@ -1,4 +1,4 @@
-@page "/Home"
+@page "/"
 
 
 
@@ -26,7 +26,7 @@
     async Task HandleLogout()
     {
         await AuthenticationService.SignOut();
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/SignIn");
     }
 
     protected override async Task OnParametersSetAsync()

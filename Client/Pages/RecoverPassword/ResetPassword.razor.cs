@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -78,6 +79,10 @@ namespace Order.Client.Pages
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
                 NotificationModal.ShowError(UIMessages.PasswordMismatch);
+            }
+            else if (result.Error == ErrorDescriber.InvalidToken().Code)
+            {
+                NotificationModal.ShowError(UIMessages.ResetPasswordInvalidToken);
             }
             else
             {

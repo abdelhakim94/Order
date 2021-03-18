@@ -58,6 +58,7 @@ namespace Order.Client.Constants
         public static string CannotRequestResetPassword { get => "Ouups! Impossible de demander la récupération du mot de passe. Veuillez réessayer ultérieurement."; }
         public static string FollowResetPasswordLink { get => "Veuillez suivre le lien que vous avez reçu par e-mail pour réinitialiser votre mot de passe."; }
         public static string ResetPasswordsuccess { get => "Votre mot de passe a été réinitialisé avec succès"; }
+        public static string ResetPasswordInvalidToken { get => "Lien cassé :( Un nouveau lien vient de vous être envoyé par email."; }
 
         public static string CannotSignInWithSocialProvider(string provider) => $"Ouups! Impossible de se connecter avec {provider}. Veuillez réessayer ultérieurement.";
     }

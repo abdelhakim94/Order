@@ -69,11 +69,7 @@ namespace Order.Client.Services
                 notificationModal);
             if (result is not null)
             {
-                try
-                {
-                    await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
-                }
-                catch (System.Exception) { }
+                await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
             }
         }
 
