@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Order.Shared.Dto.Users;
 using Order.Shared.Contracts;
-using Order.Client.Constants;
 using Order.Client.Components.Misc;
+using Order.Shared.Dto;
 
 namespace Order.Client.Services
 {
@@ -12,11 +12,13 @@ namespace Order.Client.Services
         Task<SignInResultDto> SignIn(SignInDto userSignInData, NotificationModal notificationModal = default(NotificationModal));
         Task SignOut(NotificationModal notificationModal = default(NotificationModal));
 
-        Task RefreshTokens(RefreshTokensDto refreshToken, NotificationModal notificationModal = default(NotificationModal));
+        Task RefreshTokens(ValueWrapperDto<string> refreshToken, NotificationModal notificationModal = default(NotificationModal));
 
         Task<bool> RequestResetPassword(RequestResetPasswordDto userEmail, NotificationModal notificationModal = default(NotificationModal));
         Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto password, NotificationModal notificationModal = default(NotificationModal));
 
-        Task<SignInResultDto> ExternalProvidersSignIn(ExternalProviderSignInDto provider, NotificationModal notificationModal = default(NotificationModal));
+        Task<ValueWrapperDto<string>> GetConsentScreenUrl(ValueWrapperDto<string> provider, NotificationModal notificationModal = default(NotificationModal));
+
+        Task MarkUserAsSignedIn(string accessToken, string refreshToken);
     }
 }

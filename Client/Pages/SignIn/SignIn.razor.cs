@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
+using Order.Shared.Dto;
 using Order.Shared.Dto.Users;
 using Order.Shared.Security.Claims;
 
@@ -36,6 +37,13 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; }
 
+        [Parameter]
+        public string AccessToken { get; set; }
+
+        [Parameter]
+        public string RefreshToken { get; set; }
+
+
         public string SocialSpritePath
         {
             get => "/icons/social-media-sprite.png";
@@ -49,9 +57,21 @@ namespace Order.Client.Pages
                 state.User.Identity.IsAuthenticated &&
                 state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
             {
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("/");
             }
 
+            if (!string.IsNullOrWhiteSpace(AccessToken) && !(string.IsNullOrWhiteSpace(RefreshToken)))
+            {
+                try
+                {
+                    await AuthenticationService.MarkUserAsSignedIn(AccessToken, RefreshToken);
+                    NavigationManager.NavigateTo("/");
+                }
+                catch (System.Exception)
+                {
+                    NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
+                }
+            }
         }
 
         public async Task HandleSignInFormSubmition(EditContext context)
@@ -77,7 +97,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NavigationManager.NavigateTo("/home/");
+                NavigationManager.NavigateTo("/");
                 return;
             }
             else if (result.IsNotAllowed)
@@ -142,47 +162,22 @@ namespace Order.Client.Pages
 
         // =================================== External identity providers ============================================= //
 
-        public async Task SocialSignIn(ExternalProviderSignInDto provider)
+        public async Task CheckoutConsentScreen(ValueWrapperDto<string> provider)
         {
             isLoading = true;
-            SignInResultDto result;
+            ValueWrapperDto<string> result;
             try
             {
-                result = await AuthenticationService.ExternalProvidersSignIn(provider, NotificationModal);
+                result = await AuthenticationService.GetConsentScreenUrl(provider, NotificationModal);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Provider));
+                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
                 return;
-            }
-            finally
-            {
-                isLoading = false;
-                StateHasChanged();
             }
 
-            if (result.Successful)
-            {
-                NavigationManager.NavigateTo("/home/");
-                return;
-            }
-            else if (result.IsNotAllowed)
-            {
-                NotificationModal.ShowError(UIMessages.EmailNotConfirmed);
-            }
-            else if (result.IsLockedOut)
-            {
-                NotificationModal.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
-            }
-            else if (result.IsEmailOrPasswordIncorrect)
-            {
-                NotificationModal.ShowError(UIMessages.WrongEmailOrPassword);
-            }
-            else
-            {
-                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Provider));
-            }
+            NavigationManager.NavigateTo(result.Value);
         }
     }
 }

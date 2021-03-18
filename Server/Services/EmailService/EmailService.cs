@@ -90,10 +90,9 @@ namespace Order.Server.Services.EmailService
         {
             var subject = $"Confirmer la connexion avec le compte {provider}";
             var body = new StringBuilder();
-            body.Append($"<p>Il semble que vous essayez de vous connecter avec votre compte {provider}.</p>");
-            body.Append($"<p>Cependant, un compte avec une adresse identique à celle de votre compte {provider} existe.Il semble que vous essayez de vous connecter avec votre compte {provider}.</p>");
-            body.Append($"<p>S'il sagit bien de vous, veuillez cliquer <a href=\"{ confirmationUrl}\">ici</a> afin d'associer les deux comptes.</p>");
-            body.Append($"Contactez le support dans le cas contraire.");
+            body.Append($"<p>Il semble que vous essayez de vous connecter à <em>Order</em> avec votre compte {provider}.</p>");
+            body.Append($"<p>Cependant, un compte avec une adresse email identique à celle de votre compte {provider} existe.</p>");
+            body.Append($"<p>S'il sagit bien de vous, veuillez cliquer <a href=\"{ confirmationUrl}\">ici</a> afin d'associer les deux comptes. Reconnectez-vous avec votre compte {provider} ensuite.</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");
             body.AppendLine("<p>L'équipe Order</p>");
