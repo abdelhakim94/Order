@@ -1,0 +1,25 @@
+.notification-modal-container {
+  position: fixed;
+  width: 90vw;
+  top: 3vh;
+  left: 5vw;
+  z-index: 10;
+}
+
+::deep .notification-modal {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+
+.notif-icon {
+  margin-left: 3%;
+  width: 10%;
+}
+
+.content {
+  margin-left: 7%;
+  width: 75%;
+  font-weight: bold;
+}

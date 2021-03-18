@@ -12,7 +12,7 @@ namespace Order.Server.CQRS.User.Commands
 
             RuleFor(cmd => cmd.UserId)
                 .MustAsync((userId, ct) => context.UserRefreshToken.AnyAsync(t => t.UserId == userId, ct))
-                .WithMessage(userId => $"L'utilisateur d'ID {userId} n'existe pas");
+                .WithMessage((cmd, userId) => $"L'utilisateur d'ID {userId} n'existe pas");
         }
     }
 }
