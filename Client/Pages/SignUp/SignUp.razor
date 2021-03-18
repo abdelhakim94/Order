@@ -4,7 +4,7 @@
 
 @namespace Order.Client.Pages
 
-<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition @onclick=@(() => NotificationModal.Close())>
+<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition @onclick=@(() => NotificationModal.CloseAsync())>
 
     <ObjectGraphDataAnnotationsValidator />
 

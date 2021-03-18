@@ -55,20 +55,3 @@ html {
   pointer-events: none;
   opacity: 0.4;
 }
-
-.notification-modal {
-  background-color: greenyellow;
-  border: none;
-  border-radius: 1em;
-  font-size: 1.1em;
-  text-align: center;
-  position: fixed;
-  width: 90vw;
-  top: 3vh;
-  left: 5vw;
-  z-index: 10;
-}
-
-.error-modal {
-  background-color: orangered;
-}
