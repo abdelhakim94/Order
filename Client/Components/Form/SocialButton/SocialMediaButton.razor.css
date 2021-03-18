@@ -2,7 +2,7 @@
   border: none;
   outline: none;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: transparent;
 }
 
 .component-container:active {
