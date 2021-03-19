@@ -62,6 +62,7 @@ body {
 
 .page-blured {
   filter: blur(10px);
+  pointer-events: none;
 }
 
 .page-disabled {
