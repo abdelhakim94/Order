@@ -2,9 +2,9 @@
   border: none;
   outline: none;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: transparent;
 }
 
 .component-container:active {
-  box-shadow: 0 0 0.2em #3db8ff;
+  box-shadow: 0 0 0.2em white;
 }
