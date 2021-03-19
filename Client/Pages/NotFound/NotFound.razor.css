@@ -21,5 +21,5 @@ a {
 }
 
 a:active {
-  text-shadow: 0 0 0.1em #1b6ec2;
+  text-shadow: 0 0 0.1em white;
 }
