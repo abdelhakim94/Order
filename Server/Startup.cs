@@ -152,8 +152,7 @@ namespace Order.Server
 
             });
 
-            services.AddControllersWithViews()
-                .AddControllersAsServices();
+            services.AddControllersWithViews();            
             services.AddRazorPages();
             services.AddSignalR().AddMessagePackProtocol();
             services.AddResponseCompression(opts =>
