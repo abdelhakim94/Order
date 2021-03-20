@@ -57,7 +57,7 @@ namespace Order.Client.Pages
                 state.User.Identity.IsAuthenticated &&
                 state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/home");
             }
 
             if (!string.IsNullOrWhiteSpace(AccessToken) && !(string.IsNullOrWhiteSpace(RefreshToken)))
@@ -65,7 +65,7 @@ namespace Order.Client.Pages
                 try
                 {
                     await AuthenticationService.MarkUserAsSignedIn(AccessToken, RefreshToken);
-                    NavigationManager.NavigateTo("/");
+                    NavigationManager.NavigateTo("/home");
                 }
                 catch (System.Exception)
                 {
@@ -97,7 +97,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/home");
                 return;
             }
             else if (result.IsNotAllowed)

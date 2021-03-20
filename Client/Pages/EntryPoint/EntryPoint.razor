@@ -1,0 +1,12 @@
+@page "/"
+
+@inject NavigationManager NavigationManager
+
+
+@code{
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
+        NavigationManager.NavigateTo("/home");
+    }
+}
