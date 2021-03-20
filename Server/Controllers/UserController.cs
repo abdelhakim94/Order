@@ -33,7 +33,7 @@ namespace Order.Server.Controllers
                 "ConfirmEmail",
                 "User",
                 p,
-                "Https"
+                Request.Scheme
             ));
         }
 
@@ -47,7 +47,7 @@ namespace Order.Server.Controllers
                     "ConfirmEmail",
                     "User",
                     p,
-                    "Https"
+                    Request.Scheme
                 ));
             }
             catch (System.Exception)
@@ -77,8 +77,8 @@ namespace Order.Server.Controllers
                 "RedirectToResetPassword",
                 "User",
                 p,
-                "Https")
-            );
+                Request.Scheme
+            ));
         }
 
         [HttpGet]
@@ -96,8 +96,8 @@ namespace Order.Server.Controllers
                 "RedirectToResetPassword",
                 "User",
                 p,
-                "Https")
-            );
+                Request.Scheme
+            ));
         }
 
         [HttpPost]
@@ -162,7 +162,7 @@ namespace Order.Server.Controllers
             var result = await userService.HandleFirstExternalSignIn(
                 userEmail,
                 info,
-                p => Url.Action("ConfirmExternalProviderAssociation", "User", p, "Https")
+                p => Url.Action("ConfirmExternalProviderAssociation", "User", p, Request.Scheme)
             );
 
             return Redirect($"/SignIn/{result?.TokenPair?.AccessToken}/{result?.TokenPair?.RefreshToken}");
