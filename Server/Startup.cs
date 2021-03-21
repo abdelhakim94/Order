@@ -169,17 +169,6 @@ namespace Order.Server
             app.UseResponseCompression();
             app.UseResponseExceptionHandler();
 
-            var forwardOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-                RequireHeaderSymmetry = false
-            };
-
-            forwardOptions.KnownNetworks.Clear();
-            forwardOptions.KnownProxies.Clear();
-
-            app.UseForwardedHeaders(forwardOptions);
-
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
