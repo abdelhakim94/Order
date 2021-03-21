@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.HttpOverrides;
 using MediatR;
 using FluentValidation;
 using Order.DomainModel;
@@ -168,6 +169,17 @@ namespace Order.Server
             app.UseResponseCompression();
             app.UseResponseExceptionHandler();
 
+            var forwardOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+                RequireHeaderSymmetry = false
+            };
+
+            forwardOptions.KnownNetworks.Clear();
+            forwardOptions.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(forwardOptions);
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
@@ -175,11 +187,19 @@ namespace Order.Server
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order");
+                    c.EnableValidator(null);
                 });
 
                 app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
             }
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
