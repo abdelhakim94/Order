@@ -14,12 +14,14 @@ COPY . .
 
 RUN dotnet build -c Release --no-restore
 
-RUN dotnet test --no-restore --no-build
+RUN dotnet test --no-build
 
-RUN dotnet publish -c Release --no-restore --no-build ./Server -o /publish
+RUN dotnet publish -c Release --no-build Server/ -o /publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
+# FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
+#Workarround for the "https certificate not found" problem
+FROM builder as runner 
 WORKDIR /app
 COPY --from=builder /publish .
 
-ENTRYPOINT dotnet Order.Server.dll --no-restore --no-build
+ENTRYPOINT dotnet Order.Server.dll
