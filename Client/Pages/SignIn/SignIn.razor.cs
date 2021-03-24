@@ -176,6 +176,10 @@ namespace Order.Client.Pages
                 NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
                 return;
             }
+            finally
+            {
+                isLoading = false;
+            }
 
             NavigationManager.NavigateTo(result.Value);
         }
