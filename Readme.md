@@ -6,5 +6,3 @@
 - https://thingtrax.medium.com/how-to-run-container-with-https-kestrel-asp-net-4af9f36db9b7
 
 docker run --rm -it -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_ENVIRONMENT=Development -v "C:\Users\abdel\AppData\Roaming\Microsoft\UserSecrets":/root/.microsoft/usersecrets -v "C:\Users\abdel\Dev\Repos\Order\.aspnet\https":/root/.aspnet/https/ order:latest
-
-"Kestrel:Certificates:Default:Path:": "/root/cert/Order.Server.pfx",
