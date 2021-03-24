@@ -179,6 +179,7 @@ namespace Order.Client.Pages
             finally
             {
                 isLoading = false;
+                StateHasChanged();
             }
 
             NavigationManager.NavigateTo(result.Value);
