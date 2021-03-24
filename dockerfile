@@ -18,9 +18,7 @@ RUN dotnet test --no-build
 
 RUN dotnet publish -c Release --no-build Server/ -o /publish
 
-# FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
-#Workarround for the "https certificate not found" problem
-FROM builder as runner 
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
 WORKDIR /app
 COPY --from=builder /publish .
 
