@@ -19,8 +19,8 @@ RUN dotnet test --no-build
 RUN dotnet publish -c Release --no-build Server/ -o /publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 80
+EXPOSE 443
 WORKDIR /app
 COPY --from=builder /publish .
 

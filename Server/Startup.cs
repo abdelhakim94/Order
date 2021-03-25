@@ -47,23 +47,6 @@ namespace Order.Server
             services.AddSingleton(emailBoxConfig);
             #endregion
 
-            if (string.Equals(
-                Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED"),
-                "true",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                services.Configure<ForwardedHeadersOptions>(options =>
-                {
-                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                        ForwardedHeaders.XForwardedProto;
-                    // Only loopback proxies are allowed by default.
-                    // Clear that restriction because forwarders are enabled by explicit 
-                    // configuration.
-                    options.KnownNetworks.Clear();
-                    options.KnownProxies.Clear();
-                });
-            }
-
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
             ));
@@ -199,13 +182,6 @@ namespace Order.Server
                 app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
