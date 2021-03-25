@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.HttpOverrides;
 using MediatR;
 using FluentValidation;
 using Order.DomainModel;
@@ -24,8 +27,6 @@ using Order.Shared.Security.Constants;
 using Order.Server.Exceptions;
 using Order.Server.CQRS;
 using Order.Server.Security;
-using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace Order.Server
 {
@@ -47,6 +48,25 @@ namespace Order.Server
             services.AddSingleton(jwtTokenConfig);
             services.AddSingleton(emailBoxConfig);
             #endregion
+
+            if (
+                string.Equals(
+                    Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED"),
+                    "true",
+                    StringComparison.OrdinalIgnoreCase)
+            )
+            {
+                services.Configure<ForwardedHeadersOptions>(options =>
+                {
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                        ForwardedHeaders.XForwardedProto;
+                    // Only loopback proxies are allowed by default.
+                    // Clear that restriction because forwarders are enabled by explicit 
+                    // configuration.
+                    options.KnownNetworks.Clear();
+                    options.KnownProxies.Clear();
+                });
+            }
 
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
@@ -174,7 +194,7 @@ namespace Order.Server
             app.Use(async (context, next) =>
             {
                 var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
-                logger.LogInformation(JsonSerializer.Serialize(
+                logger.LogDebug(JsonSerializer.Serialize(
                     new
                     {
                         context.Request.IsHttps,
@@ -201,6 +221,12 @@ namespace Order.Server
                 app.UseMigrationsEndPoint();
                 app.UseWebAssemblyDebugging();
             }
+            else
+            {
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
