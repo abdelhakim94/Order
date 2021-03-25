@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.HttpOverrides;
 using MediatR;
 using FluentValidation;
 using Order.DomainModel;
@@ -25,6 +24,8 @@ using Order.Shared.Security.Constants;
 using Order.Server.Exceptions;
 using Order.Server.CQRS;
 using Order.Server.Security;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Order.Server
 {
@@ -168,6 +169,24 @@ namespace Order.Server
         {
             app.UseResponseCompression();
             app.UseResponseExceptionHandler();
+
+            // Log request to debug azure problems. Should be removed soon.
+            app.Use(async (context, next) =>
+            {
+                var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+                logger.LogInformation(JsonSerializer.Serialize(
+                    new
+                    {
+                        context.Request.IsHttps,
+                        context.Request.Method,
+                        context.Request.Path,
+                        context.Request.PathBase,
+                        context.Request.Protocol,
+                        context.Request.QueryString,
+                        context.Request.Scheme,
+                    }));
+                await next();
+            });
 
             if (env.IsDevelopment())
             {

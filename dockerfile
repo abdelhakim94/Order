@@ -19,8 +19,7 @@ RUN dotnet test --no-build
 RUN dotnet publish -c Release --no-build Server/ -o /publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
-EXPOSE 80
-EXPOSE 443
+ENV ASPNETCORE_URLS=https://+:443;http://+:80
 WORKDIR /app
 COPY --from=builder /publish .
 
