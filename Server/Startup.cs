@@ -198,12 +198,16 @@ namespace Order.Server
                     new
                     {
                         context.Request.IsHttps,
+                        context.Request.Scheme,
                         context.Request.Method,
+                        context.Request.Host.Host,
+                        context.Request.Host.Port,
                         context.Request.Path,
                         context.Request.PathBase,
                         context.Request.Protocol,
                         context.Request.QueryString,
-                        context.Request.Scheme,
+                        context.Connection.LocalPort,
+                        context.Connection.RemotePort,
                     }));
                 await next();
             });
