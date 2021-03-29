@@ -8,3 +8,5 @@
 - Apparently, there is no way to solve the https problem on azure for now (https://stackoverflow.com/questions/56974255/how-to-expose-web-app-for-container-on-two-different-ports-in-azure)
 
 docker run --rm -it -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_ENVIRONMENT=Development -v "C:\Users\abdel\AppData\Roaming\Microsoft\UserSecrets":/root/.microsoft/usersecrets -v "C:\Users\abdel\Dev\Repos\Order\.aspnet\https":/root/.aspnet/https/ order:latest
+
+docker run --rm -it -p 80:80 -p 443:443 -e ASPNETCORE_ENVIRONMENT=Development -v "C:\Users\abdel\AppData\Roaming\Microsoft\UserSecrets":/root/.microsoft/usersecrets -v "C:\Users\abdel\Dev\Repos\Order\.aspnet\https":/root/.aspnet/https/ -v "C:\home\logs":/home/logs order:latest
