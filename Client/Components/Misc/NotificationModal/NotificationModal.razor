@@ -13,7 +13,7 @@
     private bool isError { get; set; }
     private string content { get; set; }
     private Modal modalRef { get; set; }
-    private string getIcon { get => isError ? "/icons/ko.png" : "/icons/ok.png"; }
+    private string getIcon { get => isError ? "icons/ko.png" : "icons/ok.png"; }
 
     public Func<Task> OnCloseAsync { get; set; }
 

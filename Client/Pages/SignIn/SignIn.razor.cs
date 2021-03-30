@@ -46,7 +46,7 @@ namespace Order.Client.Pages
 
         public string SocialSpritePath
         {
-            get => "/icons/social-media-sprite.png";
+            get => "icons/social-media-sprite.png";
         }
 
         public override async Task SetParametersAsync(ParameterView parameters)
@@ -57,7 +57,7 @@ namespace Order.Client.Pages
                 state.User.Identity.IsAuthenticated &&
                 state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
             {
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("home/");
             }
 
             if (!string.IsNullOrWhiteSpace(AccessToken) && !(string.IsNullOrWhiteSpace(RefreshToken)))
@@ -65,7 +65,7 @@ namespace Order.Client.Pages
                 try
                 {
                     await AuthenticationService.MarkUserAsSignedIn(AccessToken, RefreshToken);
-                    NavigationManager.NavigateTo("/home");
+                    NavigationManager.NavigateTo("home/");
                 }
                 catch (System.Exception)
                 {
@@ -97,7 +97,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NavigationManager.NavigateTo("/home");
+                NavigationManager.NavigateTo("home/");
                 return;
             }
             else if (result.IsNotAllowed)

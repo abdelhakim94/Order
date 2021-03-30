@@ -64,7 +64,7 @@ namespace Order.Client.Pages
             if (result.Successful)
             {
                 NotificationModal.Show(UIMessages.ResetPasswordsuccess);
-                NavigationManager.NavigateTo("/SignIn");
+                NavigationManager.NavigateTo("SignIn/");
                 return;
             }
             else if (result.Error == ErrorDescriber.PasswordTooShort(default(int)).Code

@@ -13,11 +13,11 @@
                         @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
                         nameof(Profile) && c.Value == nameof(Profile.GUEST))))
                             {
-                        <Redirect Route="/SignIn" />
+                        <Redirect Route="SignIn/" />
                         }
                             else
                             {
-                        <Redirect Route="/Unauthorized" />
+                        <Redirect Route="Unauthorized/" />
                         }
                     </NotAuthorized>
                 </AuthorizeRouteView>
@@ -25,7 +25,7 @@
         </Found>
         <NotFound>
             <LayoutView>
-                <Redirect Route="/NotFound" />
+                <Redirect Route="NotFound/" />
             </LayoutView>
         </NotFound>
     </Router>
