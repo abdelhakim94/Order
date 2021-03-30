@@ -54,7 +54,7 @@ namespace Order.Server.Controllers
             {
                 return BadRequest();
             }
-            return Redirect("app/SignIn/");
+            return Redirect("/app/SignIn/");
         }
 
         [HttpPost]
@@ -85,7 +85,7 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public IActionResult RedirectToResetPassword([FromQuery] RequestResetPasswordTokenDto resetInfo)
         {
-            return Redirect($"app/ResetPassword/{resetInfo.UserEmail}/{resetInfo.ResetPasswordToken}");
+            return Redirect($"/app/ResetPassword/{resetInfo.UserEmail}/{resetInfo.ResetPasswordToken}");
         }
 
         [HttpPost]
@@ -150,7 +150,7 @@ namespace Order.Server.Controllers
             var signInResult = await userService.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey);
             if (signInResult.Successful)
             {
-                return Redirect($"app/SignIn/{signInResult.TokenPair.AccessToken}/{signInResult.TokenPair.RefreshToken}");
+                return Redirect($"/app/SignIn/{signInResult.TokenPair.AccessToken}/{signInResult.TokenPair.RefreshToken}");
             }
 
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
@@ -165,7 +165,7 @@ namespace Order.Server.Controllers
                 p => Url.Action("ConfirmExternalProviderAssociation", "User", p, Request.Scheme)
             );
 
-            return Redirect($"app/SignIn/{result?.TokenPair?.AccessToken}/{result?.TokenPair?.RefreshToken}");
+            return Redirect($"/app/SignIn/{result?.TokenPair?.AccessToken}/{result?.TokenPair?.RefreshToken}");
         }
 
         [HttpGet]
@@ -173,7 +173,7 @@ namespace Order.Server.Controllers
         public async Task<IActionResult> ConfirmExternalProviderAssociation([FromQuery] ConfirmExternalProviderAssociationDto info)
         {
             await userService.ConfirmExternalProviderAssociation(info);
-            return Redirect("app/SignIn");
+            return Redirect("/app/SignIn");
         }
     }
 }

@@ -23,12 +23,11 @@ namespace Order.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            Console.WriteLine(builder.HostEnvironment.BaseAddress);
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddSingleton<HttpClient>(sp => new HttpClient
             {
-                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress.Replace("app/", ""))
             });
 
             builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
@@ -47,7 +46,7 @@ namespace Order.Client
                .AsImplementedInterfaces()
                .WithScopedLifetime());
 
-            builder.Services.AddScoped<IdentityErrorDescriber>();
+            builder.Services.AddSingleton<IdentityErrorDescriber>();
 
             await builder.Build().RunAsync();
         }
