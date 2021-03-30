@@ -133,7 +133,7 @@ namespace Order.Client.Services
                     return;
                 case HttpStatusCode.Unauthorized:
                     await authenticationStateProvider.MarkUserAsSignedOut();
-                    navigationManager.NavigateTo("/SignIn");
+                    navigationManager.NavigateTo("SignIn/");
                     notificationModal?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpUnauthorizedError);

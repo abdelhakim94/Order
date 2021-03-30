@@ -49,25 +49,6 @@ namespace Order.Server
             services.AddSingleton(emailBoxConfig);
             #endregion
 
-            if (
-                string.Equals(
-                    Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED"),
-                    "true",
-                    StringComparison.OrdinalIgnoreCase)
-            )
-            {
-                services.Configure<ForwardedHeadersOptions>(options =>
-                {
-                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                        ForwardedHeaders.XForwardedProto;
-                    // Only loopback proxies are allowed by default.
-                    // Clear that restriction because forwarders are enabled by explicit 
-                    // configuration.
-                    options.KnownNetworks.Clear();
-                    options.KnownProxies.Clear();
-                });
-            }
-
             services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
             ));
@@ -190,28 +171,6 @@ namespace Order.Server
             app.UseResponseCompression();
             app.UseResponseExceptionHandler();
 
-            // Log request to debug azure problems. Should be removed soon.
-            app.Use(async (context, next) =>
-            {
-                var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
-                logger.LogDebug(JsonSerializer.Serialize(
-                    new
-                    {
-                        context.Request.IsHttps,
-                        context.Request.Scheme,
-                        context.Request.Method,
-                        context.Request.Host.Host,
-                        context.Request.Host.Port,
-                        context.Request.Path,
-                        context.Request.PathBase,
-                        context.Request.Protocol,
-                        context.Request.QueryString,
-                        context.Connection.LocalPort,
-                        context.Connection.RemotePort,
-                    }));
-                await next();
-            });
-
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
@@ -232,8 +191,19 @@ namespace Order.Server
 
             app.UseHttpsRedirection();
 
-            app.UseBlazorFrameworkFiles();
-            app.UseStaticFiles();
+            app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/app"), appBuilder =>
+            {
+                appBuilder.UseBlazorFrameworkFiles("/app");
+                appBuilder.UseStaticFiles();
+
+                app.UseRouting();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapRazorPages();
+                    endpoints.MapFallbackToFile("app/{*path:nonfile}", "app/index.html");
+                });
+            });
 
             app.UseRouting();
 
@@ -250,7 +220,7 @@ namespace Order.Server
                 // Map hubs here
                 // endpoints.MapHub<AccountHub>("/Account").RequireAuthorization(IsGuest.Name);
 
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallbackToFile("/landing");
             });
         }
     }

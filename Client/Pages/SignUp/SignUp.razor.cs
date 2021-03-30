@@ -52,7 +52,7 @@ namespace Order.Client.Pages
             if (result.Successful)
             {
                 NotificationModal.Show(UIMessages.SignUpSuccess);
-                NavigationManager.NavigateTo("/SignIn");
+                NavigationManager.NavigateTo("SignIn/");
                 return;
             }
             else if (result.Error == ErrorDescriber.DuplicateEmail(SignUpData.Email).Code

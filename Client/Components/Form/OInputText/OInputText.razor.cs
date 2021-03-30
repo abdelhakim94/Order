@@ -36,7 +36,7 @@ namespace Order.Client.Components.Form
 
         void ToggleIsHiddenValue() => isHiddenValue = !isHiddenValue;
 
-        string GetIcon() => isHiddenValue ? "/icons/show-password.png" : "/icons/hide-password.png";
+        string GetIcon() => isHiddenValue ? "icons/show-password.png" : "icons/hide-password.png";
 
         async Task HandleInputChange(ChangeEventArgs args)
         {
