@@ -5,8 +5,6 @@
 - https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints?view=aspnetcore-5.0
 - https://thingtrax.medium.com/how-to-run-container-with-https-kestrel-asp-net-4af9f36db9b7
 
-- Apparently, there is no way to solve the https problem on azure for now (https://stackoverflow.com/questions/56974255/how-to-expose-web-app-for-container-on-two-different-ports-in-azure)
-
-docker run --rm -it -p 8000:80 -p 8001:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=8001 -e ASPNETCORE_ENVIRONMENT=Development -v "C:\Users\abdel\AppData\Roaming\Microsoft\UserSecrets":/root/.microsoft/usersecrets -v "C:\Users\abdel\Dev\Repos\Order\.aspnet\https":/root/.aspnet/https/ order:latest
+# Container run command
 
 docker run --rm -it -p 80:80 -p 443:443 -e ASPNETCORE_ENVIRONMENT=Development -v "C:\Users\abdel\AppData\Roaming\Microsoft\UserSecrets":/root/.microsoft/usersecrets -v "C:\Users\abdel\Dev\Repos\Order\.aspnet\https":/root/.aspnet/https/ -v "C:\home\logs":/home/logs order:latest
