@@ -1,6 +1,6 @@
 .component-container {
-  color: #fff;
-  background-color: #52affa;
+  /* color: #fff; */
+  background-color: #fed80b;
   border: none;
   border-radius: 3em;
   outline: none;
@@ -9,9 +9,9 @@
 }
 
 .component-container:active {
-  box-shadow: 0 0 0.2em white;
+  box-shadow: 0 0 0.2em black;
 }
 
 .danger-button {
-  background-color: orangered;
+  background-color: #f4475b;
 }
