@@ -22,5 +22,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine as runner
 ENV ASPNETCORE_URLS=https://+:443;http://+:80
 WORKDIR /app
 COPY --from=builder /publish .
-
+RUN sed -i 's/app\\\///g' wwwroot/app/service-worker-assets.js
 ENTRYPOINT dotnet Order.Server.dll
