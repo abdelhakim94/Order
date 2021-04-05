@@ -6,6 +6,7 @@ using Order.Client.Services;
 using Order.Shared.Dto.Users;
 using Order.Client.Constants;
 using Order.Client.Components.Misc;
+using Order.Client.Components;
 
 namespace Order.Client.Pages
 {
@@ -19,6 +20,9 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public NotificationModal NotificationModal { get; set; }
 
+        [CascadingParameter]
+        public Spinner Spinner { get; set; }
+
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
 
@@ -31,6 +35,7 @@ namespace Order.Client.Pages
         public async Task HandleFormSubmition(EditContext context)
         {
             isLoading = true;
+            Spinner.Show();
             SignUpResultDto result;
 
             try
@@ -46,6 +51,7 @@ namespace Order.Client.Pages
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 StateHasChanged();
             }
 

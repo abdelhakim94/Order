@@ -1,0 +1,24 @@
+@namespace Order.Client.Components
+
+@if (show)
+{
+    <div id="spinner-container">
+        <img id="spinner" src="icons/spinner.gif" />
+    </div>
+}
+
+@code{
+    private bool show { get; set; }
+
+    public void Show()
+    {
+        show = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        show = false;
+        StateHasChanged();
+    }
+}

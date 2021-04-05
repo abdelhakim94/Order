@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
+using Order.Client.Components;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
@@ -36,6 +37,9 @@ namespace Order.Client.Pages
 
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; }
+
+        [CascadingParameter]
+        public Spinner Spinner { get; set; }
 
         [Parameter]
         public string AccessToken { get; set; }
@@ -77,6 +81,7 @@ namespace Order.Client.Pages
         public async Task HandleSignInFormSubmition(EditContext context)
         {
             isLoading = true;
+            Spinner.Show();
             SignInResultDto result;
 
             try
@@ -92,6 +97,7 @@ namespace Order.Client.Pages
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 StateHasChanged();
             }
 
@@ -129,6 +135,7 @@ namespace Order.Client.Pages
         public async Task HandleResetPasswordFormSubmit(EditContext context)
         {
             isLoading = true;
+            Spinner.Show();
             bool result;
             try
             {
@@ -145,6 +152,7 @@ namespace Order.Client.Pages
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 isResetingPassword = false;
                 RequestResetPassword.Email = string.Empty;
                 await resetPasswordModal.Close();
@@ -165,6 +173,7 @@ namespace Order.Client.Pages
         public async Task CheckoutConsentScreen(ValueWrapperDto<string> provider)
         {
             isLoading = true;
+            Spinner.Show();
             ValueWrapperDto<string> result;
             try
             {
@@ -179,6 +188,7 @@ namespace Order.Client.Pages
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
             }
 
             NavigationManager.NavigateTo(result.Value);

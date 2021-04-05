@@ -1,8 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
+using Order.Client.Components;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
@@ -30,6 +30,9 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public NotificationModal NotificationModal { get; set; }
 
+        [CascadingParameter]
+        public Spinner Spinner { get; set; }
+
         public ResetPasswordDto PasswordReset { get; set; } = new ResetPasswordDto();
 
 
@@ -40,6 +43,7 @@ namespace Order.Client.Pages
         {
 
             isLoading = true;
+            Spinner.Show();
             ResetPasswordResultDto result;
             try
             {
@@ -58,6 +62,7 @@ namespace Order.Client.Pages
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 StateHasChanged();
             }
 

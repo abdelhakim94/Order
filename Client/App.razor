@@ -1,4 +1,5 @@
 ﻿@using Order.Client.Components.Misc
+@using Order.Client.Components
 @using Order.Shared.Security.Claims
 
 @* Read more about authentication/authorozation in blazor here: *@
@@ -8,19 +9,22 @@
         <Found Context="routeData">
             <NotificationModal @ref=@NotificationModal />
             <CascadingValue Value=@NotificationModal IsFixed=@true>
-                <AuthorizeRouteView RouteData="@routeData">
-                    <NotAuthorized>
-                        @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
-                        nameof(Profile) && c.Value == nameof(Profile.GUEST))))
-                            {
-                        <Redirect Route="SignIn/" />
-                        }
-                            else
-                            {
-                        <Redirect Route="Unauthorized/" />
-                        }
-                    </NotAuthorized>
-                </AuthorizeRouteView>
+                <Spinner @ref=@Spinner />
+                <CascadingValue Value=@Spinner IsFixed=@true>
+                    <AuthorizeRouteView RouteData="@routeData">
+                        <NotAuthorized>
+                            @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
+                            nameof(Profile) && c.Value == nameof(Profile.GUEST))))
+                                {
+                            <Redirect Route="SignIn/" />
+                            }
+                                else
+                                {
+                            <Redirect Route="Unauthorized/" />
+                            }
+                        </NotAuthorized>
+                    </AuthorizeRouteView>
+                </CascadingValue>
             </CascadingValue>
         </Found>
         <NotFound>
@@ -33,4 +37,5 @@
 
 @code{
     public NotificationModal NotificationModal { get; set; }
+    public Spinner Spinner { get; set; }
 }
