@@ -45,7 +45,7 @@ namespace Order.Client.Pages
             }
             catch (System.Exception)
             {
-                Toast.ShowError(UIMessages.DefaultSignUpErrorMessage);
+                await Toast.ShowError(UIMessages.DefaultSignUpErrorMessage);
                 return;
             }
             finally
@@ -57,7 +57,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                Toast.Show(UIMessages.SignUpSuccess);
+                await Toast.ShowSuccess(UIMessages.SignUpSuccess);
                 NavigationManager.NavigateTo("SignIn/");
                 return;
             }
@@ -65,12 +65,12 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.DuplicateUserName(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.LoginAlreadyAssociated().Code)
             {
-                Toast.ShowError(UIMessages.EmailAlreadyHasAccount);
+                await Toast.ShowError(UIMessages.EmailAlreadyHasAccount);
             }
             else if (result.Error == ErrorDescriber.InvalidUserName(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.InvalidEmail(SignUpData.Email).Code)
             {
-                Toast.ShowError(UIMessages.InvalidEmailAdress);
+                await Toast.ShowError(UIMessages.InvalidEmailAdress);
             }
             else if (result.Error == ErrorDescriber.PasswordTooShort(default(int)).Code
                   || result.Error == ErrorDescriber.PasswordRequiresUniqueChars(default(int)).Code
@@ -79,15 +79,15 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.PasswordRequiresLower().Code
                   || result.Error == ErrorDescriber.PasswordRequiresUpper().Code)
             {
-                Toast.ShowError(UIMessages.PasswordNotSecure);
+                await Toast.ShowError(UIMessages.PasswordNotSecure);
             }
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
-                Toast.ShowError(UIMessages.PasswordMismatch);
+                await Toast.ShowError(UIMessages.PasswordMismatch);
             }
             else
             {
-                Toast.ShowError(UIMessages.DefaultSignUpErrorMessage);
+                await Toast.ShowError(UIMessages.DefaultSignUpErrorMessage);
             }
         }
     }

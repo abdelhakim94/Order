@@ -1,5 +1,7 @@
 .component-container {
   position: fixed;
+  transform: translate(0, -100%);
+  transition: transform 0.5s;
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -7,6 +9,10 @@
   width: 100vw;
   z-index: 10;
   color: white;
+}
+
+.show {
+  transform: translate(0, 0);
 }
 
 .success {

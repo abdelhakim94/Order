@@ -37,12 +37,12 @@ namespace Order.Client.Services
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                await toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return false;
             }
             catch (System.Exception)
             {
-                toast?.ShowError(UIMessages.DefaultInternalError);
+                await toast?.ShowError(UIMessages.DefaultInternalError);
                 return false;
             }
         }
@@ -64,12 +64,12 @@ namespace Order.Client.Services
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                await toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return default(T);
             }
             catch (System.Exception)
             {
-                toast?.ShowError(UIMessages.DefaultInternalError);
+                await toast?.ShowError(UIMessages.DefaultInternalError);
                 return default(T);
             }
         }
@@ -85,12 +85,12 @@ namespace Order.Client.Services
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                await toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return false;
             }
             catch (System.Exception)
             {
-                toast?.ShowError(UIMessages.DefaultInternalError);
+                await toast?.ShowError(UIMessages.DefaultInternalError);
                 return false;
             }
         }
@@ -111,12 +111,12 @@ namespace Order.Client.Services
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                await toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return default(U);
             }
             catch (System.Exception)
             {
-                toast?.ShowError(UIMessages.DefaultInternalError);
+                await toast?.ShowError(UIMessages.DefaultInternalError);
                 return default(U);
             }
         }
@@ -127,29 +127,29 @@ namespace Order.Client.Services
             switch (response?.StatusCode)
             {
                 case HttpStatusCode.BadRequest:
-                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    await toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpBadRequestError);
                     return;
                 case HttpStatusCode.Unauthorized:
                     await authenticationStateProvider.MarkUserAsSignedOut();
                     navigationManager.NavigateTo("SignIn/");
-                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    await toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpUnauthorizedError);
                     return;
                 case HttpStatusCode.NotFound:
-                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    await toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpNotFoundError);
                     return;
                 case HttpStatusCode.InternalServerError:
-                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    await toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpServerError);
                     return;
                 case HttpStatusCode.RequestTimeout:
-                    toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                    await toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                     return;
                 default:
                     throw new System.Exception();
