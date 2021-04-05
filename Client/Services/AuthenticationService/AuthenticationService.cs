@@ -21,22 +21,22 @@ namespace Order.Client.Services
 
         public Task<SignUpResultDto> SignUp(
             SignUpDto userInfo,
-            NotificationModal notificationModal = default(NotificationModal))
+            Toast toast = default(Toast))
         {
             return httpClientService.Post<SignUpDto, SignUpResultDto>(
                 "api/user/SignUp",
                 userInfo,
-                notificationModal);
+                toast);
         }
 
         public async Task<SignInResultDto> SignIn(
             SignInDto userInfo,
-            NotificationModal notificationModal = default(NotificationModal))
+            Toast toast = default(Toast))
         {
             var result = await httpClientService.Post<SignInDto, SignInResultDto>(
                 "api/user/SignIn",
                 userInfo,
-                notificationModal);
+                toast);
             if (result is not null && result.Successful)
             {
                 try
@@ -53,20 +53,20 @@ namespace Order.Client.Services
             return result;
         }
 
-        public async Task SignOut(NotificationModal notificationModal = default(NotificationModal))
+        public async Task SignOut(Toast toast = default(Toast))
         {
-            await httpClientService.Get("api/user/SignOut", notificationModal);
+            await httpClientService.Get("api/user/SignOut", toast);
             await authenticationStateProvider.MarkUserAsSignedOut();
         }
 
         public async Task RefreshTokens(
             ValueWrapperDto<string> refreshToken,
-            NotificationModal notificationModal = default(NotificationModal))
+            Toast toast = default(Toast))
         {
             var result = await httpClientService.Post<ValueWrapperDto<string>, TokenPairDto>(
                 "api/user/RefreshTokens",
                 refreshToken,
-                notificationModal);
+                toast);
             if (result is not null)
             {
                 await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
@@ -75,32 +75,32 @@ namespace Order.Client.Services
 
         public Task<bool> RequestResetPassword(
             RequestResetPasswordDto userEmail,
-            NotificationModal notificationModal = default(NotificationModal))
+            Toast toast = default(Toast))
         {
             return httpClientService.Post<RequestResetPasswordDto>(
                 "api/user/RequestResetPassword",
                 userEmail,
-                notificationModal);
+                toast);
         }
 
         public async Task<ResetPasswordResultDto> ResetPassword(
             ResetPasswordDto password,
-            NotificationModal notificationModal)
+            Toast toast)
         {
             return await httpClientService.Post<ResetPasswordDto, ResetPasswordResultDto>(
                 "api/user/ResetPassword",
                 password,
-                notificationModal);
+                toast);
         }
 
         public Task<ValueWrapperDto<string>> GetConsentScreenUrl(
             ValueWrapperDto<string> provider,
-            NotificationModal notificationModal)
+            Toast toast)
         {
             return httpClientService.Post<ValueWrapperDto<string>, ValueWrapperDto<string>>(
                 "api/user/ExternalProviderSignIn",
                 provider,
-                notificationModal);
+                toast);
         }
 
         public Task MarkUserAsSignedIn(string accessToken, string refreshToken)

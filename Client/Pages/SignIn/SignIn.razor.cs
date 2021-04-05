@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
+using Order.Client.Components;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
@@ -32,10 +33,13 @@ namespace Order.Client.Pages
         public NavigationManager NavigationManager { get; set; }
 
         [CascadingParameter]
-        public NotificationModal NotificationModal { get; set; }
+        public Toast Toast { get; set; }
 
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; }
+
+        [CascadingParameter]
+        public Spinner Spinner { get; set; }
 
         [Parameter]
         public string AccessToken { get; set; }
@@ -69,7 +73,7 @@ namespace Order.Client.Pages
                 }
                 catch (System.Exception)
                 {
-                    NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
+                    await Toast.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
                 }
             }
         }
@@ -77,21 +81,23 @@ namespace Order.Client.Pages
         public async Task HandleSignInFormSubmition(EditContext context)
         {
             isLoading = true;
+            Spinner.Show();
             SignInResultDto result;
 
             try
             {
-                result = await AuthenticationService.SignIn(context.Model as SignInDto, NotificationModal);
+                result = await AuthenticationService.SignIn(context.Model as SignInDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
+                await Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
                 return;
             }
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 StateHasChanged();
             }
 
@@ -102,19 +108,19 @@ namespace Order.Client.Pages
             }
             else if (result.IsNotAllowed)
             {
-                NotificationModal.ShowError(UIMessages.EmailNotConfirmed);
+                await Toast.ShowError(UIMessages.EmailNotConfirmed);
             }
             else if (result.IsLockedOut)
             {
-                NotificationModal.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
+                await Toast.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
             }
             else if (result.IsEmailOrPasswordIncorrect)
             {
-                NotificationModal.ShowError(UIMessages.WrongEmailOrPassword);
+                await Toast.ShowError(UIMessages.WrongEmailOrPassword);
             }
             else
             {
-                NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
+                await Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
             }
         }
 
@@ -129,29 +135,31 @@ namespace Order.Client.Pages
         public async Task HandleResetPasswordFormSubmit(EditContext context)
         {
             isLoading = true;
+            Spinner.Show();
             bool result;
             try
             {
                 result = await AuthenticationService.RequestResetPassword(
                     context.Model as RequestResetPasswordDto,
-                    NotificationModal);
+                    Toast);
                 if (!result) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.CannotRequestResetPassword);
+                await Toast.ShowError(UIMessages.CannotRequestResetPassword);
                 return;
             }
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 isResetingPassword = false;
                 RequestResetPassword.Email = string.Empty;
                 await resetPasswordModal.Close();
                 StateHasChanged();
             }
 
-            NotificationModal.Show(UIMessages.FollowResetPasswordLink);
+            await Toast.ShowSuccess(UIMessages.FollowResetPasswordLink);
         }
 
         public async Task HandleResetPasswordCanceled()
@@ -165,20 +173,22 @@ namespace Order.Client.Pages
         public async Task CheckoutConsentScreen(ValueWrapperDto<string> provider)
         {
             isLoading = true;
+            Spinner.Show();
             ValueWrapperDto<string> result;
             try
             {
-                result = await AuthenticationService.GetConsentScreenUrl(provider, NotificationModal);
+                result = await AuthenticationService.GetConsentScreenUrl(provider, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
+                await Toast.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
                 return;
             }
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
             }
 
             NavigationManager.NavigateTo(result.Value);

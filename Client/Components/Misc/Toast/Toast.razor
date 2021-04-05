@@ -1,0 +1,55 @@
+@using Order.Client.Constants
+
+@namespace Order.Client.Components.Misc
+
+<div class="@CSSCLasses.ComponentContainer @shouldShow @messageType" @onclick=@(async () => await CloseAsync())>
+    <img src="@getIcon" class="notif-icon" />
+    <div class="content">
+        <p>@content</p>
+    </div>
+</div>
+
+@code{
+    private bool show { get; set; }
+    private string shouldShow { get => show ? "show" : null; }
+
+    private bool isError { get; set; }
+    private string getIcon { get => isError ? "icons/ko.png" : "icons/ok.png"; }
+    private string messageType { get => isError ? "error" : "success"; }
+
+    private string content { get; set; }
+
+    private async Task CloseAfterMilisseconds(int milliseconds, Func<Task> OnCloseAsync = default(Func<Task>))
+    {
+        await Task.Delay(milliseconds);
+        await CloseAsync(OnCloseAsync);
+    }
+
+    public async Task ShowSuccess(string content, Func<Task> OnCloseAsync = default(Func<Task>))
+    {
+        show = true;
+        isError = false;
+        this.content = content;
+        StateHasChanged();
+        await CloseAfterMilisseconds(5000, OnCloseAsync);
+    }
+
+    public async Task ShowError(string content, Func<Task> OnCloseAsync = default(Func<Task>))
+    {
+        show = true;
+        isError = true;
+        this.content = content;
+        StateHasChanged();
+        await CloseAfterMilisseconds(5000, OnCloseAsync);
+    }
+
+    public async Task CloseAsync(Func<Task> OnCloseAsync = default(Func<Task>))
+    {
+        show = false;
+        if (OnCloseAsync is not null)
+        {
+            await OnCloseAsync();
+        }
+        StateHasChanged();
+    }
+}

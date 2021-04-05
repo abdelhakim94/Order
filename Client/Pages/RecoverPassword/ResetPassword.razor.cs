@@ -1,8 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
+using Order.Client.Components;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
@@ -28,7 +28,10 @@ namespace Order.Client.Pages
         public string ResetPasswordToken { get; set; }
 
         [CascadingParameter]
-        public NotificationModal NotificationModal { get; set; }
+        public Toast Toast { get; set; }
+
+        [CascadingParameter]
+        public Spinner Spinner { get; set; }
 
         public ResetPasswordDto PasswordReset { get; set; } = new ResetPasswordDto();
 
@@ -40,6 +43,7 @@ namespace Order.Client.Pages
         {
 
             isLoading = true;
+            Spinner.Show();
             ResetPasswordResultDto result;
             try
             {
@@ -47,23 +51,24 @@ namespace Order.Client.Pages
                 recoverPwDto.Email = UserEmail;
                 recoverPwDto.ResetToken = ResetPasswordToken;
 
-                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, NotificationModal);
+                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.DefaultResetPasswordFailed);
+                await Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
                 return;
             }
             finally
             {
                 isLoading = false;
+                Spinner.Hide();
                 StateHasChanged();
             }
 
             if (result.Successful)
             {
-                NotificationModal.Show(UIMessages.ResetPasswordsuccess);
+                await Toast.ShowSuccess(UIMessages.ResetPasswordsuccess);
                 NavigationManager.NavigateTo("SignIn/");
                 return;
             }
@@ -74,19 +79,19 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.PasswordRequiresLower().Code
                   || result.Error == ErrorDescriber.PasswordRequiresUpper().Code)
             {
-                NotificationModal.ShowError(UIMessages.PasswordNotSecure);
+                await Toast.ShowError(UIMessages.PasswordNotSecure);
             }
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
-                NotificationModal.ShowError(UIMessages.PasswordMismatch);
+                await Toast.ShowError(UIMessages.PasswordMismatch);
             }
             else if (result.Error == ErrorDescriber.InvalidToken().Code)
             {
-                NotificationModal.ShowError(UIMessages.ResetPasswordInvalidToken);
+                await Toast.ShowError(UIMessages.ResetPasswordInvalidToken);
             }
             else
             {
-                NotificationModal.ShowError(UIMessages.DefaultResetPasswordFailed);
+                await Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
             }
         }
     }

@@ -50,12 +50,14 @@ body {
 }
 
 #spinner-container {
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100vw;
   height: 100vh;
+  z-index: 9;
 }
 
 .page-blured {
@@ -65,5 +67,6 @@ body {
 
 .page-disabled {
   pointer-events: none;
-  opacity: 0.4;
+  filter: blur(10px);
+  /* opacity: 0.4; */
 }

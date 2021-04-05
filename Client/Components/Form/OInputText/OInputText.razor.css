@@ -9,7 +9,7 @@
 
 ::deep input:focus,
 ::deep input:hover {
-  box-shadow: 0 0 0.2em white;
+  box-shadow: 0 0 0.2em black;
 }
 
 ::deep input.invalid {

@@ -11,8 +11,7 @@
 @* ========================================== SignIn Form =============================================================
 *@
 
-<EditForm Model=@UserSignInData OnValidSubmit=@HandleSignInFormSubmition @onclick=@(() =>
-    NotificationModal.CloseAsync())>
+<EditForm Model=@UserSignInData OnValidSubmit=@HandleSignInFormSubmition @onclick=@(() => Toast.CloseAsync())>
 
     <ObjectGraphDataAnnotationsValidator />
 
