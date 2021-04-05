@@ -6,10 +6,10 @@ namespace Order.Client.Services
 {
     public interface IHttpClientService : IService
     {
-        Task<bool> Get(string url, NotificationModal notificationModal = default(NotificationModal));
-        Task<T> Get<T>(string url, NotificationModal notificationModal = default(NotificationModal));
+        Task<bool> Get(string url, Toast toast = default(Toast));
+        Task<T> Get<T>(string url, Toast toast = default(Toast));
 
-        Task<bool> Post<T>(string url, T toSend, NotificationModal notificationModal = default(NotificationModal));
-        Task<U> Post<T, U>(string url, T toSend, NotificationModal notificationModal = default(NotificationModal));
+        Task<bool> Post<T>(string url, T toSend, Toast toast = default(Toast));
+        Task<U> Post<T, U>(string url, T toSend, Toast toast = default(Toast));
     }
 }

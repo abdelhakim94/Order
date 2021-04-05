@@ -28,7 +28,7 @@ namespace Order.Client.Pages
         public string ResetPasswordToken { get; set; }
 
         [CascadingParameter]
-        public NotificationModal NotificationModal { get; set; }
+        public Toast Toast { get; set; }
 
         [CascadingParameter]
         public Spinner Spinner { get; set; }
@@ -51,12 +51,12 @@ namespace Order.Client.Pages
                 recoverPwDto.Email = UserEmail;
                 recoverPwDto.ResetToken = ResetPasswordToken;
 
-                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, NotificationModal);
+                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.DefaultResetPasswordFailed);
+                Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
                 return;
             }
             finally
@@ -68,7 +68,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NotificationModal.Show(UIMessages.ResetPasswordsuccess);
+                Toast.Show(UIMessages.ResetPasswordsuccess);
                 NavigationManager.NavigateTo("SignIn/");
                 return;
             }
@@ -79,19 +79,19 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.PasswordRequiresLower().Code
                   || result.Error == ErrorDescriber.PasswordRequiresUpper().Code)
             {
-                NotificationModal.ShowError(UIMessages.PasswordNotSecure);
+                Toast.ShowError(UIMessages.PasswordNotSecure);
             }
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
-                NotificationModal.ShowError(UIMessages.PasswordMismatch);
+                Toast.ShowError(UIMessages.PasswordMismatch);
             }
             else if (result.Error == ErrorDescriber.InvalidToken().Code)
             {
-                NotificationModal.ShowError(UIMessages.ResetPasswordInvalidToken);
+                Toast.ShowError(UIMessages.ResetPasswordInvalidToken);
             }
             else
             {
-                NotificationModal.ShowError(UIMessages.DefaultResetPasswordFailed);
+                Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
             }
         }
     }

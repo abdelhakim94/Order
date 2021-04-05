@@ -26,29 +26,29 @@ namespace Order.Client.Services
             this.navigationManager = navigationManager;
         }
 
-        public async Task<bool> Get(string url, NotificationModal notificationModal = default(NotificationModal))
+        public async Task<bool> Get(string url, Toast toast = default(Toast))
         {
             try
             {
                 var response = await httpClient.GetAsync(url);
                 if (response is not null && response.IsSuccessStatusCode) return true;
-                await HandleHttpError(response, notificationModal);
+                await HandleHttpError(response, toast);
                 return false;
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return false;
             }
             catch (System.Exception)
             {
-                notificationModal?.ShowError(UIMessages.DefaultInternalError);
+                toast?.ShowError(UIMessages.DefaultInternalError);
                 return false;
             }
         }
 
 
-        public async Task<T> Get<T>(string url, NotificationModal notificationModal = default(NotificationModal))
+        public async Task<T> Get<T>(string url, Toast toast = default(Toast))
         {
             try
             {
@@ -59,43 +59,43 @@ namespace Order.Client.Services
                         await response.Content.ReadAsStringAsync(),
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 }
-                await HandleHttpError(response, notificationModal);
+                await HandleHttpError(response, toast);
                 return default(T);
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return default(T);
             }
             catch (System.Exception)
             {
-                notificationModal?.ShowError(UIMessages.DefaultInternalError);
+                toast?.ShowError(UIMessages.DefaultInternalError);
                 return default(T);
             }
         }
 
-        public async Task<bool> Post<T>(string url, T toSend, NotificationModal notificationModal = default(NotificationModal))
+        public async Task<bool> Post<T>(string url, T toSend, Toast toast = default(Toast))
         {
             try
             {
                 var response = await httpClient.PostAsJsonAsync<T>(url, toSend);
                 if (response is not null && response.IsSuccessStatusCode) return true;
-                await HandleHttpError(response, notificationModal);
+                await HandleHttpError(response, toast);
                 return false;
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return false;
             }
             catch (System.Exception)
             {
-                notificationModal?.ShowError(UIMessages.DefaultInternalError);
+                toast?.ShowError(UIMessages.DefaultInternalError);
                 return false;
             }
         }
 
-        public async Task<U> Post<T, U>(string url, T toSend, NotificationModal notificationModal = default(NotificationModal))
+        public async Task<U> Post<T, U>(string url, T toSend, Toast toast = default(Toast))
         {
             try
             {
@@ -106,50 +106,50 @@ namespace Order.Client.Services
                         await response.Content.ReadAsStringAsync(),
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 }
-                await HandleHttpError(response, notificationModal);
+                await HandleHttpError(response, toast);
                 return default(U);
             }
             catch (System.Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
             {
-                notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                 return default(U);
             }
             catch (System.Exception)
             {
-                notificationModal?.ShowError(UIMessages.DefaultInternalError);
+                toast?.ShowError(UIMessages.DefaultInternalError);
                 return default(U);
             }
         }
 
-        private async Task HandleHttpError(HttpResponseMessage response, NotificationModal notificationModal)
+        private async Task HandleHttpError(HttpResponseMessage response, Toast toast)
         {
             var errorMessage = await response?.Content?.ReadAsStringAsync();
             switch (response?.StatusCode)
             {
                 case HttpStatusCode.BadRequest:
-                    notificationModal?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpBadRequestError);
                     return;
                 case HttpStatusCode.Unauthorized:
                     await authenticationStateProvider.MarkUserAsSignedOut();
                     navigationManager.NavigateTo("SignIn/");
-                    notificationModal?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpUnauthorizedError);
                     return;
                 case HttpStatusCode.NotFound:
-                    notificationModal?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpNotFoundError);
                     return;
                 case HttpStatusCode.InternalServerError:
-                    notificationModal?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
+                    toast?.ShowError(!string.IsNullOrWhiteSpace(errorMessage)
                         ? errorMessage
                         : UIMessages.DefaultHttpServerError);
                     return;
                 case HttpStatusCode.RequestTimeout:
-                    notificationModal?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
+                    toast?.ShowError(UIMessages.DefaultHttpRequestTimedOut);
                     return;
                 default:
                     throw new System.Exception();

@@ -1,43 +1,50 @@
+@using Order.Client.Constants
+
 @namespace Order.Client.Components.Misc
 
-<div class="notification-modal-container">
-    <Modal @ref=@modalRef CssClass="notification-modal" @onclick=@(async () => await CloseAsync())>
-        <img src="@getIcon" class="notif-icon" />
-        <div class="content">
-            <p>@content</p>
-        </div>
-    </Modal>
+@* @if (show)
+    { *@
+<div class="@CSSCLasses.ComponentContainer @messageType" @onclick=@(async () => await CloseAsync())>
+    <img src="@getIcon" class="notif-icon" />
+    <div class="content">
+        <p>@content</p>
+    </div>
 </div>
+@* } *@
 
 @code{
+    private bool show { get; set; }
     private bool isError { get; set; }
     private string content { get; set; }
-    private Modal modalRef { get; set; }
     private string getIcon { get => isError ? "icons/ko.png" : "icons/ok.png"; }
+    private string messageType { get => isError ? "error" : "success"; }
 
     public Func<Task> OnCloseAsync { get; set; }
 
     public void Show(string content)
     {
+        show = true;
         isError = false;
         this.content = content;
-        modalRef.Show();
+        StateHasChanged();
     }
 
     public void ShowError(string content)
     {
+        show = true;
         isError = true;
         this.content = content;
-        modalRef.Show();
+        StateHasChanged();
     }
 
     public async Task CloseAsync()
     {
+        show = false;
         content = string.Empty;
         if (OnCloseAsync is not null)
         {
             await OnCloseAsync();
         }
-        await modalRef.Close();
+        StateHasChanged();
     }
 }

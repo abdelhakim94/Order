@@ -18,7 +18,7 @@ namespace Order.Client.Pages
         public SignUpDto SignUpData { get; set; } = new SignUpDto();
 
         [CascadingParameter]
-        public NotificationModal NotificationModal { get; set; }
+        public Toast Toast { get; set; }
 
         [CascadingParameter]
         public Spinner Spinner { get; set; }
@@ -40,12 +40,12 @@ namespace Order.Client.Pages
 
             try
             {
-                result = await AuthenticationService.SignUp(context.Model as SignUpDto, NotificationModal);
+                result = await AuthenticationService.SignUp(context.Model as SignUpDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.DefaultSignUpErrorMessage);
+                Toast.ShowError(UIMessages.DefaultSignUpErrorMessage);
                 return;
             }
             finally
@@ -57,7 +57,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                NotificationModal.Show(UIMessages.SignUpSuccess);
+                Toast.Show(UIMessages.SignUpSuccess);
                 NavigationManager.NavigateTo("SignIn/");
                 return;
             }
@@ -65,12 +65,12 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.DuplicateUserName(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.LoginAlreadyAssociated().Code)
             {
-                NotificationModal.ShowError(UIMessages.EmailAlreadyHasAccount);
+                Toast.ShowError(UIMessages.EmailAlreadyHasAccount);
             }
             else if (result.Error == ErrorDescriber.InvalidUserName(SignUpData.Email).Code
                   || result.Error == ErrorDescriber.InvalidEmail(SignUpData.Email).Code)
             {
-                NotificationModal.ShowError(UIMessages.InvalidEmailAdress);
+                Toast.ShowError(UIMessages.InvalidEmailAdress);
             }
             else if (result.Error == ErrorDescriber.PasswordTooShort(default(int)).Code
                   || result.Error == ErrorDescriber.PasswordRequiresUniqueChars(default(int)).Code
@@ -79,15 +79,15 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.PasswordRequiresLower().Code
                   || result.Error == ErrorDescriber.PasswordRequiresUpper().Code)
             {
-                NotificationModal.ShowError(UIMessages.PasswordNotSecure);
+                Toast.ShowError(UIMessages.PasswordNotSecure);
             }
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
-                NotificationModal.ShowError(UIMessages.PasswordMismatch);
+                Toast.ShowError(UIMessages.PasswordMismatch);
             }
             else
             {
-                NotificationModal.ShowError(UIMessages.DefaultSignUpErrorMessage);
+                Toast.ShowError(UIMessages.DefaultSignUpErrorMessage);
             }
         }
     }

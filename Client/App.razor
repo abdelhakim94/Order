@@ -7,8 +7,8 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
-            <NotificationModal @ref=@NotificationModal />
-            <CascadingValue Value=@NotificationModal IsFixed=@true>
+            <Toast @ref=@Toast />
+            <CascadingValue Value=@Toast IsFixed=@true>
                 <Spinner @ref=@Spinner />
                 <CascadingValue Value=@Spinner IsFixed=@true>
                     <AuthorizeRouteView RouteData="@routeData">
@@ -36,6 +36,6 @@
 </CascadingAuthenticationState>
 
 @code{
-    public NotificationModal NotificationModal { get; set; }
+    public Toast Toast { get; set; }
     public Spinner Spinner { get; set; }
 }

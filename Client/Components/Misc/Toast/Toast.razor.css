@@ -1,0 +1,28 @@
+.component-container {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  width: 100vw;
+  z-index: 10;
+  color: white;
+}
+
+.success {
+  background-color: #41d888;
+}
+
+.error {
+  background-color: #f94416;
+}
+
+.notif-icon {
+  margin-left: 3%;
+  width: 10%;
+}
+
+.content {
+  margin-left: 3%;
+  width: 81%;
+}

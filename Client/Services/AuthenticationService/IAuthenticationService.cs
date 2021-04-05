@@ -8,16 +8,16 @@ namespace Order.Client.Services
 {
     public interface IAuthenticationService : IService
     {
-        Task<SignUpResultDto> SignUp(SignUpDto userSignUpData, NotificationModal notificationModal = default(NotificationModal));
-        Task<SignInResultDto> SignIn(SignInDto userSignInData, NotificationModal notificationModal = default(NotificationModal));
-        Task SignOut(NotificationModal notificationModal = default(NotificationModal));
+        Task<SignUpResultDto> SignUp(SignUpDto userSignUpData, Toast toast = default(Toast));
+        Task<SignInResultDto> SignIn(SignInDto userSignInData, Toast toast = default(Toast));
+        Task SignOut(Toast toast = default(Toast));
 
-        Task RefreshTokens(ValueWrapperDto<string> refreshToken, NotificationModal notificationModal = default(NotificationModal));
+        Task RefreshTokens(ValueWrapperDto<string> refreshToken, Toast toast = default(Toast));
 
-        Task<bool> RequestResetPassword(RequestResetPasswordDto userEmail, NotificationModal notificationModal = default(NotificationModal));
-        Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto password, NotificationModal notificationModal = default(NotificationModal));
+        Task<bool> RequestResetPassword(RequestResetPasswordDto userEmail, Toast toast = default(Toast));
+        Task<ResetPasswordResultDto> ResetPassword(ResetPasswordDto password, Toast toast = default(Toast));
 
-        Task<ValueWrapperDto<string>> GetConsentScreenUrl(ValueWrapperDto<string> provider, NotificationModal notificationModal = default(NotificationModal));
+        Task<ValueWrapperDto<string>> GetConsentScreenUrl(ValueWrapperDto<string> provider, Toast toast = default(Toast));
 
         Task MarkUserAsSignedIn(string accessToken, string refreshToken);
     }

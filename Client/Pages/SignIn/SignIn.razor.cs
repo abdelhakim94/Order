@@ -33,7 +33,7 @@ namespace Order.Client.Pages
         public NavigationManager NavigationManager { get; set; }
 
         [CascadingParameter]
-        public NotificationModal NotificationModal { get; set; }
+        public Toast Toast { get; set; }
 
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; }
@@ -73,7 +73,7 @@ namespace Order.Client.Pages
                 }
                 catch (System.Exception)
                 {
-                    NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
+                    Toast.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
                 }
             }
         }
@@ -86,12 +86,12 @@ namespace Order.Client.Pages
 
             try
             {
-                result = await AuthenticationService.SignIn(context.Model as SignInDto, NotificationModal);
+                result = await AuthenticationService.SignIn(context.Model as SignInDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
+                Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
                 return;
             }
             finally
@@ -108,19 +108,19 @@ namespace Order.Client.Pages
             }
             else if (result.IsNotAllowed)
             {
-                NotificationModal.ShowError(UIMessages.EmailNotConfirmed);
+                Toast.ShowError(UIMessages.EmailNotConfirmed);
             }
             else if (result.IsLockedOut)
             {
-                NotificationModal.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
+                Toast.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
             }
             else if (result.IsEmailOrPasswordIncorrect)
             {
-                NotificationModal.ShowError(UIMessages.WrongEmailOrPassword);
+                Toast.ShowError(UIMessages.WrongEmailOrPassword);
             }
             else
             {
-                NotificationModal.ShowError(UIMessages.DefaultSignInErrorMessage);
+                Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
             }
         }
 
@@ -141,12 +141,12 @@ namespace Order.Client.Pages
             {
                 result = await AuthenticationService.RequestResetPassword(
                     context.Model as RequestResetPasswordDto,
-                    NotificationModal);
+                    Toast);
                 if (!result) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.CannotRequestResetPassword);
+                Toast.ShowError(UIMessages.CannotRequestResetPassword);
                 return;
             }
             finally
@@ -159,7 +159,7 @@ namespace Order.Client.Pages
                 StateHasChanged();
             }
 
-            NotificationModal.Show(UIMessages.FollowResetPasswordLink);
+            Toast.Show(UIMessages.FollowResetPasswordLink);
         }
 
         public async Task HandleResetPasswordCanceled()
@@ -177,12 +177,12 @@ namespace Order.Client.Pages
             ValueWrapperDto<string> result;
             try
             {
-                result = await AuthenticationService.GetConsentScreenUrl(provider, NotificationModal);
+                result = await AuthenticationService.GetConsentScreenUrl(provider, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
             {
-                NotificationModal.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
+                Toast.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
                 return;
             }
             finally
