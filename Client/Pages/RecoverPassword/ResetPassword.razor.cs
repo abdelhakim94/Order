@@ -56,7 +56,7 @@ namespace Order.Client.Pages
             }
             catch (System.Exception)
             {
-                await Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
+                Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
                 return;
             }
             finally
@@ -68,7 +68,7 @@ namespace Order.Client.Pages
 
             if (result.Successful)
             {
-                await Toast.ShowSuccess(UIMessages.ResetPasswordsuccess);
+                Toast.ShowSuccess(UIMessages.ResetPasswordsuccess);
                 NavigationManager.NavigateTo("SignIn/");
                 return;
             }
@@ -79,19 +79,19 @@ namespace Order.Client.Pages
                   || result.Error == ErrorDescriber.PasswordRequiresLower().Code
                   || result.Error == ErrorDescriber.PasswordRequiresUpper().Code)
             {
-                await Toast.ShowError(UIMessages.PasswordNotSecure);
+                Toast.ShowError(UIMessages.PasswordNotSecure);
             }
             else if (result.Error == ErrorDescriber.PasswordMismatch().Code)
             {
-                await Toast.ShowError(UIMessages.PasswordMismatch);
+                Toast.ShowError(UIMessages.PasswordMismatch);
             }
             else if (result.Error == ErrorDescriber.InvalidToken().Code)
             {
-                await Toast.ShowError(UIMessages.ResetPasswordInvalidToken);
+                Toast.ShowError(UIMessages.ResetPasswordInvalidToken);
             }
             else
             {
-                await Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
+                Toast.ShowError(UIMessages.DefaultResetPasswordFailed);
             }
         }
     }

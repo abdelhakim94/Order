@@ -73,7 +73,7 @@ namespace Order.Client.Pages
                 }
                 catch (System.Exception)
                 {
-                    await Toast.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
+                    Toast.ShowError(UIMessages.CannotSignInWithSocialProvider("la méthode sélectionnée"));
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace Order.Client.Pages
             }
             catch (System.Exception)
             {
-                await Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
+                Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
                 return;
             }
             finally
@@ -108,19 +108,19 @@ namespace Order.Client.Pages
             }
             else if (result.IsNotAllowed)
             {
-                await Toast.ShowError(UIMessages.EmailNotConfirmed);
+                Toast.ShowError(UIMessages.EmailNotConfirmed);
             }
             else if (result.IsLockedOut)
             {
-                await Toast.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
+                Toast.ShowError(UIMessages.AccountLockedOut(result.LockoutEndDate));
             }
             else if (result.IsEmailOrPasswordIncorrect)
             {
-                await Toast.ShowError(UIMessages.WrongEmailOrPassword);
+                Toast.ShowError(UIMessages.WrongEmailOrPassword);
             }
             else
             {
-                await Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
+                Toast.ShowError(UIMessages.DefaultSignInErrorMessage);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Order.Client.Pages
             }
             catch (System.Exception)
             {
-                await Toast.ShowError(UIMessages.CannotRequestResetPassword);
+                Toast.ShowError(UIMessages.CannotRequestResetPassword);
                 return;
             }
             finally
@@ -159,7 +159,7 @@ namespace Order.Client.Pages
                 StateHasChanged();
             }
 
-            await Toast.ShowSuccess(UIMessages.FollowResetPasswordLink);
+            Toast.ShowSuccess(UIMessages.FollowResetPasswordLink);
         }
 
         public async Task HandleResetPasswordCanceled()
@@ -182,7 +182,7 @@ namespace Order.Client.Pages
             }
             catch (System.Exception)
             {
-                await Toast.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
+                Toast.ShowError(UIMessages.CannotSignInWithSocialProvider(provider.Value));
                 return;
             }
             finally
