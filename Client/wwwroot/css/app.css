@@ -67,6 +67,6 @@ body {
 
 .page-disabled {
   pointer-events: none;
-  filter: blur(10px);
-  /* opacity: 0.4; */
+  /* filter: blur(10px); */
+  opacity: 0.4;
 }
