@@ -1,8 +1,15 @@
-.component-container {
+button {
   background-color: transparent;
   border: none;
   outline: none;
   box-sizing: border-box;
   margin: 0.3em;
   padding: 0;
+}
+
+.label {
+  font-size: 0.8em;
+  font-weight: bold;
+  margin: 0%;
+  padding: 0%;
 }

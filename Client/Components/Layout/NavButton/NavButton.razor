@@ -1,9 +1,14 @@
 @namespace Order.Client.Components.Layout
 
-<button @attributes=@AdditionalAttributes class="@ComponentContainer @CssClass" type="button" style="background-image:url(@icon); 
+<Column @onclick=@HandleClick>
+    <button @attributes=@AdditionalAttributes class="@CssClass" type="button" style="background-image:url(@icon); 
             background-position: 0% 0%;
-            background-size: 100% 100%;" @onclick=@HandleClick>
-</button>
+            background-size: 100% 100%;">
+    </button>
+    <div class="label" style="color:@labelColor">
+        @Label
+    </div>
+</Column>
 
 @code{
     [Parameter]
@@ -11,6 +16,9 @@
 
     [Parameter]
     public string UnClickedIcon { get; set; }
+
+    [Parameter]
+    public string Label { get; set; }
 
     [Parameter]
     public string CssClass { get; set; }
@@ -21,13 +29,14 @@
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    public bool selected { get; private set; }
+    public bool Selected { get; private set; }
 
-    private string icon { get => selected ? ClickedIcon : UnClickedIcon; }
+    private string icon { get => Selected ? ClickedIcon : UnClickedIcon; }
+    private string labelColor { get => Selected ? "black" : "grey"; }
 
     public void ToggleSelected()
     {
-        selected = !selected;
+        Selected = !Selected;
         StateHasChanged();
     }
 

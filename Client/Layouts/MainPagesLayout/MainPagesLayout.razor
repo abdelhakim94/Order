@@ -8,11 +8,11 @@
 <div>
     @Body
     <Row>
-        <NavButton CssClass="nav-button" UnClickedIcon="icons/search-unclicked.png"
+        <NavButton CssClass="nav-button" Label=M.Search UnClickedIcon="icons/search-unclicked.png"
             ClickedIcon="icons/search-clicked.png" OnClick=@HandleSearchSelect @ref=@searchButton />
-        <NavButton CssClass="nav-button" UnClickedIcon="icons/iwant-unclicked.png" ClickedIcon="icons/iwant-clicked.png"
-            OnClick=@HandleIWantSelect @ref=@IWantButton />
-        <NavButton CssClass="nav-button" UnClickedIcon="icons/orders-unclicked.png"
+        <NavButton CssClass="nav-button" Label=M.IWant UnClickedIcon="icons/iwant-unclicked.png"
+            ClickedIcon="icons/iwant-clicked.png" OnClick=@HandleIWantSelect @ref=@IWantButton />
+        <NavButton CssClass="nav-button" Label=M.Orders UnClickedIcon="icons/orders-unclicked.png"
             ClickedIcon="icons/orders-clicked.png" OnClick=@HandleOrdersClick @ref=@OrdersButton />
     </Row>
 </div>
@@ -22,29 +22,29 @@
     private NavButton IWantButton { get; set; }
     private NavButton OrdersButton { get; set; }
 
-    void HandleSearchSelect(MouseEventArgs args)
+    public void HandleSearchSelect(MouseEventArgs args)
     {
-        if (IWantButton.selected) IWantButton.ToggleSelected();
-        if (OrdersButton.selected) OrdersButton.ToggleSelected();
-        if (searchButton.selected) return;
+        if (IWantButton.Selected) IWantButton.ToggleSelected();
+        if (OrdersButton.Selected) OrdersButton.ToggleSelected();
+        if (searchButton.Selected) return;
         searchButton.ToggleSelected();
         NavigationManager.NavigateTo("search/");
     }
 
-    void HandleIWantSelect(MouseEventArgs args)
+    public void HandleIWantSelect(MouseEventArgs args)
     {
-        if (searchButton.selected) searchButton.ToggleSelected();
-        if (OrdersButton.selected) OrdersButton.ToggleSelected();
-        if (IWantButton.selected) return;
+        if (searchButton.Selected) searchButton.ToggleSelected();
+        if (OrdersButton.Selected) OrdersButton.ToggleSelected();
+        if (IWantButton.Selected) return;
         IWantButton.ToggleSelected();
         NavigationManager.NavigateTo("iwant/");
     }
 
-    void HandleOrdersClick(MouseEventArgs args)
+    public void HandleOrdersClick(MouseEventArgs args)
     {
-        if (searchButton.selected) searchButton.ToggleSelected();
-        if (IWantButton.selected) IWantButton.ToggleSelected();
-        if (OrdersButton.selected) return;
+        if (searchButton.Selected) searchButton.ToggleSelected();
+        if (IWantButton.Selected) IWantButton.ToggleSelected();
+        if (OrdersButton.Selected) return;
         OrdersButton.ToggleSelected();
         NavigationManager.NavigateTo("orders/");
     }
