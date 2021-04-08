@@ -1,0 +1,23 @@
+@using Order.Client.Constants
+@namespace Order.Client.Components.Layout
+
+<div @attributes=@AdditionalAttributes class="column @CssClass" style="justify-content: @Justify;align-items: @Align;">
+    @ChildContent
+</div>
+
+@code{
+    [Parameter]
+    public string Justify { get; set; } = JustifyContent.SPACE_AROUND;
+
+    [Parameter]
+    public string Align { get; set; } = AlignItems.CENTER;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}
