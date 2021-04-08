@@ -8,11 +8,11 @@
 <div>
     @Body
     <Row>
-        <NavButton CssClass="nav-button" Label=M.Search UnClickedIcon="icons/search-unclicked.png"
+        <NavButton CssClass="nav-button" Label=@M.Search UnClickedIcon="icons/search-unclicked.png"
             ClickedIcon="icons/search-clicked.png" OnClick=@HandleSearchSelect @ref=@searchButton />
-        <NavButton CssClass="nav-button" Label=M.IWant UnClickedIcon="icons/iwant-unclicked.png"
+        <NavButton CssClass="nav-button" Label=@M.IWant UnClickedIcon="icons/iwant-unclicked.png"
             ClickedIcon="icons/iwant-clicked.png" OnClick=@HandleIWantSelect @ref=@IWantButton />
-        <NavButton CssClass="nav-button" Label=M.Orders UnClickedIcon="icons/orders-unclicked.png"
+        <NavButton CssClass="nav-button" Label=@M.Orders UnClickedIcon="icons/orders-unclicked.png"
             ClickedIcon="icons/orders-clicked.png" OnClick=@HandleOrdersClick @ref=@OrdersButton />
     </Row>
 </div>
