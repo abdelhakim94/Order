@@ -1,0 +1,8 @@
+@page "/iwant"
+
+@using Microsoft.AspNetCore.Authorization
+@using Order.Shared.Security.Policies
+
+@attribute [Authorize(Policy = IsGuest.Name)]
+
+the Iwant page

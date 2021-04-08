@@ -1,0 +1,8 @@
+.component-container {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  margin: 0.3em;
+  padding: 0;
+}

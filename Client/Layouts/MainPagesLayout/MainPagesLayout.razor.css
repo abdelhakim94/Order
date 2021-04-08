@@ -1,0 +1,10 @@
+::deep .row {
+  position: fixed;
+  bottom: 0%;
+  box-shadow: 0 0.1em 5px 1px black;
+}
+
+::deep .nav-button {
+  height: 3em;
+  width: 3em;
+}

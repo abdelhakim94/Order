@@ -1,0 +1,51 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Layouts
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<div>
+    @Body
+    <Row>
+        <NavButton CssClass="nav-button" UnClickedIcon="icons/search-unclicked.png"
+            ClickedIcon="icons/search-clicked.png" OnClick=@HandleSearchSelect @ref=@searchButton />
+        <NavButton CssClass="nav-button" UnClickedIcon="icons/iwant-unclicked.png" ClickedIcon="icons/iwant-clicked.png"
+            OnClick=@HandleIWantSelect @ref=@IWantButton />
+        <NavButton CssClass="nav-button" UnClickedIcon="icons/orders-unclicked.png"
+            ClickedIcon="icons/orders-clicked.png" OnClick=@HandleOrdersClick @ref=@OrdersButton />
+    </Row>
+</div>
+
+@code{
+    private NavButton searchButton { get; set; }
+    private NavButton IWantButton { get; set; }
+    private NavButton OrdersButton { get; set; }
+
+    void HandleSearchSelect(MouseEventArgs args)
+    {
+        if (IWantButton.selected) IWantButton.ToggleSelected();
+        if (OrdersButton.selected) OrdersButton.ToggleSelected();
+        if (searchButton.selected) return;
+        searchButton.ToggleSelected();
+        NavigationManager.NavigateTo("search/");
+    }
+
+    void HandleIWantSelect(MouseEventArgs args)
+    {
+        if (searchButton.selected) searchButton.ToggleSelected();
+        if (OrdersButton.selected) OrdersButton.ToggleSelected();
+        if (IWantButton.selected) return;
+        IWantButton.ToggleSelected();
+        NavigationManager.NavigateTo("iwant/");
+    }
+
+    void HandleOrdersClick(MouseEventArgs args)
+    {
+        if (searchButton.selected) searchButton.ToggleSelected();
+        if (IWantButton.selected) IWantButton.ToggleSelected();
+        if (OrdersButton.selected) return;
+        OrdersButton.ToggleSelected();
+        NavigationManager.NavigateTo("orders/");
+    }
+}

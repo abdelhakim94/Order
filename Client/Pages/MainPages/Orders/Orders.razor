@@ -1,0 +1,8 @@
+@page "/orders"
+
+@using Microsoft.AspNetCore.Authorization
+@using Order.Shared.Security.Policies
+
+@attribute [Authorize(Policy = IsGuest.Name)]
+
+the orders page

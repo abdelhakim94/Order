@@ -1,0 +1,38 @@
+@namespace Order.Client.Components.Layout
+
+<button @attributes=@AdditionalAttributes class="@ComponentContainer @CssClass" type="button" style="background-image:url(@icon); 
+            background-position: 0% 0%;
+            background-size: 100% 100%;" @onclick=@HandleClick>
+</button>
+
+@code{
+    [Parameter]
+    public string ClickedIcon { get; set; }
+
+    [Parameter]
+    public string UnClickedIcon { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    public bool selected { get; private set; }
+
+    private string icon { get => selected ? ClickedIcon : UnClickedIcon; }
+
+    public void ToggleSelected()
+    {
+        selected = !selected;
+        StateHasChanged();
+    }
+
+    private async Task HandleClick(MouseEventArgs args)
+    {
+        await OnClick.InvokeAsync(args);
+    }
+}
