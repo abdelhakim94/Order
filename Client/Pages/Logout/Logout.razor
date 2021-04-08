@@ -11,9 +11,15 @@
 @attribute [Authorize(Policy = IsGuest.Name)]
 
 @* <p>Authenticated : @authenticated</p>
-<p>@token</p>
+    <p>@token</p>
 
-<button type="button" @onclick=HandleLogout>Logout</button> *@
+    <button type="button" @onclick=HandleLogout>Logout</button> *@
+
+<Column>
+    <button type="button" @onclick=HandleLogout>Logout</button>
+    <button type="button" @onclick=HandleLogout>Logout</button>
+    <button type="button" @onclick=HandleLogout>Logout</button>
+</Column>
 
 <Row>
     <button type="button" @onclick=HandleLogout>Logout</button>
