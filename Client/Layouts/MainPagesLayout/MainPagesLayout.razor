@@ -1,4 +1,5 @@
 @using Order.Client.Components.Layout
+@layout MainLayout
 
 @namespace Order.Client.Layouts
 @inherits LayoutComponentBase
@@ -8,6 +9,7 @@
     <CascadingValue Value=@this IsFixed=@true>
         @Body
     </CascadingValue>
+
     <Row>
         <NavButton Label=@M.Search Icon="icons/search-sprite.png" Selected=@SearchSelected ImagesInSprite=2
             Translate=@translateSearchIcon @onclick=@(() => SearchSelected = true) />

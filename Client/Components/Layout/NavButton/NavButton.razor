@@ -1,16 +1,37 @@
 @namespace Order.Client.Components.Layout
 
-<Column @attributes=@AdditionalAttributes class="@CssClass">
-    <button type="button" style="background-image:url(@Icon); 
-            background-position: @(Translate)% 0%;
-            background-size: @(ImagesInSprite * 100)% 100%;">
-    </button>
-    <div class="label" style="color:@labelColor">
-        @Label
-    </div>
-</Column>
+@if (DisplayHorizontal)
+{
+    <Row @attributes=@AdditionalAttributes class="@CssClass">
+        <button type="button" style="background-image:url(@Icon); 
+                                        background-position: @(Translate)% 0%;
+                                        background-size: @(ImagesInSprite * 100)% 100%;">
+        </button>
+        <div class="label" style="color:@labelColor">
+            @Label
+        </div>
+    </Row>
+}
+else
+{
+    <Column @attributes=@AdditionalAttributes class="@CssClass">
+        <button type="button" style="background-image:url(@Icon); 
+                                    background-position: @(Translate)% 0%;
+                                    background-size: @(ImagesInSprite * 100)% 100%;">
+        </button>
+        <div class="label" style="color:@labelColor">
+            @Label
+        </div>
+    </Column>
+}
 
 @code{
+    /// <summary>
+    /// True for displaying as a row, false for displaying as column.
+    /// </summary>
+    [Parameter]
+    public bool DisplayHorizontal { get; set; }
+
     [Parameter]
     public string Label { get; set; }
 

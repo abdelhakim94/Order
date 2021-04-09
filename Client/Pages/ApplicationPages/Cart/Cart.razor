@@ -1,0 +1,41 @@
+@page "/cart"
+
+@using Microsoft.AspNetCore.Authorization
+@using Order.Shared.Security.Policies
+@using Order.Client.Layouts
+
+@implements IDisposable
+@attribute [Authorize(Policy = IsGuest.Name)]
+@inject NavigationManager NavigationManager
+
+the cart page
+
+@code{
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Layout.CartSelected = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.LocationChanged += LocationChanged;
+    }
+
+    void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        if (!e.Location.EndsWith("/cart/"))
+        {
+            Layout.CartSelected = false;
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        NavigationManager.LocationChanged -= LocationChanged;
+    }
+}
