@@ -1,0 +1,10 @@
+::deep button {
+  height: 2em;
+  width: 2em;
+  margin-right: 0.5em;
+}
+
+::deep .label {
+  margin-right: 0.5em;
+  font-size: 1em;
+}

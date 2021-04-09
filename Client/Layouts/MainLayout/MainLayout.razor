@@ -1,0 +1,39 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Layouts
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<div>
+    <Row>
+        <NavButton Justify=@JustifyContent.FLEX_END DisplayHorizontal=@true Label=@NbElements.ToString()
+            Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon
+            @onclick=@(() => CartSelected = true) />
+    </Row>
+</div>
+
+<CascadingValue Value=@this IsFixed=@true>
+    @Body
+</CascadingValue>
+
+@code{
+    private int translateCartIcon { get => cartSelected ? 0 : 100; }
+    private bool cartSelected;
+    public bool CartSelected
+    {
+        get => cartSelected;
+        set
+        {
+            if (cartSelected == value) return;
+            cartSelected = value;
+            if (value)
+            {
+                NavigationManager.NavigateTo("cart/");
+            }
+            StateHasChanged();
+        }
+    }
+
+    public int NbElements { get; set; } = 1;
+}

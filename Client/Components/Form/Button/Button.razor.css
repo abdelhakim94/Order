@@ -4,7 +4,6 @@
   border: none;
   border-radius: 3em;
   outline: none;
-
   box-sizing: border-box;
 }
 
@@ -13,5 +12,5 @@
 }
 
 .danger-button {
-  background-color: #F94416;
+  background-color: #f94416;
 }

@@ -1,0 +1,77 @@
+@using Order.Client.Components.Layout
+@layout MainLayout
+
+@namespace Order.Client.Layouts
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<div>
+    <CascadingValue Value=@this IsFixed=@true>
+        @Body
+    </CascadingValue>
+
+    <Row>
+        <NavButton Label=@M.Search Icon="icons/search-sprite.png" Selected=@SearchSelected ImagesInSprite=2
+            Translate=@translateSearchIcon @onclick=@(() => SearchSelected = true) />
+        <NavButton Label=@M.IWant Icon="icons/iwant-sprite.png" Selected=@IWantSelected ImagesInSprite=2
+            Translate=@translateIwantIcon @onclick=@(() => IWantSelected = true) />
+        <NavButton Label=@M.Orders Icon="icons/orders-sprite.png" ImagesInSprite=2 Translate=@translateOrdersIcon
+            Selected=@OrdersSelected @onclick=@(() => OrdersSelected = true) />
+    </Row>
+</div>
+
+@code{
+    private int translateSearchIcon { get => searchSelected ? 0 : 100; }
+    private bool searchSelected;
+    public bool SearchSelected
+    {
+        get => searchSelected;
+        set
+        {
+            if (searchSelected == value) return;
+            searchSelected = value;
+            if (value)
+            {
+                IWantSelected = false;
+                OrdersSelected = false;
+                NavigationManager.NavigateTo("search/");
+            }
+        }
+    }
+
+    private int translateIwantIcon { get => iWantSelected ? 0 : 100; }
+    private bool iWantSelected;
+    public bool IWantSelected
+    {
+        get => iWantSelected;
+        set
+        {
+            if (iWantSelected == value) return;
+            iWantSelected = value;
+            if (value)
+            {
+                SearchSelected = false;
+                OrdersSelected = false;
+                NavigationManager.NavigateTo("iwant/");
+            }
+        }
+    }
+
+    private int translateOrdersIcon { get => ordersSelected ? 0 : 100; }
+    private bool ordersSelected;
+    public bool OrdersSelected
+    {
+        get => ordersSelected;
+        set
+        {
+            if (ordersSelected == value) return;
+            ordersSelected = value;
+            if (value)
+            {
+                SearchSelected = false;
+                IWantSelected = false;
+                NavigationManager.NavigateTo("orders/");
+            }
+        }
+    }
+}

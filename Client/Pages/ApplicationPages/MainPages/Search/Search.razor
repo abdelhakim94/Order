@@ -1,0 +1,18 @@
+@page "/search"
+
+@using Microsoft.AspNetCore.Authorization
+@using Order.Shared.Security.Policies
+
+@attribute [Authorize(Policy = IsGuest.Name)]
+
+the search page
+@code{
+    [CascadingParameter]
+    public MainPagesLayout Layout { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Layout.SearchSelected = true;
+    }
+}
