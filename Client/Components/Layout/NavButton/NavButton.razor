@@ -1,9 +1,9 @@
 @namespace Order.Client.Components.Layout
 
-<Column @onclick=@HandleClick>
-    <button @attributes=@AdditionalAttributes class="@CssClass" type="button" style="background-image:url(@icon); 
-            background-position: 0% 0%;
-            background-size: 100% 100%;">
+<Column @attributes=@AdditionalAttributes class="@CssClass">
+    <button type="button" style="background-image:url(@Icon); 
+            background-position: @(Translate)% 0%;
+            background-size: @(ImagesInSprite * 100)% 100%;">
     </button>
     <div class="label" style="color:@labelColor">
         @Label
@@ -11,12 +11,6 @@
 </Column>
 
 @code{
-    [Parameter]
-    public string ClickedIcon { get; set; }
-
-    [Parameter]
-    public string UnClickedIcon { get; set; }
-
     [Parameter]
     public string Label { get; set; }
 
@@ -27,21 +21,26 @@
     public Dictionary<string, Object> AdditionalAttributes { get; set; }
 
     [Parameter]
-    public EventCallback<MouseEventArgs> OnClick { get; set; }
+    public bool Selected { get; set; }
 
-    public bool Selected { get; private set; }
+    [Parameter]
+    public string Icon { get; set; }
 
-    private string icon { get => Selected ? ClickedIcon : UnClickedIcon; }
-    private string labelColor { get => Selected ? "black" : "grey"; }
+    /// <summary>
+    /// Translates the background image horizontally.
+    /// A percentage value.
+    /// Useful when using sprites.
+    /// </summary>
+    [Parameter]
+    public double Translate { get; set; }
 
-    public void ToggleSelected()
-    {
-        Selected = !Selected;
-        StateHasChanged();
-    }
+    /// <summary>
+    /// The number of images in the sprite.
+    /// Images in a sprite should be distributed
+    /// evenly.
+    /// </summary>
+    [Parameter]
+    public int ImagesInSprite { get; set; }
 
-    private async Task HandleClick(MouseEventArgs args)
-    {
-        await OnClick.InvokeAsync(args);
-    }
+    private string labelColor { get => Selected ? "black" : "lightgrey"; }
 }

@@ -6,3 +6,14 @@
 @attribute [Authorize(Policy = IsGuest.Name)]
 
 the orders page
+
+@code{
+    [CascadingParameter]
+    public MainPagesLayout Layout { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Layout.OrdersSelected = true;
+    }
+}
