@@ -29,6 +29,10 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnName("id")
                         .UseIdentityByDefaultColumn();
 
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_main");
+
                     b.Property<string>("Label")
                         .IsRequired()
                         .HasMaxLength(30)

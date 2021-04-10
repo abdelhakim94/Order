@@ -28,6 +28,10 @@ namespace Order.Server.Persistence
                 .HasColumnName("picture")
                 .HasColumnType("character varying")
                 .IsRequired();
+
+            builder.Property(e => e.IsMain)
+                .HasColumnName("is_main")
+                .HasColumnType("boolean");
         }
     }
 }

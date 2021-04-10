@@ -11,6 +11,7 @@ docker run --rm -it -p 80:80 -p 443:443 -e ASPNETCORE_ENVIRONMENT=Development -v
 
 # EF Migrations:
 
-dotnet ef migrations add MigrationName -o ./Persistence/Migrations/V01/MigrationName
-dotnet ef database update
-
+generate migration: dotnet ef migrations add MigrationName -o ./Persistence/Migrations/V01/MigrationName
+remove last migration: dotnet ef migrations remove
+apply migration: dotnet ef database update
+revert all migrations until the last good migraion: dotnet ef database update LastGoodMigration

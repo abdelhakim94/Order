@@ -15,7 +15,8 @@ namespace Order.Server.Persistence.Migrations.V01._03AddCategory
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     label = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    picture = table.Column<string>(type: "character varying", nullable: false)
+                    picture = table.Column<string>(type: "character varying", nullable: false),
+                    is_main = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

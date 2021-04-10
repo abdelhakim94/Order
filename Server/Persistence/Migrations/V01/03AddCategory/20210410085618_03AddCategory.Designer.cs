@@ -10,7 +10,7 @@ using Order.Server.Persistence;
 namespace Order.Server.Persistence.Migrations.V01._03AddCategory
 {
     [DbContext(typeof(OrderContext))]
-    [Migration("20210410081304_03AddCategory")]
+    [Migration("20210410085618_03AddCategory")]
     partial class _03AddCategory
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,10 @@ namespace Order.Server.Persistence.Migrations.V01._03AddCategory
                         .HasColumnType("integer")
                         .HasColumnName("id")
                         .UseIdentityByDefaultColumn();
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_main");
 
                     b.Property<string>("Label")
                         .IsRequired()
