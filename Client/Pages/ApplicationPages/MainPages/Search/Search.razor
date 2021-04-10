@@ -2,17 +2,15 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Order.Shared.Security.Policies
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
 
+@namespace Order.Client.Pages
 @attribute [Authorize(Policy = IsGuest.Name)]
 
-the search page
-@code{
-    [CascadingParameter]
-    public MainPagesLayout Layout { get; set; }
-
-    protected override void OnParametersSet()
+<Row Wrap=@FlexWrap.WRAP>
+    @* @foreach (var category in categories)
     {
-        base.OnParametersSet();
-        Layout.SearchSelected = true;
-    }
-}
+        <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
+    } *@
+</Row>

@@ -1,0 +1,22 @@
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class="@ComponentContainer @CssClass">
+    <img src=@Picture />
+    <div class="label">
+        @Label
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string Picture { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}

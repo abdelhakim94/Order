@@ -13,6 +13,9 @@
     public string Align { get; set; } = AlignItems.CENTER;
 
     [Parameter]
+    public string Wrap { get; set; } = FlexWrap.NO_WRAP;
+
+    [Parameter]
     public RenderFragment ChildContent { get; set; }
 
     [Parameter]
