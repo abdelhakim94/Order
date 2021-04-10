@@ -3,7 +3,7 @@ using Order.Shared.Contracts;
 
 namespace Order.Server.Services.EmailService
 {
-    public interface IEmailService : IService
+    public interface IEmailService : IScopedService
     {
         Task SendMail(string receiver, string subject, string body);
 

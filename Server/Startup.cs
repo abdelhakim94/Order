@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Linq;
-using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,8 +13,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.HttpOverrides;
 using MediatR;
 using FluentValidation;
 using Order.DomainModel;
@@ -27,6 +24,7 @@ using Order.Shared.Security.Constants;
 using Order.Server.Exceptions;
 using Order.Server.CQRS;
 using Order.Server.Security;
+using Order.Server.Hubs.CategoryHub;
 
 namespace Order.Server
 {
@@ -59,7 +57,7 @@ namespace Order.Server
 
             services.Scan(scan => scan
                .FromCallingAssembly()
-               .AddClasses(classes => classes.AssignableTo<IService>())
+               .AddClasses(classes => classes.AssignableTo<IScopedService>())
                .AsImplementedInterfaces()
                .WithScopedLifetime());
 
@@ -217,8 +215,7 @@ namespace Order.Server
                 endpoints.MapControllers()
                     .RequireAuthorization(IsGuest.Name);
 
-                // Map hubs here
-                // endpoints.MapHub<AccountHub>("/Account").RequireAuthorization(IsGuest.Name);
+                endpoints.MapHub<AppHub>("/Account").RequireAuthorization(IsGuest.Name);
 
                 endpoints.MapFallbackToFile("/landing");
             });

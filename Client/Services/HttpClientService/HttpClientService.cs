@@ -10,7 +10,7 @@ using Order.Shared.Contracts;
 
 namespace Order.Client.Services
 {
-    public class HttpClientService : IHttpClientService, IService
+    public class HttpClientService : IHttpClientService, IScopedService
     {
         private readonly HttpClient httpClient;
         private readonly IOrderAuthenticationStateProvider authenticationStateProvider;

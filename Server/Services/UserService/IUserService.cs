@@ -10,7 +10,7 @@ using Order.Shared.Contracts;
 
 namespace Order.Server.Services
 {
-    public interface IUserService : IService
+    public interface IUserService : IScopedService
     {
         Task<SignUpResultDto> SignUp(
             SignUpDto userInfo,

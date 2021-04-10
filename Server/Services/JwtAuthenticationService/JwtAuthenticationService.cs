@@ -17,7 +17,7 @@ using Order.Server.Exceptions;
 
 namespace Order.Server.Services.JwtAuthenticationService
 {
-    public class JwtAuthenticationService : IJwtAuthenticationService, IService
+    public class JwtAuthenticationService : IJwtAuthenticationService, IScopedService
     {
         private readonly JwtTokenConfigDto jwtTokenConfig;
         private readonly IMediator mediator;

@@ -6,7 +6,7 @@ using Order.Shared.Dto;
 
 namespace Order.Client.Services
 {
-    public class AuthenticationService : IAuthenticationService, IService
+    public class AuthenticationService : IAuthenticationService, IScopedService
     {
         private readonly IHttpClientService httpClientService;
         private readonly IOrderAuthenticationStateProvider authenticationStateProvider;

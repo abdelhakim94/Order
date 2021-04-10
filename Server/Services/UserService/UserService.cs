@@ -18,7 +18,7 @@ using Order.Server.Exceptions;
 
 namespace Order.Server.Services.UserService
 {
-    public class UserService : IUserService, IService
+    public class UserService : IUserService, IScopedService
     {
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;

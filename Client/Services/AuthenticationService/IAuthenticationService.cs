@@ -6,7 +6,7 @@ using Order.Shared.Dto;
 
 namespace Order.Client.Services
 {
-    public interface IAuthenticationService : IService
+    public interface IAuthenticationService : IScopedService
     {
         Task<SignUpResultDto> SignUp(SignUpDto userSignUpData, Toast toast = default(Toast));
         Task<SignInResultDto> SignIn(SignInDto userSignInData, Toast toast = default(Toast));

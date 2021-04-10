@@ -36,9 +36,15 @@ namespace Order.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.Scan(scan => scan
                .FromCallingAssembly()
-               .AddClasses(classes => classes.AssignableTo<IService>())
+               .AddClasses(classes => classes.AssignableTo<IScopedService>())
                .AsImplementedInterfaces()
                .WithScopedLifetime());
+
+            builder.Services.Scan(scan => scan
+               .FromCallingAssembly()
+               .AddClasses(classes => classes.AssignableTo<ISingletonService>())
+               .AsImplementedInterfaces()
+               .WithSingletonLifetime());
 
             builder.Services.AddSingleton<IdentityErrorDescriber>();
 
