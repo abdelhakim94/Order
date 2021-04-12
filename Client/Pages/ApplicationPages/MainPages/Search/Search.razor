@@ -9,8 +9,8 @@
 @attribute [Authorize(Policy = IsGuest.Name)]
 
 <Row Wrap=@FlexWrap.WRAP>
-    @* @foreach (var category in categories)
+    @foreach (var category in categories)
     {
         <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
-    } *@
+    }
 </Row>

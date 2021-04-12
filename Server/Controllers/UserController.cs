@@ -7,7 +7,7 @@ using Order.Shared.Dto.Users;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;
-using Order.Server.Exceptions;
+using Order.Server.Middlewares;
 using Order.Shared.Dto;
 
 namespace Order.Server.Controllers

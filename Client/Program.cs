@@ -24,6 +24,8 @@ namespace Order.Client
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress.Replace("app/", ""))
             });
 
+            builder.Services.AddSingleton<IWebAssemblyHostEnvironment>(sp => builder.HostEnvironment);
+
             builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
                 sp.GetRequiredService<IOrderAuthenticationStateProvider>() as AuthenticationStateProvider);
 

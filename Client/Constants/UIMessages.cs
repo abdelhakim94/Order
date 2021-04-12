@@ -13,6 +13,8 @@ namespace Order.Client.Constants
         public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
         public static string DefaultInternalError { get => "Une erreur interne est survenue. Veuillez réessayer ou contacter le support"; }
 
+        public static string DefaultSignalRInvocationError { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
+
         public static string SignUpSuccess { get => "Veuillez suivre le lien reçu par email pour finaliser votre inscription"; }
 
         public static string Email { get => "Email"; }
@@ -45,7 +47,7 @@ namespace Order.Client.Constants
         public static string EmailNotConfirmed { get => "Votre email n'a pas été confirmé. Veuillez suivre le lien reçu par email pour confirmer l'adresse"; }
         public static string AccountLockedOut(DateTimeOffset? remainning) => $"Votre compte est bloqué car {UserConstants.MAX_FAILED_SIGNIN} tentatives infructueuses de connexion. Veuillez réessayer dans {remainning.Value.ToLocalTime().Subtract(DateTime.Now).Minutes + 1} minutes";
         public static string WrongEmailOrPassword { get => "Email ou mot de passe incorrect, veuillez réessayer"; }
-        public static string DefaultSignInErrorMessage { get => "impossible de vous connecter. Veuillez envisager de créer un compte ou de continuer avec un compte de réseau social"; }
+        public static string DefaultSignInErrorMessage { get => "impossible de vous connecter"; }
 
         public static string Send { get => "Envoyer"; }
         public static string Cancel { get => "Annuler"; }

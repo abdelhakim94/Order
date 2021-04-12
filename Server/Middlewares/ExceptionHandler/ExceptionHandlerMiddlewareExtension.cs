@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Order.Server.Exceptions
+namespace Order.Server.Middlewares
 {
     public static class ExceptionHandlerMiddlewareExtension
     {

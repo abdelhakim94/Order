@@ -69,7 +69,14 @@ namespace Order.Client.Services
                 toast);
             if (result is not null)
             {
-                await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
+                try
+                {
+                    await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
+                }
+                catch (System.Exception)
+                {
+                    await authenticationStateProvider.MarkUserAsSignedOut();
+                }
             }
         }
 

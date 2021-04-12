@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Order.Shared.Contracts;
 using Order.Shared.Dto.Users;
-using System.Linq;
 
 namespace Order.Client.Services
 {
@@ -37,10 +36,11 @@ namespace Order.Client.Services
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
-            IEnumerable<Claim> claims;
             try
             {
-                claims = ParseClaimsFromJwt(accessToken);
+                var claims = ParseClaimsFromJwt(accessToken);
+                await ProvideTokenToConnectionClients(accessToken);
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
             }
             catch (System.Exception)
             {
@@ -49,9 +49,6 @@ namespace Order.Client.Services
                 await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken));
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
-
-            await ProvideTokenToConnectionClients(accessToken);
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
         }
 
         public async Task MarkUserAsSignedIn(string accessToken, string refreshToken)
