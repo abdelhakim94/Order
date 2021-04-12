@@ -1,7 +1,8 @@
-::deep .row {
+::deep .bottom {
   position: fixed;
   bottom: 0%;
   box-shadow: 0 0.1em 7px 0 lightgrey;
+  background-color: white;
 }
 
 ::deep button {

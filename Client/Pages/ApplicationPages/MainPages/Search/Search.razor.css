@@ -1,4 +1,14 @@
-.card {
-  height: 4em;
-  width: 4em;
+::deep .categories {
+  padding-bottom: 4em;
+}
+
+::deep .card {
+  height: 46vw;
+  width: 46vw;
+  margin: 2vw;
+}
+
+.text {
+  color: lightslategrey;
+  margin: 2vw;
 }

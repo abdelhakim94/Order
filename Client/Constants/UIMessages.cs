@@ -67,5 +67,7 @@ namespace Order.Client.Constants
         public static string Search { get => "Recherche"; }
         public static string IWant { get => "I Want"; }
         public static string Orders { get => "Commandes"; }
+
+        public static string TopCategories { get => "Catégories reines"; }
     }
 }

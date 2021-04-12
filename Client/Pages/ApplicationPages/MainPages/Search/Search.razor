@@ -4,13 +4,17 @@
 @using Order.Shared.Security.Policies
 @using Order.Client.Components.Layout
 @using Order.Client.Constants
+@using Order.Client.Constants
 
 @namespace Order.Client.Pages
 @attribute [Authorize(Policy = IsGuest.Name)]
 
-<Row Wrap=@FlexWrap.WRAP>
-    @foreach (var category in categories)
-    {
-        <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
-    }
-</Row>
+<div>
+    <p class="text">@M.TopCategories</p>
+    <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.FLEX_START>
+        @foreach (var category in categories)
+        {
+            <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
+        }
+    </Row>
+</div>

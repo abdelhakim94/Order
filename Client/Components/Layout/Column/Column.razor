@@ -1,7 +1,8 @@
 @using Order.Client.Constants
 @namespace Order.Client.Components.Layout
 
-<div @attributes=@AdditionalAttributes class="column @CssClass" style="justify-content: @Justify;align-items: @Align;">
+<div @attributes=@AdditionalAttributes class="column @CssClass"
+    style="justify-content: @Justify;align-items: @Align; flex-wrap: @Wrap;">
     @ChildContent
 </div>
 
