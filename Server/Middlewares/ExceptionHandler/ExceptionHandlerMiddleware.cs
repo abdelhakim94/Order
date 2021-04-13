@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using FluentValidation;
 
-namespace Order.Server.Exceptions
+namespace Order.Server.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {

@@ -7,6 +7,7 @@ namespace Order.Server.Persistence
 {
     public interface IOrderContext
     {
+        DbSet<Category> Category { get; set; }
         DbSet<UserRefreshToken> UserRefreshToken { get; set; }
         DbSet<User> Users { get; set; }
 

@@ -7,7 +7,7 @@ using Order.Shared.Contracts;
 
 namespace Order.Server.Services.EmailService
 {
-    public class EmailService : IEmailService, IService
+    public class EmailService : IEmailService, IScopedService
     {
         private readonly EmailBox sender;
 

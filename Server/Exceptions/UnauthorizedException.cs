@@ -1,6 +1,6 @@
 using System;
 
-namespace Order.Server.Exceptions
+namespace Order.Server.Middlewares
 {
     public class UnauthorizedException : Exception
     {

@@ -32,6 +32,7 @@ namespace Order.Server.Persistence
                 .HasDefaultSchema("order_schema");
         }
 
+        public DbSet<Category> Category { get; set; }
         public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
         public override DbSet<User> Users { get; set; }
     }

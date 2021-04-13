@@ -2,7 +2,8 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Linq;
-using System.Text.Json;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,22 +15,31 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.SignalR;
 using MediatR;
 using FluentValidation;
+using Npgsql.Logging;
 using Order.DomainModel;
 using Order.Server.Persistence;
 using Order.Shared.Contracts;
 using Order.Server.Dto.Users;
 using Order.Shared.Security.Policies;
 using Order.Shared.Security.Constants;
-using Order.Server.Exceptions;
+using Order.Server.Middlewares;
 using Order.Server.CQRS;
-using Order.Server.Security;
+using Order.Server.Hubs.CategoryHub;
+using Order.Server.Services;
 
 namespace Order.Server
 {
+    class UserIdProvider : IUserIdProvider
+    {
+        public virtual string GetUserId(HubConnectionContext connection)
+        {
+            return connection.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+    }
+
     public class Startup
     {
         public IConfiguration Configuration { get; }
@@ -49,9 +59,12 @@ namespace Order.Server
             services.AddSingleton(emailBoxConfig);
             #endregion
 
-            services.AddDbContextPool<IOrderContext, OrderContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order")
-            ));
+            services.AddSingleton<INpgsqlLoggingProvider, NLogLoggingProvider>();
+            services.AddDbContextPool<IOrderContext, OrderContext>((sp, builder) =>
+            {
+                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order"));
+                NpgsqlLogManager.Provider = sp.GetRequiredService<INpgsqlLoggingProvider>();
+            });
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
@@ -59,7 +72,7 @@ namespace Order.Server
 
             services.Scan(scan => scan
                .FromCallingAssembly()
-               .AddClasses(classes => classes.AssignableTo<IService>())
+               .AddClasses(classes => classes.AssignableTo<IScopedService>())
                .AsImplementedInterfaces()
                .WithScopedLifetime());
 
@@ -104,6 +117,20 @@ namespace Order.Server
                         ValidAudience = jwtTokenConfig.Audience,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(1),
+                    };
+                    // https://docs.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-5.0
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrWhiteSpace(accessToken) && path.StartsWithSegments("/AppHub"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
                     };
                 })
                 .AddGoogle(options =>
@@ -158,6 +185,7 @@ namespace Order.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSignalR().AddMessagePackProtocol();
+            services.AddSingleton<IUserIdProvider, UserIdProvider>();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -170,6 +198,7 @@ namespace Order.Server
         {
             app.UseResponseCompression();
             app.UseResponseExceptionHandler();
+            app.UseLogging();
 
             if (env.IsDevelopment())
             {
@@ -217,8 +246,8 @@ namespace Order.Server
                 endpoints.MapControllers()
                     .RequireAuthorization(IsGuest.Name);
 
-                // Map hubs here
-                // endpoints.MapHub<AccountHub>("/Account").RequireAuthorization(IsGuest.Name);
+                endpoints.MapHub<AppHub>("/AppHub")
+                    .RequireAuthorization(IsGuest.Name);
 
                 endpoints.MapFallbackToFile("/landing");
             });

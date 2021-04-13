@@ -8,3 +8,10 @@
 # Container run command
 
 docker run --rm -it -p 80:80 -p 443:443 -e ASPNETCORE_ENVIRONMENT=Development -v "C:\Users\abdel\AppData\Roaming\Microsoft\UserSecrets":/root/.microsoft/usersecrets -v "C:\Users\abdel\Dev\Repos\Order\.aspnet\https":/root/.aspnet/https/ -v "C:\home\logs":/home/logs order:latest
+
+# EF Migrations:
+
+generate migration: dotnet ef migrations add MigrationName -o ./Persistence/Migrations/V01/MigrationName
+remove last migration: dotnet ef migrations remove
+apply migration: dotnet ef database update
+revert all migrations until the last good migraion: dotnet ef database update LastGoodMigration

@@ -13,11 +13,11 @@ using Order.Shared.Contracts;
 using Order.Shared.Dto.Users;
 using Order.Server.CQRS.User.Commands;
 using Order.Server.CQRS.User.Queries;
-using Order.Server.Exceptions;
+using Order.Server.Middlewares;
 
 namespace Order.Server.Services.JwtAuthenticationService
 {
-    public class JwtAuthenticationService : IJwtAuthenticationService, IService
+    public class JwtAuthenticationService : IJwtAuthenticationService, IScopedService
     {
         private readonly JwtTokenConfigDto jwtTokenConfig;
         private readonly IMediator mediator;

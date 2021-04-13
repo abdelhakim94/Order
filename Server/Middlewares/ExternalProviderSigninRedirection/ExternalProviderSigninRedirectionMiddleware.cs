@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Order.Shared.Dto;
 
-namespace Order.Server.Security
+namespace Order.Server.Middlewares
 {
     public class ExternalProviderSigninRedirectionMiddleware
     {

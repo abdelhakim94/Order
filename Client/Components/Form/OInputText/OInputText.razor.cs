@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Order.Client.Components.Form
 {
@@ -16,10 +17,14 @@ namespace Order.Client.Components.Form
         [Parameter]
         public string PlaceHolder { get; set; }
 
-        private bool isHiddenValue;
+        [Parameter]
+        public bool HideData { get; set; }
 
         [Parameter]
-        public bool IsSensitiveInput { get; set; }
+        public string RightIcon { get; set; }
+
+        [Parameter]
+        public EventCallback OnRightIconClick { get; set; }
 
         [Parameter]
         public string CssClass { get; set; }
@@ -27,22 +32,21 @@ namespace Order.Client.Components.Form
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, Object> AdditionalAttributes { get; set; }
 
-        protected override void OnInitialized()
-        {
-            this.isHiddenValue = IsSensitiveInput;
-        }
-
-        string ShouldHideValue() => isHiddenValue ? "password" : "";
-
-        void ToggleIsHiddenValue() => isHiddenValue = !isHiddenValue;
-
-        string GetIcon() => isHiddenValue ? "icons/show-password.png" : "icons/hide-password.png";
+        private string ShouldHideValue() => HideData ? "password" : "";
 
         async Task HandleInputChange(ChangeEventArgs args)
         {
             Value = args.Value.ToString();
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
+        }
+
+        async Task HandleRightIconClick(MouseEventArgs args)
+        {
+            if (OnRightIconClick.HasDelegate)
+            {
+                await OnRightIconClick.InvokeAsync();
+            }
         }
     }
 }

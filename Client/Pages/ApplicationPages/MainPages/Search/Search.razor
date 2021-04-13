@@ -2,17 +2,31 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Order.Shared.Security.Policies
+@using Order.Client.Components.Layout
+@using Order.Client.Components.Form
+@using Order.Client.Constants
 
+@namespace Order.Client.Pages
 @attribute [Authorize(Policy = IsGuest.Name)]
 
-the search page
-@code{
-    [CascadingParameter]
-    public MainPagesLayout Layout { get; set; }
+<div>
+    <Column Align=@AlignItems.STRETCH>
+        <div class="search-bar">
+            <EditForm Model=@SearchValue >
+                <ObjectGraphDataAnnotationsValidator />
+                <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
+                    RightIcon="icons/searchbar-magnifier.png" />
+                <ValidationMessage For=@( () => SearchValue.Search ) />
+            </EditForm>
+        </div>
 
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        Layout.SearchSelected = true;
-    }
-}
+        <p class="text">@M.TopCategories</p>
+
+        <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.FLEX_START>
+            @foreach (var category in categories)
+            {
+                <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
+            }
+        </Row>
+    </Column>
+</div>

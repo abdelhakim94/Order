@@ -6,7 +6,7 @@ using Order.Shared.Dto;
 
 namespace Order.Client.Services
 {
-    public class AuthenticationService : IAuthenticationService, IService
+    public class AuthenticationService : IAuthenticationService, IScopedService
     {
         private readonly IHttpClientService httpClientService;
         private readonly IOrderAuthenticationStateProvider authenticationStateProvider;
@@ -69,7 +69,14 @@ namespace Order.Client.Services
                 toast);
             if (result is not null)
             {
-                await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
+                try
+                {
+                    await authenticationStateProvider.MarkUserAsSignedIn(result.AccessToken, result.RefreshToken);
+                }
+                catch (System.Exception)
+                {
+                    await authenticationStateProvider.MarkUserAsSignedOut();
+                }
             }
         }
 

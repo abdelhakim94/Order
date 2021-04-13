@@ -11,30 +11,42 @@ using Order.Shared.Dto.Users;
 
 namespace Order.Client.Services
 {
-    public class OrderAuthenticationStateProvider : AuthenticationStateProvider, IOrderAuthenticationStateProvider, IService
+    public class OrderAuthenticationStateProvider : AuthenticationStateProvider, IOrderAuthenticationStateProvider, IScopedService
     {
         private readonly HttpClient httpClient;
+        private readonly IHubConnectionService hubConnectionService;
         private readonly ILocalStorageService localStorage;
 
         public OrderAuthenticationStateProvider(
             HttpClient httpClient,
+            IHubConnectionService hubConnectionService,
             ILocalStorageService localStorage)
         {
             this.httpClient = httpClient;
+            this.hubConnectionService = hubConnectionService;
             this.localStorage = localStorage;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
+            var accessToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.AccessToken));
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                await DeleteTokenFromConnectionClients();
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            }
+
             try
             {
-                var accessToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.AccessToken));
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(accessToken), "jwt")));
+                var claims = ParseClaimsFromJwt(accessToken);
+                await ProvideTokenToConnectionClients(accessToken);
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
             }
             catch (System.Exception)
             {
-                httpClient.DefaultRequestHeaders.Authorization = null;
+                await DeleteTokenFromConnectionClients();
+                await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.AccessToken));
+                await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken));
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
         }
@@ -47,7 +59,7 @@ namespace Order.Client.Services
                 ParseClaimsFromJwt(accessToken),
                 "jwt"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+            await ProvideTokenToConnectionClients(accessToken);
             NotifyAuthenticationStateChanged(authState);
         }
 
@@ -57,7 +69,7 @@ namespace Order.Client.Services
             await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken));
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(new AuthenticationState(anonymousUser));
-            httpClient.DefaultRequestHeaders.Authorization = null;
+            await DeleteTokenFromConnectionClients();
             NotifyAuthenticationStateChanged(authState);
         }
 
@@ -66,6 +78,22 @@ namespace Order.Client.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.ReadJwtToken(jwt);
             return securityToken.Claims;
+        }
+
+        private async Task DeleteTokenFromConnectionClients()
+        {
+            if (!string.IsNullOrWhiteSpace(httpClient.DefaultRequestHeaders.Authorization?.Parameter))
+                httpClient.DefaultRequestHeaders.Authorization = null;
+            if (hubConnectionService.IsConnected)
+                await hubConnectionService.ShutDown();
+        }
+
+        private async Task ProvideTokenToConnectionClients(string accessToken)
+        {
+            if (httpClient.DefaultRequestHeaders.Authorization?.Parameter != accessToken)
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+            if (hubConnectionService.LastAccessToken != accessToken)
+                await hubConnectionService.StartNew(accessToken);
         }
     }
 }

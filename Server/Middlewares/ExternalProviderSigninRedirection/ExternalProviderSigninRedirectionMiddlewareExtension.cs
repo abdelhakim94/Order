@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 
-namespace Order.Server.Security
+namespace Order.Server.Middlewares
 {
     public static class ExternalProviderSigninRedirectionMiddlewareExtension
     {

@@ -24,6 +24,8 @@ namespace Order.Client
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress.Replace("app/", ""))
             });
 
+            builder.Services.AddSingleton<IWebAssemblyHostEnvironment>(sp => builder.HostEnvironment);
+
             builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
                 sp.GetRequiredService<IOrderAuthenticationStateProvider>() as AuthenticationStateProvider);
 
@@ -36,9 +38,15 @@ namespace Order.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.Scan(scan => scan
                .FromCallingAssembly()
-               .AddClasses(classes => classes.AssignableTo<IService>())
+               .AddClasses(classes => classes.AssignableTo<IScopedService>())
                .AsImplementedInterfaces()
                .WithScopedLifetime());
+
+            builder.Services.Scan(scan => scan
+               .FromCallingAssembly()
+               .AddClasses(classes => classes.AssignableTo<ISingletonService>())
+               .AsImplementedInterfaces()
+               .WithSingletonLifetime());
 
             builder.Services.AddSingleton<IdentityErrorDescriber>();
 

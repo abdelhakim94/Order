@@ -1,0 +1,27 @@
+::deep .categories {
+  padding-bottom: 4em;
+}
+
+::deep .card {
+  height: 46vw;
+  width: 46vw;
+  margin: 2vw;
+}
+
+.text {
+  color: lightslategrey;
+  margin-left: 2vw;
+  margin-right: 2vw;
+  margin-top: 4vw;
+  margin-bottom: 4vw;
+}
+
+.search-bar {
+  margin: 2vw;
+}
+
+::deep .right-icon {
+  top: 20%;
+  height: 60%;
+  padding-left: 0.5em;
+}

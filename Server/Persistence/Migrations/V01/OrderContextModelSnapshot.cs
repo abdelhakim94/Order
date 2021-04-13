@@ -21,6 +21,37 @@ namespace Order.Server.Persistence.Migrations.V01
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
+            modelBuilder.Entity("Order.DomainModel.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_main");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("label");
+
+                    b.Property<string>("Picture")
+                        .IsRequired()
+                        .HasColumnType("character varying")
+                        .HasColumnName("picture");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .HasDatabaseName("category_id_index");
+
+                    b.ToTable("category", "order_schema");
+                });
+
             modelBuilder.Entity("Order.DomainModel.Role", b =>
                 {
                     b.Property<int>("Id")

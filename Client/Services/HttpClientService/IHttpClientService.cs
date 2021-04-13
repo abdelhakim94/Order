@@ -4,7 +4,7 @@ using Order.Shared.Contracts;
 
 namespace Order.Client.Services
 {
-    public interface IHttpClientService : IService
+    public interface IHttpClientService : IScopedService
     {
         Task<bool> Get(string url, Toast toast = default(Toast));
         Task<T> Get<T>(string url, Toast toast = default(Toast));

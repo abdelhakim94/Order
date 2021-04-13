@@ -5,6 +5,6 @@
     <InputText type=@ShouldHideValue() placeholder=@PlaceHolder Value=@Value @oninput=@HandleInputChange
         ValueExpression=@(() => Value) />
 
-    <img src=@GetIcon() hidden=@(!IsSensitiveInput) @onclick=@ToggleIsHiddenValue />
+    <img class="right-icon" src=@RightIcon @onclick=@HandleRightIconClick />
 
 </div>

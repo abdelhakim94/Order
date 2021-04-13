@@ -4,7 +4,7 @@ using Order.Shared.Contracts;
 
 namespace Order.Client.Services
 {
-    public interface IOrderAuthenticationStateProvider : IService
+    public interface IOrderAuthenticationStateProvider : IScopedService
     {
         Task<AuthenticationState> GetAuthenticationStateAsync();
         Task MarkUserAsSignedIn(string accessToken, string refreshToken);
