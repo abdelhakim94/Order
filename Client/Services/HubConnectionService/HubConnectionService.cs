@@ -56,9 +56,7 @@ namespace Order.Client.Services
             {
                 try
                 {
-                    Console.WriteLine("sending request");
                     var response = await hubConnection.InvokeAsync<T>(methodName);
-                    Console.WriteLine(response);
                     return response;
                 }
                 catch (System.Exception)

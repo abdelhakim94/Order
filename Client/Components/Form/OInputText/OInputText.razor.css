@@ -9,7 +9,7 @@
 
 ::deep input:focus,
 ::deep input:hover {
-  box-shadow: 0 0 0.2em black;
+  box-shadow: 0 0 0.2em lightgrey;
 }
 
 ::deep input.invalid {
@@ -20,9 +20,8 @@
   position: relative;
 }
 
-img {
+.right-icon {
   position: absolute;
   right: 1em;
-  top: 5%;
-  height: 90%;
+  height: 100%;
 }

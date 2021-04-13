@@ -11,6 +11,7 @@ namespace Order.Client.Pages
     public partial class Search : ComponentBase
     {
         private List<CategoryListItemDto> categories = new();
+        public CategorySearchBarDto SearchValue { get; set; } = new();
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }

@@ -28,14 +28,14 @@
         </div>
 
         <div>
-            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.Password
-                @bind-Value=@SignUpData.Password />
+            <OInputText HideData=@isPasswordHidden RightIcon=@passwordRightIcon OnRightIconClick=@TogglePasswordHide
+                CssClass="form-input" PlaceHolder=@M.Password @bind-Value=@SignUpData.Password />
             <ValidationMessage For=@( () => SignUpData.Password) />
         </div>
 
         <div>
-            <OInputText IsSensitiveInput=@true CssClass="form-input" PlaceHolder=@M.ConfirmPassword
-                @bind-Value=@SignUpData.ConfirmPassword />
+            <OInputText HideData=@isConfirmPasswordHidden RightIcon=@confirmPasswordRightIcon OnRightIconClick=@ToggleConfirmPasswordHide
+                CssClass="form-input" PlaceHolder=@M.ConfirmPassword @bind-Value=@SignUpData.ConfirmPassword />
             <ValidationMessage For=@( () => SignUpData.ConfirmPassword ) />
         </div>
 

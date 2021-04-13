@@ -12,6 +12,10 @@ namespace Order.Client.Pages
 {
     public partial class ResetPassword : ComponentBase
     {
+        private bool isPasswordHidden = true;
+        private string rightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
+        private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
+
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
 

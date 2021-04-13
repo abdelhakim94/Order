@@ -5,7 +5,6 @@ namespace Order.Client.Constants
 {
     public static class UIMessages
     {
-        // Http default error messages. To use if the Http error messages beneath are null.
         public static string DefaultHttpNotFoundError { get => "La ressource demandée n'a pas été trouvée"; }
         public static string DefaultHttpBadRequestError { get => "La demande n'a pas pu être construit correctement"; }
         public static string DefaultHttpUnauthorizedError { get => "Vous n'êtes pas autorisé à accéder à la ressource demandée. Vous reconnecter peut résoudre le problème"; }
@@ -68,6 +67,7 @@ namespace Order.Client.Constants
         public static string IWant { get => "I Want"; }
         public static string Orders { get => "Commandes"; }
 
-        public static string TopCategories { get => "Catégories reines"; }
+        public static string TopCategories { get => "Nos catégories reines"; }
+        public static string CategorySearchBar { get => "Rechercher un plat ou un chef"; }
     }
 }

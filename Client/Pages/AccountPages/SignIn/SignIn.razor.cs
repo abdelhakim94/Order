@@ -23,6 +23,10 @@ namespace Order.Client.Pages
 
         private Modal resetPasswordModal { get; set; }
 
+        private bool isPasswordHidden = true;
+        private string rightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
+        private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
+
         public SignInDto UserSignInData { get; set; } = new SignInDto();
         public RequestResetPasswordDto RequestResetPassword { get; set; } = new RequestResetPasswordDto();
 

@@ -15,6 +15,14 @@ namespace Order.Client.Pages
         private bool isLoading { get; set; }
         private string disabled { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
 
+        private bool isPasswordHidden = true;
+        private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
+        private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
+
+        private bool isConfirmPasswordHidden = true;
+        private string confirmPasswordRightIcon { get => isConfirmPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
+        private void ToggleConfirmPasswordHide() => isConfirmPasswordHidden = !isConfirmPasswordHidden;
+
         public SignUpDto SignUpData { get; set; } = new SignUpDto();
 
         [CascadingParameter]
