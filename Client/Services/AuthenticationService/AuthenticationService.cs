@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Order.Shared.Dto.Users;
 using Order.Shared.Contracts;
 using Order.Client.Components.Misc;
@@ -10,13 +11,16 @@ namespace Order.Client.Services
     {
         private readonly IHttpClientService httpClientService;
         private readonly IOrderAuthenticationStateProvider authenticationStateProvider;
+        private readonly NavigationManager navigationManager;
 
         public AuthenticationService(
             IHttpClientService httpClientService,
-            IOrderAuthenticationStateProvider authenticationStateProvider)
+            IOrderAuthenticationStateProvider authenticationStateProvider,
+            NavigationManager navigationManager)
         {
             this.httpClientService = httpClientService;
             this.authenticationStateProvider = authenticationStateProvider;
+            this.navigationManager = navigationManager;
         }
 
         public Task<SignUpResultDto> SignUp(
@@ -76,6 +80,7 @@ namespace Order.Client.Services
                 catch (System.Exception)
                 {
                     await authenticationStateProvider.MarkUserAsSignedOut();
+                    navigationManager.NavigateTo("SignIn/");
                 }
             }
         }

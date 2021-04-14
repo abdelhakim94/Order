@@ -55,11 +55,11 @@ namespace Order.Client.Services
         {
             await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.AccessToken), accessToken);
             await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken), refreshToken);
+            await ProvideTokenToConnectionClients(accessToken);
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(
                 ParseClaimsFromJwt(accessToken),
                 "jwt"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-            await ProvideTokenToConnectionClients(accessToken);
             NotifyAuthenticationStateChanged(authState);
         }
 
@@ -67,9 +67,9 @@ namespace Order.Client.Services
         {
             await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.AccessToken));
             await localStorage.RemoveItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken));
+            await DeleteTokenFromConnectionClients();
             var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
             var authState = Task.FromResult(new AuthenticationState(anonymousUser));
-            await DeleteTokenFromConnectionClients();
             NotifyAuthenticationStateChanged(authState);
         }
 
@@ -82,18 +82,14 @@ namespace Order.Client.Services
 
         private async Task DeleteTokenFromConnectionClients()
         {
-            if (!string.IsNullOrWhiteSpace(httpClient.DefaultRequestHeaders.Authorization?.Parameter))
-                httpClient.DefaultRequestHeaders.Authorization = null;
-            if (hubConnectionService.IsConnected)
-                await hubConnectionService.ShutDown();
+            httpClient.DefaultRequestHeaders.Authorization = null;
+            await hubConnectionService.ShutDown();
         }
 
         private async Task ProvideTokenToConnectionClients(string accessToken)
         {
-            if (httpClient.DefaultRequestHeaders.Authorization?.Parameter != accessToken)
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
-            if (hubConnectionService.LastAccessToken != accessToken)
-                await hubConnectionService.StartNew(accessToken);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+            await hubConnectionService.StartNew(accessToken);
         }
     }
 }

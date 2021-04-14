@@ -23,7 +23,7 @@
         <p class="text">@M.TopCategories</p>
 
         <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.FLEX_START>
-            @foreach (var category in categories)
+            @foreach (var category in categories ?? new())
             {
                 <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
             }

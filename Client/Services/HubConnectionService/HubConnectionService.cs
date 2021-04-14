@@ -1,22 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Shared.Contracts;
 
 namespace Order.Client.Services
 {
-    public class HubConnectionService : IHubConnectionService, ISingletonService
+    public class HubConnectionService : IHubConnectionService, ISingletonService, IAsyncDisposable
     {
         private readonly IWebAssemblyHostEnvironment hostEnvironment;
         private HubConnection hubConnection;
-        public bool IsConnected { get => !string.IsNullOrWhiteSpace(LastAccessToken); }
-        public string LastAccessToken { get; private set; }
 
         public HubConnectionService(IWebAssemblyHostEnvironment hostEnvironment)
         {
@@ -33,46 +28,36 @@ namespace Order.Client.Services
                 .AddMessagePackProtocol()
                 .Build();
             await hubConnection.StartAsync();
-            LastAccessToken = accessToken;
         }
 
         public async Task ShutDown()
         {
             if (hubConnection is not null)
             {
-                if (hubConnection.State != HubConnectionState.Disconnected)
-                {
-                    await hubConnection.StopAsync();
-                }
+                await hubConnection.StopAsync();
                 await hubConnection.DisposeAsync();
-                hubConnection = null;
             }
-            LastAccessToken = null;
         }
 
-        public async Task<T> Invoke<T>(string methodName, Toast toast = default(Toast))
+        public async Task<T> Invoke<T>(string methodName)
         {
+            // Change this:
+            // See if we can know why an invocation failed.
+            // If the reason is authorization, mark the user as signed out.
+            // Hook an event handler (to the reconnection event or the 
+            // disconected event ot the reconnecting method during connection
+            // build) to see if it is an authorization problem that caused
+            // the deconnection, and if so, mark the user as signed out.
             if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
             {
-                try
-                {
-                    var response = await hubConnection.InvokeAsync<T>(methodName);
-                    return response;
-                }
-                catch (System.Exception)
-                {
-                    if (toast != default(Toast))
-                    {
-                        toast.ShowError(UIMessages.DefaultSignalRInvocationError);
-                    }
-                    return default(T);
-                }
+                return await hubConnection.InvokeAsync<T>(methodName);
             }
-            if (toast != default(Toast))
-            {
-                toast.ShowError(UIMessages.DefaultSignalRInvocationError);
-            }
-            return default(T);
+            throw new ApplicationException(UIMessages.DefaultSignalRInvocationError);
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            await hubConnection.DisposeAsync();
         }
     }
 }
