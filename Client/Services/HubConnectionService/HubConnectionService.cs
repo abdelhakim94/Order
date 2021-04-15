@@ -34,8 +34,12 @@ namespace Order.Client.Services
         {
             if (hubConnection is not null)
             {
-                await hubConnection.StopAsync();
+                if (hubConnection.State != HubConnectionState.Disconnected)
+                {
+                    await hubConnection.StopAsync();
+                }
                 await hubConnection.DisposeAsync();
+                hubConnection = null;
             }
         }
 

@@ -3,7 +3,7 @@
 @if (DisplayHorizontal)
 {
     <Row @attributes=@AdditionalAttributes class="@CssClass">
-        <button type="button" style="background-image:url(@Icon); 
+        <button class="button-image" type="button" style="background-image:url(@Icon); 
                                         background-position: @(Translate)% 0%;
                                         background-size: @(ImagesInSprite * 100)% 100%;">
         </button>
@@ -15,7 +15,7 @@
 else
 {
     <Column @attributes=@AdditionalAttributes class="@CssClass">
-        <button type="button" style="background-image:url(@Icon); 
+        <button class="button-image" type="button" style="background-image:url(@Icon); 
                                     background-position: @(Translate)% 0%;
                                     background-size: @(ImagesInSprite * 100)% 100%;">
         </button>

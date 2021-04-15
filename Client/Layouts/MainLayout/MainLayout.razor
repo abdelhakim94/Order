@@ -5,12 +5,10 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-<div>
-    <Row>
-        <NavButton Justify=@JustifyContent.FLEX_END DisplayHorizontal=@true Label=@NbElements.ToString()
-            Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon
-            @onclick=@(() => CartSelected = true) />
-    </Row>
+<div class="cart-button">
+    <NavButton Justify=@JustifyContent.CENTER DisplayHorizontal=@true Label=@NbElements.ToString()
+        Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon @onclick=@(()
+        => CartSelected = true) />
 </div>
 
 <CascadingValue Value=@this IsFixed=@true>

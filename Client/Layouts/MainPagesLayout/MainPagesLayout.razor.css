@@ -5,7 +5,7 @@
   background-color: white;
 }
 
-::deep button {
+::deep .button-image {
   height: 2em;
   width: 2em;
 }

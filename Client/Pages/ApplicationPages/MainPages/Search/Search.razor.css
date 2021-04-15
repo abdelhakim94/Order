@@ -1,11 +1,14 @@
 ::deep .categories {
   padding-bottom: 4em;
+  padding-top: 2vw;
+  padding-right: 1vw;
+  padding-left: 1vw;
 }
 
 ::deep .card {
-  height: 46vw;
-  width: 46vw;
-  margin: 2vw;
+  height: 47vw;
+  width: 47vw;
+  margin: 1vw;
 }
 
 .text {
@@ -18,6 +21,7 @@
 
 .search-bar {
   margin: 2vw;
+  width: 75vw;
 }
 
 ::deep .right-icon {
