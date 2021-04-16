@@ -4,10 +4,9 @@ namespace Order.DomainModel
 {
     public class City
     {
-        public int Id { get; set; }
-        public int ZipCode { get; set; }
+        public string ZipCode { get; set; }
         public string Name { get; set; }
-        public int CodeWilaya { get; set; }
+        public string CodeWilaya { get; set; }
 
         public virtual Wilaya Wilaya { get; set; }
         public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();

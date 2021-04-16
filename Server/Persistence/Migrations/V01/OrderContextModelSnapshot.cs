@@ -31,14 +31,15 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("address2");
 
-                    b.Property<int>("IdCity")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_city");
+                    b.Property<string>("ZipCodeCity")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
+                        .HasColumnName("zip_code_city");
 
-                    b.HasKey("Address1", "Address2", "IdCity")
+                    b.HasKey("Address1", "Address2", "ZipCodeCity")
                         .HasName("PK_ADDRESS");
 
-                    b.HasIndex("IdCity");
+                    b.HasIndex("ZipCodeCity");
 
                     b.ToTable("address", "order_schema");
                 });
@@ -76,14 +77,15 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.City", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                    b.Property<string>("ZipCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
+                        .HasColumnName("zip_code");
 
-                    b.Property<int>("CodeWilaya")
-                        .HasColumnType("integer")
+                    b.Property<string>("CodeWilaya")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying")
                         .HasColumnName("code_wilaya");
 
                     b.Property<string>("Name")
@@ -92,11 +94,7 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("name");
 
-                    b.Property<int>("ZipCode")
-                        .HasColumnType("integer")
-                        .HasColumnName("zip_code");
-
-                    b.HasKey("Id")
+                    b.HasKey("ZipCode")
                         .HasName("PK_CITY");
 
                     b.HasIndex("CodeWilaya");
@@ -247,14 +245,15 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("address2");
 
-                    b.Property<int>("IdCity")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_city");
+                    b.Property<string>("ZipCodeCity")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
+                        .HasColumnName("zip_code_city");
 
-                    b.HasKey("IdUser", "Address1", "Address2", "IdCity")
+                    b.HasKey("IdUser", "Address1", "Address2", "ZipCodeCity")
                         .HasName("PK_USER_ADDRESS");
 
-                    b.HasIndex("Address1", "Address2", "IdCity");
+                    b.HasIndex("Address1", "Address2", "ZipCodeCity");
 
                     b.ToTable("user_address", "order_schema");
                 });
@@ -359,11 +358,10 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.Wilaya", b =>
                 {
-                    b.Property<int>("Code")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("code")
-                        .UseIdentityByDefaultColumn();
+                    b.Property<string>("Code")
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying")
+                        .HasColumnName("code");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -371,12 +369,17 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("name");
 
-                    b.Property<int>("ZipCode")
-                        .HasColumnType("integer")
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
                         .HasColumnName("zip_code");
 
                     b.HasKey("Code")
                         .HasName("PK_WILAYA");
+
+                    b.HasIndex("ZipCode")
+                        .IsUnique();
 
                     b.ToTable("wilaya", "order_schema");
                 });
@@ -385,7 +388,7 @@ namespace Order.Server.Persistence.Migrations.V01
                 {
                     b.HasOne("Order.DomainModel.City", "City")
                         .WithMany("Addresses")
-                        .HasForeignKey("IdCity")
+                        .HasForeignKey("ZipCodeCity")
                         .HasConstraintName("FK_ADDRESS_CITY")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -427,7 +430,7 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.HasOne("Order.DomainModel.Address", "Address")
                         .WithMany("UsersAddress")
-                        .HasForeignKey("Address1", "Address2", "IdCity")
+                        .HasForeignKey("Address1", "Address2", "ZipCodeCity")
                         .HasConstraintName("FK_USER_ADDRESS_ADDRESS")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

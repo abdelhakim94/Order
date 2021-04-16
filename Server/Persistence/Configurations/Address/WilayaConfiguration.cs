@@ -13,14 +13,20 @@ namespace Order.Server.Persistence
             builder.HasKey(w => w.Code)
                 .HasName("PK_WILAYA");
 
+            builder.HasIndex(w => w.ZipCode)
+                .IsUnique();
+
             builder.Property(w => w.Code)
                 .HasColumnName("code")
-                .HasColumnType("integer")
+                .HasColumnType("character varying")
+                .HasMaxLength(2)
+                .ValueGeneratedNever()
                 .IsRequired();
 
             builder.Property(w => w.ZipCode)
                 .HasColumnName("zip_code")
-                .HasColumnType("integer")
+                .HasColumnType("character varying")
+                .HasMaxLength(5)
                 .IsRequired();
 
             builder.Property(w => w.Name)

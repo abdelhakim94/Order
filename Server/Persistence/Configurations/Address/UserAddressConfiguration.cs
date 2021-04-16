@@ -15,7 +15,7 @@ namespace Order.Server.Persistence
                 ua.IdUser,
                 ua.Address1,
                 ua.Address2,
-                ua.IdCity,
+                ua.ZipCodeCity,
             }).HasName("PK_USER_ADDRESS");
 
             builder.Property(ua => ua.IdUser)
@@ -32,9 +32,10 @@ namespace Order.Server.Persistence
                 .HasColumnName("address2")
                 .HasColumnType("character varying");
 
-            builder.Property(ua => ua.IdCity)
-                .HasColumnName("id_city")
-                .HasColumnType("integer")
+            builder.Property(ua => ua.ZipCodeCity)
+                .HasColumnName("zip_code_city")
+                .HasColumnType("character varying")
+                .HasMaxLength(5)
                 .IsRequired();
 
             builder.HasOne(ua => ua.User)
@@ -49,7 +50,7 @@ namespace Order.Server.Persistence
                 {
                     ua.Address1,
                     ua.Address2,
-                    ua.IdCity,
+                    ua.ZipCodeCity,
                 })
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_ADDRESS_ADDRESS");

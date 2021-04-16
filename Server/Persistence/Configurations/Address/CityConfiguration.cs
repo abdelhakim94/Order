@@ -10,17 +10,14 @@ namespace Order.Server.Persistence
         {
             builder.ToTable("city", "order_schema");
 
-            builder.HasKey(c => c.Id)
+            builder.HasKey(c => c.ZipCode)
                 .HasName("PK_CITY");
-
-            builder.Property(c => c.Id)
-                .HasColumnName("id")
-                .HasColumnType("integer")
-                .IsRequired();
 
             builder.Property(c => c.ZipCode)
                 .HasColumnName("zip_code")
-                .HasColumnType("integer")
+                .HasColumnType("character varying")
+                .HasMaxLength(5)
+                .ValueGeneratedNever()
                 .IsRequired();
 
             builder.Property(c => c.Name)
@@ -31,7 +28,8 @@ namespace Order.Server.Persistence
 
             builder.Property(c => c.CodeWilaya)
                 .HasColumnName("code_wilaya")
-                .HasColumnType("integer")
+                .HasColumnType("character varying")
+                .HasMaxLength(2)
                 .IsRequired();
 
             builder.HasOne(c => c.Wilaya)
@@ -42,7 +40,7 @@ namespace Order.Server.Persistence
 
             builder.HasMany(c => c.Addresses)
                 .WithOne(a => a.City)
-                .HasForeignKey(a => a.IdCity)
+                .HasForeignKey(a => a.ZipCodeCity)
                 .HasConstraintName("FK_ADDRESS_CITY")
                 .OnDelete(DeleteBehavior.Cascade);
         }

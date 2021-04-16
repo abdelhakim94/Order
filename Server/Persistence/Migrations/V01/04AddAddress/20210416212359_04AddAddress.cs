@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Order.Server.Persistence.Migrations.V01._04AddAddress
 {
@@ -12,9 +11,8 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                 schema: "order_schema",
                 columns: table => new
                 {
-                    code = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    zip_code = table.Column<int>(type: "integer", nullable: false),
+                    code = table.Column<string>(type: "character varying", maxLength: 2, nullable: false),
+                    zip_code = table.Column<string>(type: "character varying", maxLength: 5, nullable: false),
                     name = table.Column<string>(type: "character varying", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
@@ -27,15 +25,13 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                 schema: "order_schema",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    zip_code = table.Column<int>(type: "integer", nullable: false),
+                    zip_code = table.Column<string>(type: "character varying", maxLength: 5, nullable: false),
                     name = table.Column<string>(type: "character varying", maxLength: 30, nullable: false),
-                    code_wilaya = table.Column<int>(type: "integer", nullable: false)
+                    code_wilaya = table.Column<string>(type: "character varying", maxLength: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CITY", x => x.id);
+                    table.PrimaryKey("PK_CITY", x => x.zip_code);
                     table.ForeignKey(
                         name: "FK_CITY_WILAYA",
                         column: x => x.code_wilaya,
@@ -52,17 +48,17 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                 {
                     address1 = table.Column<string>(type: "character varying", nullable: false),
                     address2 = table.Column<string>(type: "character varying", nullable: false),
-                    id_city = table.Column<int>(type: "integer", nullable: false)
+                    zip_code_city = table.Column<string>(type: "character varying", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ADDRESS", x => new { x.address1, x.address2, x.id_city });
+                    table.PrimaryKey("PK_ADDRESS", x => new { x.address1, x.address2, x.zip_code_city });
                     table.ForeignKey(
                         name: "FK_ADDRESS_CITY",
-                        column: x => x.id_city,
+                        column: x => x.zip_code_city,
                         principalSchema: "order_schema",
                         principalTable: "city",
-                        principalColumn: "id",
+                        principalColumn: "zip_code",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -74,17 +70,17 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                     id_user = table.Column<int>(type: "integer", nullable: false),
                     address1 = table.Column<string>(type: "character varying", nullable: false),
                     address2 = table.Column<string>(type: "character varying", nullable: false),
-                    id_city = table.Column<int>(type: "integer", nullable: false)
+                    zip_code_city = table.Column<string>(type: "character varying", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_USER_ADDRESS", x => new { x.id_user, x.address1, x.address2, x.id_city });
+                    table.PrimaryKey("PK_USER_ADDRESS", x => new { x.id_user, x.address1, x.address2, x.zip_code_city });
                     table.ForeignKey(
                         name: "FK_USER_ADDRESS_ADDRESS",
-                        columns: x => new { x.address1, x.address2, x.id_city },
+                        columns: x => new { x.address1, x.address2, x.zip_code_city },
                         principalSchema: "order_schema",
                         principalTable: "address",
-                        principalColumns: new[] { "address1", "address2", "id_city" },
+                        principalColumns: new[] { "address1", "address2", "zip_code_city" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_USER_ADDRESS_USER",
@@ -96,10 +92,10 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_address_id_city",
+                name: "IX_address_zip_code_city",
                 schema: "order_schema",
                 table: "address",
-                column: "id_city");
+                column: "zip_code_city");
 
             migrationBuilder.CreateIndex(
                 name: "IX_city_code_wilaya",
@@ -108,10 +104,17 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                 column: "code_wilaya");
 
             migrationBuilder.CreateIndex(
-                name: "IX_user_address_address1_address2_id_city",
+                name: "IX_user_address_address1_address2_zip_code_city",
                 schema: "order_schema",
                 table: "user_address",
-                columns: new[] { "address1", "address2", "id_city" });
+                columns: new[] { "address1", "address2", "zip_code_city" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_wilaya_zip_code",
+                schema: "order_schema",
+                table: "wilaya",
+                column: "zip_code",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
