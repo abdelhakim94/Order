@@ -10,7 +10,7 @@ using Order.Server.Persistence;
 namespace Order.Server.Persistence.Migrations.V01._04AddAddress
 {
     [DbContext(typeof(OrderContext))]
-    [Migration("20210416212359_04AddAddress")]
+    [Migration("20210416221043_04AddAddress")]
     partial class _04AddAddress
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,9 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                         .HasName("PK_CITY");
 
                     b.HasIndex("CodeWilaya");
+
+                    b.HasIndex("Name")
+                        .HasDatabaseName("INDEX_NAME_CITY");
 
                     b.ToTable("city", "order_schema");
                 });

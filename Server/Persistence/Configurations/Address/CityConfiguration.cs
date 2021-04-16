@@ -13,6 +13,9 @@ namespace Order.Server.Persistence
             builder.HasKey(c => c.ZipCode)
                 .HasName("PK_CITY");
 
+            builder.HasIndex(c => c.Name)
+                .HasDatabaseName("INDEX_NAME_CITY");
+
             builder.Property(c => c.ZipCode)
                 .HasColumnName("zip_code")
                 .HasColumnType("character varying")

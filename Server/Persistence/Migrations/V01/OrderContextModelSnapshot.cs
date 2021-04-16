@@ -99,6 +99,9 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.HasIndex("CodeWilaya");
 
+                    b.HasIndex("Name")
+                        .HasDatabaseName("INDEX_NAME_CITY");
+
                     b.ToTable("city", "order_schema");
                 });
 

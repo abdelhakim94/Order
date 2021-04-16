@@ -98,6 +98,12 @@ namespace Order.Server.Persistence.Migrations.V01._04AddAddress
                 column: "zip_code_city");
 
             migrationBuilder.CreateIndex(
+                name: "INDEX_NAME_CITY",
+                schema: "order_schema",
+                table: "city",
+                column: "name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_city_code_wilaya",
                 schema: "order_schema",
                 table: "city",
