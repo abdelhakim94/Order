@@ -1,6 +1,3 @@
--- Add any data required to run the system.
--- ----------------------------------------
-
 -- CATEGORY
 INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 1, 'Pizza', 'images/category/pizza.png', true);
 INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 2, 'Soupes', 'images/category/soupes.png', true);

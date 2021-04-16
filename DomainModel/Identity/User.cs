@@ -14,6 +14,7 @@ namespace Order.DomainModel
         public virtual ICollection<UserLogin> Logins { get; set; }
         public virtual ICollection<UserToken> Tokens { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserAddress> UserAddresses { get; set; }
 
         public User()
         {
@@ -21,6 +22,7 @@ namespace Order.DomainModel
             Logins = new HashSet<UserLogin>();
             Tokens = new HashSet<UserToken>();
             UserRoles = new HashSet<UserRole>();
+            UserAddresses = new HashSet<UserAddress>();
         }
     }
 }

@@ -32,8 +32,12 @@ namespace Order.Server.Persistence
                 .HasDefaultSchema("order_schema");
         }
 
+        public DbSet<Address> Address { get; set; }
         public DbSet<Category> Category { get; set; }
-        public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
+        public DbSet<City> City { get; set; }
         public override DbSet<User> Users { get; set; }
+        public DbSet<UserAddress> UserAddress { get; set; }
+        public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
+        public DbSet<Wilaya> Wilaya { get; set; }
     }
 }

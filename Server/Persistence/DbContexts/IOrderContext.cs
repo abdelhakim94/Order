@@ -7,9 +7,13 @@ namespace Order.Server.Persistence
 {
     public interface IOrderContext
     {
+        DbSet<Address> Address { get; set; }
         DbSet<Category> Category { get; set; }
-        DbSet<UserRefreshToken> UserRefreshToken { get; set; }
+        DbSet<City> City { get; set; }
         DbSet<User> Users { get; set; }
+        DbSet<UserAddress> UserAddress { get; set; }
+        DbSet<UserRefreshToken> UserRefreshToken { get; set; }
+        DbSet<Wilaya> Wilaya { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken ct);
     }
