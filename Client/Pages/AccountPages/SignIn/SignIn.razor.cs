@@ -66,6 +66,7 @@ namespace Order.Client.Pages
                 state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
             {
                 NavigationManager.NavigateTo("search/");
+                return;
             }
 
             if (!string.IsNullOrWhiteSpace(AccessToken) && !(string.IsNullOrWhiteSpace(RefreshToken)))
