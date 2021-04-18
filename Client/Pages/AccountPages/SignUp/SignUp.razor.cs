@@ -48,6 +48,8 @@ namespace Order.Client.Pages
 
             try
             {
+                var userInfo = context.Model as SignUpDto;
+                userInfo.Trim();
                 result = await AuthenticationService.SignUp(context.Model as SignUpDto, Toast);
                 if (result is null) return;
             }

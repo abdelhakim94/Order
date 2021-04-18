@@ -52,9 +52,9 @@ namespace Order.Server
         public void ConfigureServices(IServiceCollection services)
         {
             #region Configuration
-            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig_dev").Get<JwtTokenConfigDto>();
-            var emailBoxConfig = Configuration.GetSection("EmailBox_dev").Get<EmailBox>();
-            var OAuthCredentials = Configuration.GetSection("OAuthCredentials_dev").Get<OAuthCredentials>();
+            var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
+            var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
+            var OAuthCredentials = Configuration.GetSection("OAuthCredentials").Get<OAuthCredentials>();
             services.AddSingleton(jwtTokenConfig);
             services.AddSingleton(emailBoxConfig);
             #endregion
@@ -62,7 +62,7 @@ namespace Order.Server
             services.AddSingleton<INpgsqlLoggingProvider, NLogLoggingProvider>();
             services.AddDbContextPool<IOrderContext, OrderContext>((sp, builder) =>
             {
-                builder.UseNpgsql(Configuration.GetConnectionString("dev_db_order"));
+                builder.UseNpgsql(Configuration.GetConnectionString("db_order"));
                 NpgsqlLogManager.Provider = sp.GetRequiredService<INpgsqlLoggingProvider>();
             });
 
@@ -151,7 +151,11 @@ namespace Order.Server
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(HasAtLeastOneProfile.Name, HasAtLeastOneProfile.Policy);
+                options.AddPolicy(IsAdmin.Name, IsAdmin.Policy);
                 options.AddPolicy(IsGuest.Name, IsGuest.Policy);
+                options.AddPolicy(IsDeliveryMan.Name, IsDeliveryMan.Policy);
+                options.AddPolicy(IsChef.Name, IsChef.Policy);
             });
             #endregion
 
@@ -243,12 +247,8 @@ namespace Order.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapControllers()
-                    .RequireAuthorization(IsGuest.Name);
-
-                endpoints.MapHub<AppHub>("/AppHub")
-                    .RequireAuthorization(IsGuest.Name);
-
+                endpoints.MapControllers().RequireAuthorization(HasAtLeastOneProfile.Name);
+                endpoints.MapHub<AppHub>("/AppHub").RequireAuthorization(HasAtLeastOneProfile.Name);
                 endpoints.MapFallbackToFile("/landing");
             });
         }

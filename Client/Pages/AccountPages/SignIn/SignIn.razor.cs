@@ -90,6 +90,8 @@ namespace Order.Client.Pages
 
             try
             {
+                var userInfo = context.Model as SignInDto;
+                userInfo.Trim();
                 result = await AuthenticationService.SignIn(context.Model as SignInDto, Toast);
                 if (result is null) return;
             }
@@ -143,8 +145,11 @@ namespace Order.Client.Pages
             bool result;
             try
             {
+                var info = context.Model as RequestResetPasswordDto;
+                info.Trim();
+
                 result = await AuthenticationService.RequestResetPassword(
-                    context.Model as RequestResetPasswordDto,
+                    info,
                     Toast);
                 if (!result) return;
             }

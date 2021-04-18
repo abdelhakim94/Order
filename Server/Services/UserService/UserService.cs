@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using MediatR;
-using Order.DomainModel;
 using Order.Shared.Dto.Users;
 using Order.Shared.Security.Claims;
 using Order.Server.Services.JwtAuthenticationService;
@@ -15,13 +14,14 @@ using Order.Shared.Contracts;
 using Order.Server.Services.EmailService;
 using Order.Server.Dto.Users;
 using Order.Server.Middlewares;
+using Order.Server.CQRS.User.Commands;
 
 namespace Order.Server.Services.UserService
 {
     public class UserService : IUserService, IScopedService
     {
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<DomainModel.User> userManager;
+        private readonly SignInManager<DomainModel.User> signInManager;
         private readonly IJwtAuthenticationService jwtAuthenticationService;
         private readonly IEmailService emailService;
         private readonly IdentityErrorDescriber errorDescriber;
@@ -29,8 +29,8 @@ namespace Order.Server.Services.UserService
         private readonly IMediator mediator;
 
         public UserService(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            UserManager<DomainModel.User> userManager,
+            SignInManager<DomainModel.User> signInManager,
             IJwtAuthenticationService jwtAuthenticationService,
             IEmailService emailService,
             IdentityErrorDescriber errorDescriber,
@@ -53,7 +53,7 @@ namespace Order.Server.Services.UserService
                 return new SignUpResultDto { Successful = false, Error = errorDescriber.PasswordMismatch().Code };
             }
 
-            var newUser = new User
+            var newUser = new DomainModel.User
             {
                 UserName = userInfo.Email,
                 Email = userInfo.Email,
@@ -61,8 +61,7 @@ namespace Order.Server.Services.UserService
                 LastName = userInfo.LastName,
                 TwoFactorEnabled = false,
                 Claims = {
-                    new UserClaim { ClaimType = ClaimTypes.Email, ClaimValue = userInfo.Email },
-                    new UserClaim { ClaimType = nameof(Profile), ClaimValue = nameof(Profile.GUEST) }
+                    new DomainModel.UserClaim { ClaimType = ClaimTypes.Email, ClaimValue = userInfo.Email },
                 },
             };
 
@@ -73,27 +72,47 @@ namespace Order.Server.Services.UserService
                 return new SignUpResultDto { Successful = false, Error = error };
             }
 
-            var registeredUser = await userManager.FindByEmailAsync(userInfo.Email);
-            await userManager.AddClaimsAsync(registeredUser, new Claim[]
-            {
-                new(ClaimTypes.NameIdentifier, registeredUser.Id.ToString())
-            });
-
-            var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(registeredUser);
-            var confirmationUrl = emailConfirmationUrlBuilder(new EmailConfirmationDto
-            {
-                ConfirmationToken = confirmationToken,
-                UserEmail = registeredUser.Email,
-            });
-
             try
             {
+                var registeredUser = await userManager.FindByEmailAsync(userInfo.Email);
+
+                var success = await mediator.Send(new AssociateToProfileCommand(registeredUser.Id, Profile.GUEST));
+                if (!success)
+                {
+                    throw new ApplicationException("Le bon profile n'a pas pu être associé. Veuillez réessayer plus tard ou contacter le support.");
+                }
+
+                var additionalClaims = new List<Claim>
+                {
+                    new(ClaimTypes.NameIdentifier, registeredUser.Id.ToString()),
+                    new(nameof(Profile), nameof(Profile.GUEST)),
+                };
+
+                result = await userManager.AddClaimsAsync(registeredUser, additionalClaims);
+                if (!result.Succeeded)
+                {
+                    throw new ApplicationException("Le compte n'a pas pu être configuré. Veuillez réessayer plus tard ou contacter le support.");
+                }
+
+                var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(registeredUser);
+                var confirmationUrl = emailConfirmationUrlBuilder(new EmailConfirmationDto
+                {
+                    ConfirmationToken = confirmationToken,
+                    UserEmail = registeredUser.Email,
+                });
+
                 await emailService.SendEmailConfirmationMail(registeredUser.Email, confirmationUrl);
+
+            }
+            catch (System.ApplicationException)
+            {
+                await userManager.DeleteAsync(newUser);
+                throw;
             }
             catch (System.Exception)
             {
                 await userManager.DeleteAsync(newUser);
-                throw new ApplicationException("Le serveur n'a pas pu envoyer le lien de confirmation à l'e-mail fourni. Veuillez réessayer plus tard ou contacter le support.");
+                throw new ApplicationException("Le compte n'a pas pu être configuré. Veuillez réessayer plus tard ou contacter le support.");
             }
 
             return new SignUpResultDto { Successful = true };
@@ -341,7 +360,7 @@ namespace Order.Server.Services.UserService
             var existingUser = await userManager.FindByEmailAsync(userEmail);
             if (existingUser is null)
             {
-                var newUser = new User
+                var newUser = new DomainModel.User
                 {
                     UserName = userEmail,
                     Email = userEmail,
@@ -350,8 +369,8 @@ namespace Order.Server.Services.UserService
                     EmailConfirmed = true,
                     TwoFactorEnabled = false,
                     Claims = {
-                        new UserClaim { ClaimType = ClaimTypes.Email, ClaimValue = userEmail },
-                        new UserClaim { ClaimType = nameof(Profile), ClaimValue = nameof(Profile.GUEST) }
+                        new DomainModel.UserClaim { ClaimType = ClaimTypes.Email, ClaimValue = userEmail },
+                        new DomainModel.UserClaim { ClaimType = nameof(Profile), ClaimValue = nameof(Profile.GUEST) }
                     },
                 };
 

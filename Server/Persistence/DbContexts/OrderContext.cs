@@ -35,8 +35,10 @@ namespace Order.Server.Persistence
         public DbSet<Address> Address { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<City> City { get; set; }
+        public DbSet<Profile> Profile { get; set; }
         public override DbSet<User> Users { get; set; }
         public DbSet<UserAddress> UserAddress { get; set; }
+        public DbSet<UserProfile> UserProfile { get; set; }
         public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
         public DbSet<Wilaya> Wilaya { get; set; }
     }

@@ -1,10 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Order.Server.Services;
 using Order.Shared.Contracts;
 using Order.Shared.Dto.Category;
+using Order.Shared.Security.Policies;
 
 namespace Order.Server.Hubs.CategoryHub
 {
@@ -17,6 +18,7 @@ namespace Order.Server.Hubs.CategoryHub
             this.categoryService = categoryService;
         }
 
+        [Authorize(IsGuest.Name)]
         public Task<List<CategoryListItemDto>> GetCategories()
         {
             var result = categoryService.GetCategories();

@@ -14,5 +14,11 @@ namespace Order.Shared.Dto.Users
         [RegularExpression("^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$",
             ErrorMessage = "Nécessite au moin 8 caractères dont une lettre et un chiffre")]
         public string Password { get; set; }
+
+        public void Trim()
+        {
+            Email = Email.Trim();
+            Password = Password.Trim();
+        }
     }
 }

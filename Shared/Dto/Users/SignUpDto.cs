@@ -26,5 +26,14 @@ namespace Order.Shared.Dto.Users
         [PasswordPropertyText(true)]
         [Compare("Password", ErrorMessage = "Different du mot de passe")]
         public string ConfirmPassword { get; set; }
+
+        public void Trim()
+        {
+            LastName = LastName.Trim();
+            FirstName = FirstName.Trim();
+            Email = Email.Trim();
+            Password = Password.Trim();
+            ConfirmPassword = ConfirmPassword.Trim();
+        }
     }
 }

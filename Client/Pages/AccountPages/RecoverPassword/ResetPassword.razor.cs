@@ -54,8 +54,9 @@ namespace Order.Client.Pages
                 var recoverPwDto = context.Model as ResetPasswordDto;
                 recoverPwDto.Email = UserEmail;
                 recoverPwDto.ResetToken = ResetPasswordToken;
+                recoverPwDto.Trim();
 
-                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, Toast);
+                result = await AuthenticationService.ResetPassword(recoverPwDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
