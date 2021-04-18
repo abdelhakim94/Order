@@ -15,3 +15,4 @@ INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 10, 'B
 INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 11, 'Desserts', 'images/category/desserts.png', true);
 INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 12, 'Pâtisseries', 'images/category/patisseries.png', true);
 INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 13, 'Djouez et tadjines', 'images/category/djouez-et-tadjines.png', true);
+INSERT INTO order_schema.category( id, label, picture, is_main ) VALUES ( 14, 'Boissons', 'images/category/boissons.png', true);
