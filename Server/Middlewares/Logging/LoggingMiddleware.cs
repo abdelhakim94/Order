@@ -15,7 +15,7 @@ namespace Order.Server.Middlewares
 
         public async Task Invoke(HttpContext context, ILogger<LoggingMiddleware> logger)
         {
-            logger.LogInformation($"Response to request: '{context.Request.Path}' started. Protocol: '{context.Request.Protocol}'. Scheme: '{context.Request.Scheme}'. Method: '{context.Request.Method}'. Query-string: '{context.Request.QueryString}'. Content-type: '{context.Request.ContentType}'.");
+            logger.LogDebug($"Response to request: '{context.Request.Path}' started. Protocol: '{context.Request.Protocol}'. Scheme: '{context.Request.Scheme}'. Method: '{context.Request.Method}'. Query-string: '{context.Request.QueryString}'. Content-type: '{context.Request.ContentType}'.");
             await requestDelegate.Invoke(context);
         }
     }

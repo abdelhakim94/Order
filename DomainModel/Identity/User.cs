@@ -16,6 +16,7 @@ namespace Order.DomainModel
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<UserAddress> UserAddresses { get; set; }
         public virtual ICollection<UserProfile> UserProfiles { get; set; }
+        public virtual ICollection<Card> Cards { get; set; }
 
         public User()
         {
@@ -25,6 +26,7 @@ namespace Order.DomainModel
             UserRoles = new HashSet<UserRole>();
             UserAddresses = new HashSet<UserAddress>();
             UserProfiles = new HashSet<UserProfile>();
+            Cards = new HashSet<Card>();
         }
     }
 }
