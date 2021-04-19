@@ -18,11 +18,9 @@ namespace Order.Server.Hubs.CategoryHub
             this.categoryService = categoryService;
         }
 
-        [Authorize(IsGuest.Name)]
         public Task<List<CategoryListItemDto>> GetCategories()
         {
-            var result = categoryService.GetCategories();
-            return result;
+            return categoryService.GetCategories();
         }
     }
 }

@@ -18,7 +18,7 @@ using Order.Server.CQRS.User.Commands;
 
 namespace Order.Server.Services.UserService
 {
-    public class UserService : IUserService, IScopedService
+    public class AccountService : IAccountService, IScopedService
     {
         private readonly UserManager<DomainModel.User> userManager;
         private readonly SignInManager<DomainModel.User> signInManager;
@@ -28,7 +28,7 @@ namespace Order.Server.Services.UserService
         private readonly IConfiguration configuration;
         private readonly IMediator mediator;
 
-        public UserService(
+        public AccountService(
             UserManager<DomainModel.User> userManager,
             SignInManager<DomainModel.User> signInManager,
             IJwtAuthenticationService jwtAuthenticationService,
