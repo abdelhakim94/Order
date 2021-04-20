@@ -8,7 +8,7 @@ using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
 using Order.Shared.Dto;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Shared.Security.Claims;
 
 namespace Order.Client.Pages

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Order.Server.Dto.Users;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Shared.Contracts;
 
 namespace Order.Server.Services

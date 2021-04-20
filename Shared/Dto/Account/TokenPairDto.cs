@@ -1,4 +1,4 @@
-namespace Order.Shared.Dto.Users
+namespace Order.Shared.Dto.Account
 {
     public class TokenPairDto
     {

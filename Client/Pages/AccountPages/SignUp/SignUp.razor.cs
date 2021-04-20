@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Services;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Client.Constants;
 using Order.Client.Components.Misc;
 using Order.Client.Components;

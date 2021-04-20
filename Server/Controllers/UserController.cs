@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;

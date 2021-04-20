@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using MediatR;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Shared.Security.Claims;
 using Order.Server.Services.JwtAuthenticationService;
 using Order.Shared.Contracts;

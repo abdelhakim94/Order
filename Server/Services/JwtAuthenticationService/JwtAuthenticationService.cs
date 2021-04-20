@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using MediatR;
 using Order.Server.Dto.Users;
 using Order.Shared.Contracts;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Server.CQRS.Account.Commands;
 using Order.Server.CQRS.Account.Queries;
 using Order.Server.Middlewares;
