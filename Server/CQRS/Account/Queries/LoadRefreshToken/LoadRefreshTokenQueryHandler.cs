@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Order.Server.Dto.Users;
 using Order.Server.Persistence;
 
-namespace Order.Server.CQRS.User.Queries
+namespace Order.Server.CQRS.Account.Queries
 {
     public class LoadRefreshTokenQueryHandler : IRequestHandler<LoadRefreshTokenQuery, RefreshTokenDto>
     {

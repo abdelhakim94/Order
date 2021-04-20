@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Order.Server.CQRS.User.Commands
+namespace Order.Server.CQRS.Account.Commands
 {
     public class DeleteRefreshTokenCommand : IRequest<bool>
     {

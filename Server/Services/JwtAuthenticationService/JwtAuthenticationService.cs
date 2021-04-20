@@ -11,8 +11,8 @@ using MediatR;
 using Order.Server.Dto.Users;
 using Order.Shared.Contracts;
 using Order.Shared.Dto.Users;
-using Order.Server.CQRS.User.Commands;
-using Order.Server.CQRS.User.Queries;
+using Order.Server.CQRS.Account.Commands;
+using Order.Server.CQRS.Account.Queries;
 using Order.Server.Middlewares;
 
 namespace Order.Server.Services.JwtAuthenticationService

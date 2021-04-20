@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Order.Server.Persistence;
 
-namespace Order.Server.CQRS.User.Commands
+namespace Order.Server.CQRS.Account.Commands
 {
     public class AssociateToProfileCommandValidator : AbstractValidator<AssociateToProfileCommand>
     {

@@ -1,7 +1,7 @@
 using MediatR;
 using Order.Server.Dto.Users;
 
-namespace Order.Server.CQRS.User.Queries
+namespace Order.Server.CQRS.Account.Queries
 {
     public class LoadRefreshTokenQuery : IRequest<RefreshTokenDto>
     {

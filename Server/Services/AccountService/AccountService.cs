@@ -14,9 +14,9 @@ using Order.Shared.Contracts;
 using Order.Server.Services.EmailService;
 using Order.Server.Dto.Users;
 using Order.Server.Middlewares;
-using Order.Server.CQRS.User.Commands;
+using Order.Server.CQRS.Account.Commands;
 
-namespace Order.Server.Services.UserService
+namespace Order.Server.Services
 {
     public class AccountService : IAccountService, IScopedService
     {

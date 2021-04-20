@@ -1,7 +1,7 @@
 using MediatR;
 using Order.Shared.Security.Claims;
 
-namespace Order.Server.CQRS.User.Commands
+namespace Order.Server.CQRS.Account.Commands
 {
     public class AssociateToProfileCommand : IRequest<bool>
     {

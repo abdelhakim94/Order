@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Order.DomainModel;
 using Order.Server.Persistence;
 
-namespace Order.Server.CQRS.User.Commands
+namespace Order.Server.CQRS.Account.Commands
 {
     public class AssociateToProfileCommandHandler : IRequestHandler<AssociateToProfileCommand, bool>
     {
