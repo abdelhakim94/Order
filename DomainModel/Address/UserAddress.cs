@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Order.DomainModel
@@ -8,6 +9,7 @@ namespace Order.DomainModel
         public string Address1 { get; set; }
         public string Address2 { get; set; }
         public string ZipCodeCity { get; set; }
+        public DateTime LastTimeUsed { get; set; }
 
         public virtual User User { get; set; }
         public virtual Address Address { get; set; }

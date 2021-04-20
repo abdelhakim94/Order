@@ -38,6 +38,10 @@ namespace Order.Server.Persistence
                 .HasMaxLength(5)
                 .IsRequired();
 
+            builder.Property(ua => ua.LastTimeUsed)
+                .HasColumnName("last_time_used")
+                .HasColumnType("timestamp with time zone");
+
             builder.HasOne(ua => ua.User)
                 .WithMany(u => u.UserAddresses)
                 .HasForeignKey(ua => ua.IdUser)
