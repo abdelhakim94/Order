@@ -21,6 +21,8 @@ namespace Order.Server.Persistence
     {
         public OrderContext(DbContextOptions<OrderContext> options) : base(options) { }
 
+        public bool HasChanges() => ChangeTracker.HasChanges();
+
         public override Task<int> SaveChangesAsync(CancellationToken ct) => base.SaveChangesAsync(ct);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

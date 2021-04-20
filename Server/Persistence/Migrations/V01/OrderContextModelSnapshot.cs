@@ -519,6 +519,10 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("zip_code_city");
 
+                    b.Property<DateTime>("LastTimeUsed")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_time_used");
+
                     b.HasKey("IdUser", "Address1", "Address2", "ZipCodeCity")
                         .HasName("PK_USER_ADDRESS");
 

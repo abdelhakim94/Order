@@ -11,12 +11,19 @@
 
 <div>
     <Column Align=@AlignItems.STRETCH>
+
+        <div class="address-bar">
+            <EditForm Model=@CurrentAddress>
+                <ObjectGraphDataAnnotationsValidator />
+                <OInputText PlaceHolder=@M.Address Value=@GetFullAddress() />
+            </EditForm>
+        </div>
+
         <div class="search-bar">
-            <EditForm Model=@SearchValue >
+            <EditForm Model=@SearchValue>
                 <ObjectGraphDataAnnotationsValidator />
                 <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
                     RightIcon="icons/searchbar-magnifier.png" />
-                <ValidationMessage For=@( () => SearchValue.Search ) />
             </EditForm>
         </div>
 

@@ -17,6 +17,7 @@ namespace Order.Server.Persistence
         DbSet<UserRefreshToken> UserRefreshToken { get; set; }
         DbSet<Wilaya> Wilaya { get; set; }
 
+        bool HasChanges();
         Task<int> SaveChangesAsync(CancellationToken ct);
     }
 }

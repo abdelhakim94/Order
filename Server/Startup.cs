@@ -27,7 +27,7 @@ using Order.Shared.Security.Policies;
 using Order.Shared.Security.Constants;
 using Order.Server.Middlewares;
 using Order.Server.CQRS;
-using Order.Server.Hubs.CategoryHub;
+using Order.Server.Hubs;
 using Order.Server.Services;
 
 namespace Order.Server

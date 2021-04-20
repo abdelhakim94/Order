@@ -6,6 +6,7 @@ using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Layouts;
 using Order.Client.Services;
+using Order.Shared.Dto.Address;
 using Order.Shared.Dto.Category;
 
 namespace Order.Client.Pages
@@ -14,6 +15,8 @@ namespace Order.Client.Pages
     {
         private List<CategoryListItemDto> categories = new();
         public CategorySearchBarDto SearchValue { get; set; } = new();
+        public UserAddressDetailDto CurrentAddress { get; set; } = new();
+        public List<UserAddressDetailDto> AllAddresses { get; set; } = new();
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
@@ -29,8 +32,10 @@ namespace Order.Client.Pages
             Layout.SearchSelected = true;
             try
             {
-                categories = await HubConnection.Invoke<List<CategoryListItemDto>>("GetCategories");
-                StateHasChanged();
+                var catTask = HubConnection.Invoke<List<CategoryListItemDto>>("GetCategories");
+                var curAddTask = HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress");
+                categories = await catTask;
+                CurrentAddress = await curAddTask;
             }
             catch (System.Exception ex) when (ex is ApplicationException)
             {
@@ -40,6 +45,11 @@ namespace Order.Client.Pages
             {
                 Toast.ShowError(UIMessages.DefaultInternalError);
             }
+        }
+
+        string GetFullAddress()
+        {
+            return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.ZipCode} {CurrentAddress.City}";
         }
     }
 }
