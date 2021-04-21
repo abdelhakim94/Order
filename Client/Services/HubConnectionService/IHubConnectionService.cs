@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Order.Client.Components.Misc;
 using Order.Shared.Contracts;
 
 namespace Order.Client.Services

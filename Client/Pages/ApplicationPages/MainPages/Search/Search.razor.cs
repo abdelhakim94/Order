@@ -11,15 +11,18 @@ using Order.Shared.Dto.Category;
 
 namespace Order.Client.Pages
 {
-    public partial class Search : ComponentBase
+    public partial class Search : ComponentBase, IDisposable
     {
-        private List<CategoryListItemDto> categories = new();
-        public CategorySearchBarDto SearchValue { get; set; } = new();
-        public UserAddressDetailDto CurrentAddress { get; set; } = new();
-        public List<UserAddressDetailDto> AllAddresses { get; set; } = new();
+        List<CategoryListItemDto> Categories = new();
+        CategorySearchBarDto SearchValue { get; set; } = new();
+        UserAddressDetailDto CurrentAddress { get; set; } = new();
+        List<UserAddressDetailDto> AllAddresses { get; set; } = new();
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
+
+        [Inject]
+        public IStateStore Store { get; set; }
 
         [CascadingParameter]
         public MainPagesLayout Layout { get; set; }
@@ -30,12 +33,23 @@ namespace Order.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             Layout.SearchSelected = true;
+            Store.OnUpdate += OnAddressChange;
+
             try
             {
-                var catTask = HubConnection.Invoke<List<CategoryListItemDto>>("GetCategories");
-                var curAddTask = HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress");
-                categories = await catTask;
-                CurrentAddress = await curAddTask;
+                Categories = Store.Get<List<CategoryListItemDto>>(StoreKey.CATEGORIES);
+                if (Categories is null)
+                {
+                    Categories = await HubConnection.Invoke<List<CategoryListItemDto>>("GetCategories");
+                    Store.Set(StoreKey.CATEGORIES, Categories);
+                }
+
+                CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
+                if (CurrentAddress is null)
+                {
+                    CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress");
+                    Store.Set(StoreKey.ADDRESS, CurrentAddress);
+                }
             }
             catch (System.Exception ex) when (ex is ApplicationException)
             {
@@ -54,6 +68,19 @@ namespace Order.Client.Pages
                 return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.ZipCode} {CurrentAddress.City}";
             }
             return string.Empty;
+        }
+
+        void OnAddressChange(object sender, StoreUpdateArgs args)
+        {
+            if (args.Key is StoreKey.ADDRESS)
+            {
+                CurrentAddress = args.Value as UserAddressDetailDto;
+            }
+        }
+
+        public void Dispose()
+        {
+            Store.OnUpdate -= OnAddressChange;
         }
     }
 }

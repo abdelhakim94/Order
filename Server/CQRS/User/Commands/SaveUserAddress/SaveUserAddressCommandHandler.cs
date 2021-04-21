@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,7 +5,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Order.DomainModel;
 using Order.Server.Persistence;
-using Order.Shared.Dto.Address;
 
 namespace Order.Server.CQRS.User.Commands
 {
