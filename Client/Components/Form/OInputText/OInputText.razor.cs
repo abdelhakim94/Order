@@ -21,6 +21,9 @@ namespace Order.Client.Components.Form
         public bool HideData { get; set; }
 
         [Parameter]
+        public bool Disable { get; set; }
+
+        [Parameter]
         public string RightIcon { get; set; }
 
         [Parameter]

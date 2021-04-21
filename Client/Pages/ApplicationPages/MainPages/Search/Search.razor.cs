@@ -49,7 +49,11 @@ namespace Order.Client.Pages
 
         string GetFullAddress()
         {
-            return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.ZipCode} {CurrentAddress.City}";
+            if (CurrentAddress.Address1 is not null)
+            {
+                return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.ZipCode} {CurrentAddress.City}";
+            }
+            return string.Empty;
         }
     }
 }

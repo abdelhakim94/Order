@@ -15,7 +15,7 @@
         <div class="address-bar">
             <EditForm Model=@CurrentAddress>
                 <ObjectGraphDataAnnotationsValidator />
-                <OInputText PlaceHolder=@M.Address Value=@GetFullAddress() />
+                <OInputText Disable=@true PlaceHolder=@M.Address Value=@GetFullAddress() />
             </EditForm>
         </div>
 

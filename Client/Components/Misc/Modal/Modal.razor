@@ -33,7 +33,10 @@
     public async Task Close()
     {
         ShowModal = false;
-        await OnClose.InvokeAsync();
+        if (OnClose.HasDelegate)
+        {
+            await OnClose.InvokeAsync();
+        }
         StateHasChanged();
     }
 }
