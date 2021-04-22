@@ -70,7 +70,10 @@ namespace Order.Client.Constants
         public static string TopCategories { get => "Nos catégories reines"; }
         public static string CategorySearchBar { get => "Rechercher un plat ou un chef"; }
 
-        public static string Address { get => "adresse"; }
-
+        public static string Address { get => "Adresse"; }
+        public static string Address1 { get => "Adresse 1"; }
+        public static string Address2 { get => "Adresse 2"; }
+        public static string ZipCode { get => "Code postal"; }
+        public static string City { get => "Ville"; }
     }
 }

@@ -77,19 +77,6 @@ a:active {
   overflow: visible;
 }
 
-::deep .reset-pw-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: stretch;
-  width: 80%;
-}
-
 ::deep .reset-pw-input {
   width: 90%;
   margin-left: auto;

@@ -3,6 +3,17 @@
   width: 75vw;
 }
 
+::deep div.address-bar-input input {
+  border: none;
+  border-radius: 0%;
+  border-bottom: 0.1em solid lightgrey;
+}
+
+::deep div.address-bar-input input:focus,
+::deep div.address-bar-input input:hover {
+  box-shadow: none;
+}
+
 .search-bar {
   margin-left: 2vw;
   margin-right: 2vw;
