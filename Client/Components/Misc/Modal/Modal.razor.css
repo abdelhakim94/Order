@@ -1,7 +1,7 @@
 .component-container {
-  background-color: whitesmoke;
+  background-color: rgba(200, 200, 200, 0.7);
   border: none;
-  border-radius: 1em;
+  border-radius: 0.6em;
 
   position: fixed;
   top: 50%;

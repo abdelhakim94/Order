@@ -1,0 +1,12 @@
+@namespace Order.Client.Components.Form
+
+<div @attributes=@AdditionalAttributes class="@ComponentContainer @CssClass">
+    <InputText list="options" placeholder=@PlaceHolder Value=@Value @oninput=HandleInputChange ValueExpression=@(() =>
+        Value) />
+    <datalist id="options">
+        @foreach (var option in Options)
+        {
+            <option value="@option.Id">@option.Value</option>
+        }
+    </datalist>
+</div>
