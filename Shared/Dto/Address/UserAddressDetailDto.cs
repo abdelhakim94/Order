@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Order.Shared.Dto.Address
 {
-    public class UserAddressDetailDto
+    public class UserAddressDetailDto : ICloneable<UserAddressDetailDto>
     {
         [Required(ErrorMessage = "Une adresse est requise")]
         public string Address1 { get; set; }
@@ -16,5 +16,17 @@ namespace Order.Shared.Dto.Address
         public string ZipCode { get; set; }
 
         public string Wilaya { get; set; }
+
+        public UserAddressDetailDto Clone()
+        {
+            return new UserAddressDetailDto
+            {
+                Address1 = Address1,
+                Address2 = Address2,
+                City = City,
+                ZipCode = ZipCode,
+                Wilaya = Wilaya,
+            };
+        }
     }
 }
