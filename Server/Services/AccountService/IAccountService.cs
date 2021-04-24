@@ -27,6 +27,8 @@ namespace Order.Server.Services
             int userId,
             IEnumerable<Claim> claims);
 
+        Task<TokenPairDto> RefreshExpiredTokens(TokenPairDto tokens);
+
         Task RequestResetPassword(
             RequestResetPasswordDto request,
             Func<object, string> resetPasswordUrlBuilder);

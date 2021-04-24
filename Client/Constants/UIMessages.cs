@@ -49,6 +49,7 @@ namespace Order.Client.Constants
         public static string DefaultSignInErrorMessage { get => "impossible de vous connecter"; }
 
         public static string Send { get => "Envoyer"; }
+        public static string Save { get => "Enregistrer"; }
         public static string Cancel { get => "Annuler"; }
 
         public static string Reset { get => "Réinitialiser"; }

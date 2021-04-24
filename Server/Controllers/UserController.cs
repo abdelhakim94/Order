@@ -113,6 +113,20 @@ namespace Order.Server.Controllers
             }
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult<TokenPairDto>> RefreshExpiredTokens([FromBody] TokenPairDto tokens)
+        {
+            try
+            {
+                return Ok(await accountService.RefreshExpiredTokens(tokens));
+            }
+            catch (System.Exception)
+            {
+                return Unauthorized();
+            }
+        }
+
         [HttpGet]
         public new Task SignOut()
         {

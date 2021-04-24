@@ -1,13 +1,14 @@
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Order.Shared.Contracts;
 using Order.Shared.Dto.Account;
+using Order.Shared.Security;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Order.Client.Services
 {
@@ -38,7 +39,7 @@ namespace Order.Client.Services
 
             try
             {
-                var claims = ParseClaimsFromJwt(accessToken);
+                var claims = accessToken.ParseClaimsFromJwt();
                 await ProvideTokenToConnectionClients(accessToken);
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
             }
@@ -57,7 +58,7 @@ namespace Order.Client.Services
             await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken), refreshToken);
             await ProvideTokenToConnectionClients(accessToken);
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(
-                ParseClaimsFromJwt(accessToken),
+                accessToken.ParseClaimsFromJwt(),
                 "jwt"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
@@ -73,13 +74,6 @@ namespace Order.Client.Services
             NotifyAuthenticationStateChanged(authState);
         }
 
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.ReadJwtToken(jwt);
-            return securityToken.Claims;
-        }
-
         private async Task DeleteTokenFromConnectionClients()
         {
             httpClient.DefaultRequestHeaders.Authorization = null;
@@ -88,8 +82,39 @@ namespace Order.Client.Services
 
         private async Task ProvideTokenToConnectionClients(string accessToken)
         {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
-            await hubConnectionService.StartNew(accessToken);
+            try
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+                await hubConnectionService.StartNew(accessToken);
+            }
+            // Catching any exception and try to refresh tokens assume that the SignalR connection couldn't be
+            // established because of an expired access token. This is wrong. The SignalR connection could fail because
+            // of other reasons. Fix this later.
+            catch (System.Exception)
+            {
+                var currentAccessToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.AccessToken));
+                var currentRefreshToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.RefreshToken));
+                var response = await httpClient.PostAsJsonAsync<TokenPairDto>("api/user/RefreshExpiredTokens", new()
+                {
+                    AccessToken = currentAccessToken,
+                    RefreshToken = currentRefreshToken,
+                });
+                response.EnsureSuccessStatusCode();
+                var tokens = JsonSerializer.Deserialize<TokenPairDto>(
+                        await response.Content.ReadAsStringAsync(),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (tokens is null)
+                {
+                    throw;
+                }
+
+                await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.AccessToken), tokens.AccessToken);
+                await localStorage.SetItemAsync(nameof(SignInResultDto.TokenPair.RefreshToken), tokens.RefreshToken);
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", tokens.AccessToken);
+                await hubConnectionService.StartNew(tokens.AccessToken);
+            }
         }
     }
 }

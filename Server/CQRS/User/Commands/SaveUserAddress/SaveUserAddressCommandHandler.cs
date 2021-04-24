@@ -12,6 +12,11 @@ namespace Order.Server.CQRS.User.Commands
     {
         private readonly IOrderContext context;
 
+        public SaveUserAddressCommandHandler(IOrderContext context)
+        {
+            this.context = context;
+        }
+
         public async Task<bool> Handle(SaveUserAddressCommand command, CancellationToken ct)
         {
             var address = await context.Address

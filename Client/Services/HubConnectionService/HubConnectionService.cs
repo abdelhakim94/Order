@@ -59,6 +59,15 @@ namespace Order.Client.Services
             throw new ApplicationException(UIMessages.DefaultSignalRInvocationError);
         }
 
+        public async Task<T> Invoke<T, U>(string methodName, U arg1)
+        {
+            if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
+            {
+                return await hubConnection.InvokeAsync<T>(methodName, arg1);
+            }
+            throw new ApplicationException(UIMessages.DefaultSignalRInvocationError);
+        }
+
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
             await hubConnection.DisposeAsync();

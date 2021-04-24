@@ -11,6 +11,7 @@ namespace Order.Server.Services.JwtAuthenticationService
     {
         Task<TokenPairDto> GenerateTokens(int userId, IEnumerable<Claim> claims, DateTime now);
         Task<TokenPairDto> RefreshTokens(string refreshToken, int userId, IEnumerable<Claim> claims, DateTime now);
+        Task<TokenPairDto> RefreshExpiredTokens(TokenPairDto tokens, DateTime now);
         Task<bool> DeleteRefreshToken(int userId);
     }
 }

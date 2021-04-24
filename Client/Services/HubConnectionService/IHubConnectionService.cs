@@ -8,5 +8,6 @@ namespace Order.Client.Services
         Task StartNew(string accessToken);
         Task ShutDown();
         Task<T> Invoke<T>(string methodName);
+        Task<T> Invoke<T, U>(string methodName, U arg1);
     }
 }

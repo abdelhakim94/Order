@@ -228,6 +228,11 @@ namespace Order.Server.Services
             }
         }
 
+        public Task<TokenPairDto> RefreshExpiredTokens(TokenPairDto tokens)
+        {
+            return jwtAuthenticationService.RefreshExpiredTokens(tokens, DateTime.Now);
+        }
+
         public async Task RequestResetPassword(RequestResetPasswordDto request, Func<object, string> resetPasswordUrlBuilder)
         {
             var user = await userManager.FindByEmailAsync(request.Email);

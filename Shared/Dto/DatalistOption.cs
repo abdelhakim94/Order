@@ -1,4 +1,4 @@
-namespace Order.Client.Components.Form
+namespace Order.Shared.Dto
 {
     public class DatalistOption
     {
