@@ -11,6 +11,8 @@
         <EditForm Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
             <ObjectGraphDataAnnotationsValidator />
 
+            <h1>@M.DeliveryAddress</h1>
+
             <div class="address-input first">
                 <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
                 <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
@@ -22,10 +24,18 @@
             </div>
 
             <div class="address-input">
-                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@Options OptionChanged=@OnOptionChanged />
+                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions OptionChanged=@OnOptionChanged />
                 @* The name of the city is just for the user. In the database, we are more interested in the zipcode. *@
                 <ValidationMessage For=@( () => CurrentAddress.ZipCode ) />
             </div>
+
+            @if(AllAddresses is not null && AllAddresses.Any())
+            {
+                <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
+                <div class="address-input recent">
+                    <OInputSelect PlaceHolder=@M.Address @bind-Value=@SelectedRecentAddress Options=@RecentAddressOptions />
+                </div>
+            }
 
             <Row CssClass="button-row" Align=@AlignItems.STRETCH>
                 <Button CssClass="button" Type="submit" Label=@M.Save />

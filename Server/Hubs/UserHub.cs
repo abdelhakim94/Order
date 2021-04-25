@@ -10,7 +10,7 @@ namespace Order.Server.Hubs
 {
     public partial class AppHub : Hub<IClientHubMessage>
     {
-        public async Task<List<UserAddressDetailDto>> GetAllUserAddresses()
+        public async Task<List<IdentifiedUserAddressDetailDto>> GetAllUserAddresses()
         {
             return await userService.GetAllUserAddresses(Context.User.GetUserId().Value);
         }

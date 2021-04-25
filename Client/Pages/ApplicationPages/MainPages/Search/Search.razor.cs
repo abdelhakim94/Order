@@ -18,7 +18,6 @@ namespace Order.Client.Pages
         CloneableList<CategoryListItemDto> Categories = new();
         CategorySearchBarDto SearchValue { get; set; } = new();
         UserAddressDetailDto CurrentAddress { get; set; } = new();
-        List<UserAddressDetailDto> AllAddresses { get; set; } = new();
         AddressModal AddressModal;
         IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
 

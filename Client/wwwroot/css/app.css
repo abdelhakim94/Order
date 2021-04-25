@@ -61,11 +61,11 @@ body {
 }
 
 .page-blured {
-  filter: blur(10px);
+  filter: blur(2px);
   pointer-events: none;
 }
 
 .page-disabled {
-  pointer-events: none;
   opacity: 0.4;
+  pointer-events: none;
 }

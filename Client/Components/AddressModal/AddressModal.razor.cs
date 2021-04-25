@@ -16,9 +16,31 @@ namespace Order.Client.Components
     public partial class AddressModal : ComponentBase, IDisposable
     {
         Modal Modal;
-        UserAddressDetailDto CurrentAddress = new();
-        List<DatalistOption> Options { get; set; } = new();
         Timer timer { get; set; }
+
+        UserAddressDetailDto CurrentAddress = new();
+        List<IdentifiedUserAddressDetailDto> AllAddresses = new();
+
+        string selectedRecentAddress = default(int).ToString();
+        string SelectedRecentAddress
+        {
+            get => selectedRecentAddress;
+            set
+            {
+                selectedRecentAddress = value;
+                CurrentAddress = AllAddresses?.FirstOrDefault(a => a.Id == value).Address.Clone();
+            }
+        }
+
+        List<DatalistOption> CityOptions { get; set; } = new();
+        IEnumerable<DatalistOption> RecentAddressOptions
+        {
+            get => AllAddresses.Select(a => new DatalistOption
+            {
+                Id = a.Id,
+                Value = a.Address.ToString(),
+            });
+        }
 
         [Inject]
         public IStateStore Store { get; set; }
@@ -35,14 +57,21 @@ namespace Order.Client.Components
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, Object> AdditionalAttributes { get; set; }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
+            await base.OnInitializedAsync();
             CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
             Store.OnUpdate += OnStoreAddressChanged;
             timer = new Timer(400);
             timer.AutoReset = false;
             timer.Elapsed += async (s, e) => await OnTimedEvent(s, e);
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+            AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses");
+            AllAddresses = AllAddresses is null ? new() : AllAddresses;
         }
 
         public void Show()
@@ -61,7 +90,7 @@ namespace Order.Client.Components
 
         async Task OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            Options = await HubConnection.Invoke<List<DatalistOption>, string>("SearchCities", CurrentAddress.City);
+            CityOptions = await HubConnection.Invoke<List<DatalistOption>, string>("SearchCities", CurrentAddress.City);
             StateHasChanged();
         }
 

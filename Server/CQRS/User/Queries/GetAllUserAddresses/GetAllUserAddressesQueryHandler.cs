@@ -19,11 +19,8 @@ namespace Order.Server.CQRS.User.Queries
         public async Task<List<UserAddressDetailDto>> Handle(GetAllUserAddressesQuery query, CancellationToken ct)
         {
             return await context.UserAddress
-                .Include(ua => ua.Address)
-                .ThenInclude(a => a.City)
-                .ThenInclude(c => c.Wilaya)
                 .Where(ua => ua.IdUser == query.IdUser)
-                .OrderBy(ua => ua.LastTimeUsed)
+                .OrderByDescending(ua => ua.LastTimeUsed)
                 .Select(ua => new UserAddressDetailDto
                 {
                     Address1 = ua.Address.Address1,

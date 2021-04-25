@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Order.Shared.Dto.Address
 {
@@ -25,6 +26,15 @@ namespace Order.Shared.Dto.Address
                 ZipCode = ZipCode,
                 Wilaya = Wilaya,
             };
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrWhiteSpace(Address1) && !string.IsNullOrWhiteSpace(ZipCode))
+            {
+                return $"{Address1}, {Address2}, {ZipCode} {City}";
+            }
+            return string.Empty;
         }
     }
 }

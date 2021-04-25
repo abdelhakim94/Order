@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Order.Server.CQRS.User.Commands;
@@ -17,9 +18,15 @@ namespace Order.Server.Services
         {
             this.mediator = mediator;
         }
-        public Task<List<UserAddressDetailDto>> GetAllUserAddresses(int userId)
+        public async Task<List<IdentifiedUserAddressDetailDto>> GetAllUserAddresses(int userId)
         {
-            return mediator.Send(new GetAllUserAddressesQuery(userId));
+            var result = await mediator.Send(new GetAllUserAddressesQuery(userId));
+            var counter = 0;
+            return result?.Select(r => new IdentifiedUserAddressDetailDto
+            {
+                Id = (counter++).ToString(),
+                Address = r,
+            }).ToList();
         }
 
         public Task<UserAddressDetailDto> GetLastUsedAddress(int userId)
