@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace Order.Server.CQRS.User.Commands
                 if (address.UsersAddress.Any(ua => ua.IdUser == command.IdUser))
                     return true;
 
-                address.UsersAddress.Add(new UserAddress { IdUser = command.IdUser });
+                address.UsersAddress.Add(new UserAddress { IdUser = command.IdUser, LastTimeUsed = DateTime.Now });
                 return await context.SaveChangesAsync(ct) > 0;
             }
 
@@ -41,7 +42,7 @@ namespace Order.Server.CQRS.User.Commands
                 Address2 = command.Address.Address2,
                 ZipCodeCity = command.Address.ZipCode,
             };
-            newAddress.UsersAddress.Add(new UserAddress { IdUser = command.IdUser });
+            newAddress.UsersAddress.Add(new UserAddress { IdUser = command.IdUser, LastTimeUsed = DateTime.Now });
             context.Address.Add(newAddress);
             return await context.SaveChangesAsync(ct) > 0;
         }

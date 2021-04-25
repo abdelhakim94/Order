@@ -19,7 +19,7 @@ namespace Order.Server.CQRS.User.Queries
         public async Task<List<DatalistOption>> Handle(SearchCitiesQuery query, CancellationToken ct)
         {
             return await context.City
-                .Where(c => c.Name.Contains(query.Search.ToUpper()))
+                .Where(c => c.Name.ToLower().Contains(query.Search.ToLower()))
                 .OrderBy(c => c.Name)
                 .Select(c => new DatalistOption
                 {

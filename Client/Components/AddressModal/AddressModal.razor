@@ -22,9 +22,9 @@
             </div>
 
             <div class="address-input">
-                <OInputDatalist @bind-Value=@CurrentAddress.City OnValueChanged=@OnCityChanged PlaceHolder=@M.City
-                    Options=@Options />
-                <ValidationMessage For=@( () => CurrentAddress.City ) />
+                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@Options OptionChanged=@OnOptionChanged />
+                @* The name of the city is just for the user. In the database, we are more interested in the zipcode. *@
+                <ValidationMessage For=@( () => CurrentAddress.ZipCode ) />
             </div>
 
             <Row CssClass="button-row" Align=@AlignItems.STRETCH>

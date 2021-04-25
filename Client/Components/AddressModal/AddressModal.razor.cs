@@ -71,8 +71,9 @@ namespace Order.Client.Components
             timer.Start();
         }
 
-        void OnCityChanged(string value)
+        void OnOptionChanged(DatalistOption option)
         {
+            CurrentAddress.ZipCode = option.Id;
             ResetTimer();
         }
 

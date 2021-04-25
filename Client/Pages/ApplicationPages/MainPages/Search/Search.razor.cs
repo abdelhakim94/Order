@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
-using Order.Client.Components.Form;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Layouts;
@@ -50,6 +49,7 @@ namespace Order.Client.Pages
                 if (Categories is null)
                 {
                     Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories");
+                    Categories = Categories is null ? new() : Categories;
                     Store.Set(StoreKey.CATEGORIES, Categories);
                 }
 
@@ -57,6 +57,7 @@ namespace Order.Client.Pages
                 if (CurrentAddress is null)
                 {
                     CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress");
+                    CurrentAddress = CurrentAddress is null ? new() : CurrentAddress;
                     Store.Set(StoreKey.ADDRESS, CurrentAddress);
                 }
             }

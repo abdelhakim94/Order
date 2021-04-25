@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Order.Shared.Dto;
 
 namespace Order.Client.Components.Form
@@ -19,10 +21,13 @@ namespace Order.Client.Components.Form
 
         // ValueChanged is for two way binding. This one is for custom behavior.
         [Parameter]
-        public EventCallback<string> OnValueChanged { get; set; }
+        public EventCallback<DatalistOption> OptionChanged { get; set; }
 
         [Parameter]
         public string PlaceHolder { get; set; }
+
+        [CascadingParameter]
+        public EditContext Context { get; set; }
 
         [Parameter]
         public string CssClass { get; set; }
@@ -34,9 +39,14 @@ namespace Order.Client.Components.Form
         {
             Value = args.Value.ToString();
             if (ValueChanged.HasDelegate)
+            {
                 await ValueChanged.InvokeAsync(Value);
-            if (OnValueChanged.HasDelegate)
-                await OnValueChanged.InvokeAsync(Value);
+            }
+            if (OptionChanged.HasDelegate)
+            {
+                var id = Options?.FirstOrDefault(o => o.Value.ToLower() == Value.ToLower())?.Id;
+                await OptionChanged.InvokeAsync(new DatalistOption { Id = id, Value = Value });
+            }
         }
     }
 }

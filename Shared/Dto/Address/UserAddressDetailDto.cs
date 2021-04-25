@@ -8,11 +8,9 @@ namespace Order.Shared.Dto.Address
         public string Address1 { get; set; }
 
         public string Address2 { get; set; }
-
-        [Required(ErrorMessage = "Une ville est requise")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "Une code postal est requis")]
+        [Required(ErrorMessage = "Veuillez choisir parmis la liste")]
         public string ZipCode { get; set; }
 
         public string Wilaya { get; set; }
