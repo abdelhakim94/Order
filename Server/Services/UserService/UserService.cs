@@ -4,6 +4,7 @@ using MediatR;
 using Order.Server.CQRS.User.Commands;
 using Order.Server.CQRS.User.Queries;
 using Order.Shared.Contracts;
+using Order.Shared.Dto;
 using Order.Shared.Dto.Address;
 
 namespace Order.Server.Services
@@ -29,6 +30,11 @@ namespace Order.Server.Services
         public Task<bool> SaveUserAddress(UserAddressDetailDto address, int userId)
         {
             return mediator.Send(new SaveUserAddressCommand(address, userId));
+        }
+
+        public Task<List<DatalistOption>> SearchCities(string search)
+        {
+            return mediator.Send(new SearchCitiesQuery(search));
         }
     }
 }

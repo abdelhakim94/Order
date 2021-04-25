@@ -12,6 +12,7 @@ namespace Order.Client.Services
     {
         private readonly IWebAssemblyHostEnvironment hostEnvironment;
         private HubConnection hubConnection;
+        public event EventHandler<Exception> OnReconnecting;
 
         public HubConnectionService(IWebAssemblyHostEnvironment hostEnvironment)
         {

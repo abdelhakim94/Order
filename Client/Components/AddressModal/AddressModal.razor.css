@@ -1,0 +1,13 @@
+.address-input {
+  margin: 1em;
+}
+
+::deep .button-row {
+  height: 2em;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+}
+
+::deep .button {
+  width: 30%;
+}

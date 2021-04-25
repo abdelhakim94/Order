@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Order.Client.Components;
+using Order.Client.Components.Form;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Layouts;
 using Order.Client.Services;
+using Order.Shared.Dto;
 using Order.Shared.Dto.Address;
 using Order.Shared.Dto.Category;
 
@@ -13,10 +16,15 @@ namespace Order.Client.Pages
 {
     public partial class Search : ComponentBase, IDisposable
     {
-        List<CategoryListItemDto> Categories = new();
+        CloneableList<CategoryListItemDto> Categories = new();
         CategorySearchBarDto SearchValue { get; set; } = new();
         UserAddressDetailDto CurrentAddress { get; set; } = new();
         List<UserAddressDetailDto> AllAddresses { get; set; } = new();
+        AddressModal AddressModal;
+        IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
+
+        private bool isEditingAddress { get; set; }
+        private string bluredPage { get => isEditingAddress ? CSSCLasses.PageBlured : string.Empty; }
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
@@ -25,22 +33,23 @@ namespace Order.Client.Pages
         public IStateStore Store { get; set; }
 
         [CascadingParameter]
-        public MainPagesLayout Layout { get; set; }
+        public MainPagesLayout BottomLayout { get; set; }
+
+        [CascadingParameter]
+        public MainLayout TopLayout { get; set; }
 
         [CascadingParameter]
         public Toast Toast { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            Layout.SearchSelected = true;
-            Store.OnUpdate += OnAddressChange;
-
+            BottomLayout.SearchSelected = true;
             try
             {
-                Categories = Store.Get<List<CategoryListItemDto>>(StoreKey.CATEGORIES);
+                Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
                 if (Categories is null)
                 {
-                    Categories = await HubConnection.Invoke<List<CategoryListItemDto>>("GetCategories");
+                    Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories");
                     Store.Set(StoreKey.CATEGORIES, Categories);
                 }
 
@@ -59,6 +68,10 @@ namespace Order.Client.Pages
             {
                 Toast.ShowError(UIMessages.DefaultInternalError);
             }
+            finally
+            {
+                Store.OnUpdate += OnStoreAddressChange;
+            }
         }
 
         string GetFullAddress()
@@ -70,17 +83,44 @@ namespace Order.Client.Pages
             return string.Empty;
         }
 
-        void OnAddressChange(object sender, StoreUpdateArgs args)
+        void HandleAddressBarClick()
+        {
+            isEditingAddress = true;
+            BottomLayout.Blured = true;
+            TopLayout.Blured = true;
+            AddressModal.Show();
+        }
+
+        void OnAddressModalClosed()
+        {
+            isEditingAddress = false;
+            BottomLayout.Blured = false;
+            TopLayout.Blured = false;
+        }
+
+        void OnStoreAddressChange(object sender, StoreUpdateArgs args)
         {
             if (args.Key is StoreKey.ADDRESS)
             {
                 CurrentAddress = args.Value as UserAddressDetailDto;
+                try
+                {
+                    HubConnection.Invoke<bool, UserAddressDetailDto>("SaveUserAddress", CurrentAddress);
+                }
+                catch (System.Exception ex) when (ex is ApplicationException)
+                {
+                    Toast.ShowError(ex.Message);
+                }
+                catch (System.Exception)
+                {
+                    Toast.ShowError(UIMessages.DefaultInternalError);
+                }
             }
         }
 
         public void Dispose()
         {
-            Store.OnUpdate -= OnAddressChange;
+            Store.OnUpdate -= OnStoreAddressChange;
         }
     }
 }

@@ -10,12 +10,12 @@
 @attribute [Authorize(Policy = IsGuest.Name)]
 
 <div>
-    <Column Align=@AlignItems.STRETCH>
+    <Column Align=@AlignItems.STRETCH CssClass=@bluredPage>
 
         <div class="address-bar">
             <EditForm Model=@CurrentAddress>
-                <ObjectGraphDataAnnotationsValidator />
-                <OInputText Disable=@true PlaceHolder=@M.Address Value=@GetFullAddress() />
+                <OInputText CssClass="address-bar-input" Disable=@true PlaceHolder=@M.Address Value=@GetFullAddress()
+                    @onclick=@HandleAddressBarClick />
             </EditForm>
         </div>
 
@@ -36,4 +36,6 @@
             }
         </Row>
     </Column>
+
+    <AddressModal @ref=@AddressModal OnClose=@OnAddressModalClosed />
 </div>

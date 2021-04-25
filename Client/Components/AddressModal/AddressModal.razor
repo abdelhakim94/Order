@@ -1,0 +1,37 @@
+@using Order.Client.Components.Misc
+@using Order.Client.Components.Form
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+@using M = Order.Client.Constants.UIMessages;
+
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class=@CssClass>
+    <Modal @ref=@Modal>
+        <EditForm Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
+            <ObjectGraphDataAnnotationsValidator />
+
+            <div class="address-input first">
+                <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
+                <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
+            </div>
+
+            <div class="address-input">
+                <OInputText PlaceHolder=@M.Address2 @bind-Value=@CurrentAddress.Address2 />
+                <ValidationMessage For=@( () => CurrentAddress.Address2 ) />
+            </div>
+
+            <div class="address-input">
+                <OInputDatalist @bind-Value=@CurrentAddress.City OnValueChanged=@OnCityChanged PlaceHolder=@M.City
+                    Options=@Options />
+                <ValidationMessage For=@( () => CurrentAddress.City ) />
+            </div>
+
+            <Row CssClass="button-row" Align=@AlignItems.STRETCH>
+                <Button CssClass="button" Type="submit" Label=@M.Save />
+                <Button CssClass="button" Label=@M.Cancel Danger=@true @onclick=Close />
+            </Row>
+
+        </EditForm>
+    </Modal>
+</div>

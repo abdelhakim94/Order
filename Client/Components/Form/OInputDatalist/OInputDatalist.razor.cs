@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Order.Shared.Dto;
 
 namespace Order.Client.Components.Form
 {
@@ -15,6 +16,10 @@ namespace Order.Client.Components.Form
 
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
+
+        // ValueChanged is for two way binding. This one is for custom behavior.
+        [Parameter]
+        public EventCallback<string> OnValueChanged { get; set; }
 
         [Parameter]
         public string PlaceHolder { get; set; }
@@ -30,6 +35,8 @@ namespace Order.Client.Components.Form
             Value = args.Value.ToString();
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
+            if (OnValueChanged.HasDelegate)
+                await OnValueChanged.InvokeAsync(Value);
         }
     }
 }
