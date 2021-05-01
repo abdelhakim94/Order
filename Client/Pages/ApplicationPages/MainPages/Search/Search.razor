@@ -9,33 +9,27 @@
 @namespace Order.Client.Pages
 @attribute [Authorize(Policy = IsGuest.Name)]
 
-<div>
-    <Column Align=@AlignItems.STRETCH CssClass=@bluredPage>
+<div class=@bluredPage>
+    <Column CssClass="search-column" Align=@AlignItems.STRETCH>
 
-        <div class="address-bar">
-            <EditForm Model=@CurrentAddress>
-                <OInputText CssClass="address-bar-input" Disable=@true PlaceHolder=@M.Address Value=@GetFullAddress()
-                    @onclick=@HandleAddressBarClick />
-            </EditForm>
-        </div>
+        <EditForm Model=@CurrentAddress>
+            <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.Address Value=@GetFullAddress() @onclick=@HandleAddressBarClick />
+        </EditForm>
 
-        <div class="search-bar">
-            <EditForm Model=@SearchValue>
-                <ObjectGraphDataAnnotationsValidator />
-                <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
-                    RightIcon="icons/searchbar-magnifier.png" />
-            </EditForm>
-        </div>
+        <EditForm Model=@SearchValue>
+            <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
+                RightIcon="icons/searchbar-magnifier.png" />
+        </EditForm>
 
         <p class="text">@M.TopCategories</p>
 
-        <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.FLEX_START>
+        <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.SPACE_BETWEEN>
             @foreach (var category in Categories ?? new())
             {
-                <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
+                <CategoryCard Label=@category.Label Picture=@category.Picture />
             }
         </Row>
     </Column>
-
-    <AddressModal @ref=@AddressModal OnClose=@OnAddressModalClosed />
 </div>
+
+<AddressModal @ref=@AddressModal OnClose=@OnAddressModalClosed />

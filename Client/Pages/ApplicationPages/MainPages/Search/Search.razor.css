@@ -1,24 +1,22 @@
-.address-bar {
-  margin: 2vw;
-  width: 75vw;
+::deep .search-column {
+  width: 96%;
+  margin: auto;
 }
 
-::deep div.address-bar-input input {
+::deep .search-column > * {
+  margin-top: 2%;
+  margin-bottom: 2%;
+  padding-bottom: 5%;
+}
+
+::deep .address-bar {
+  width: 75%;
+}
+
+::deep div.address-bar input {
   border: none;
   border-radius: 0%;
   border-bottom: 0.1em solid lightgrey;
-}
-
-::deep div.address-bar-input input:focus,
-::deep div.address-bar-input input:hover {
-  box-shadow: none;
-}
-
-.search-bar {
-  margin-left: 2vw;
-  margin-right: 2vw;
-  margin-top: 6vw;
-  margin-bottom: 2vw;
 }
 
 ::deep .right-icon {
@@ -29,21 +27,8 @@
 
 .text {
   color: lightslategrey;
-  margin-left: 2vw;
-  margin-right: 2vw;
-  margin-top: 4vw;
-  margin-bottom: 4vw;
 }
 
-::deep .categories {
-  padding-bottom: 4em;
-  padding-top: 2vw;
-  padding-right: 1vw;
-  padding-left: 1vw;
-}
-
-::deep .card {
-  height: 47vw;
-  width: 47vw;
-  margin: 1vw;
+::deep .categories{
+  padding-bottom: 15%;
 }
