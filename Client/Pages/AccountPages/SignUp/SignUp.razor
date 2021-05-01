@@ -1,50 +1,51 @@
 @page "/SignUp"
 
 @using Order.Client.Components.Form
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
 
 @namespace Order.Client.Pages
 
-<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition>
+<div class="@disabled">
+    <EditForm class="form-container" Model=SignUpData OnValidSubmit=@HandleFormSubmition>
+        <ObjectGraphDataAnnotationsValidator />
+        <Column CssClass="form-column" Align=@AlignItems.STRETCH ExpandVertically=@true>
+            <OTitle Text=@M.SignUp Size=1.5 />
 
-    <ObjectGraphDataAnnotationsValidator />
+            <Group>
+                <OInputText PlaceHolder=@M.LastName @bind-Value=@SignUpData.LastName />
+                <ValidationMessage For=@( () => SignUpData.LastName ) />
+            </Group>
 
-    <div class="form-container @disabled">
+            <Group>
+                <OInputText PlaceHolder=@M.FirstName @bind-Value=@SignUpData.FirstName />
+                <ValidationMessage For=@( () => SignUpData.FirstName ) />
+            </Group>
 
-        <h1 class="form-header">@M.SignUp</h1>
+            <Group>
+                <OInputText PlaceHolder=@M.Email @bind-Value=@SignUpData.Email />
+                <ValidationMessage For=@( () => SignUpData.Email ) />
+            </Group>
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.LastName @bind-Value=@SignUpData.LastName />
-            <ValidationMessage For=@( () => SignUpData.LastName ) />
-        </div>
+            <Group>
+                <OInputText HideData=@isPasswordHidden RightIcon=@passwordRightIcon OnRightIconClick=@TogglePasswordHide
+                    PlaceHolder=@M.Password @bind-Value=@SignUpData.Password />
+                <ValidationMessage For=@( () => SignUpData.Password) />
+            </Group>
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.FirstName @bind-Value=@SignUpData.FirstName />
-            <ValidationMessage For=@( () => SignUpData.FirstName ) />
-        </div>
+            <Group>
+                <OInputText HideData=@isConfirmPasswordHidden RightIcon=@confirmPasswordRightIcon
+                    OnRightIconClick=@ToggleConfirmPasswordHide PlaceHolder=@M.ConfirmPassword
+                    @bind-Value=@SignUpData.ConfirmPassword />
+                <ValidationMessage For=@( () => SignUpData.ConfirmPassword ) />
+            </Group>
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@SignUpData.Email />
-            <ValidationMessage For=@( () => SignUpData.Email ) />
-        </div>
+            <Button Type="submit" Label=@M.Register />
 
-        <div>
-            <OInputText HideData=@isPasswordHidden RightIcon=@passwordRightIcon OnRightIconClick=@TogglePasswordHide
-                CssClass="form-input" PlaceHolder=@M.Password @bind-Value=@SignUpData.Password />
-            <ValidationMessage For=@( () => SignUpData.Password) />
-        </div>
-
-        <div>
-            <OInputText HideData=@isConfirmPasswordHidden RightIcon=@confirmPasswordRightIcon OnRightIconClick=@ToggleConfirmPasswordHide
-                CssClass="form-input" PlaceHolder=@M.ConfirmPassword @bind-Value=@SignUpData.ConfirmPassword />
-            <ValidationMessage For=@( () => SignUpData.ConfirmPassword ) />
-        </div>
-
-        <Button CssClass="form-submit" Type="submit" Label=@M.Register />
-
-        <div class="redirection">
-            @M.AskForAccountExistance <a href="SignIn/" class="redirect">@M.SignInRedirect</a>
-        </div>
-
-    </div>
-
-</EditForm>
+            <Group>
+                @M.AskForAccountExistance
+                <LinkButton NavigateTo="SignIn/" Label=@M.SignInRedirect />
+            </Group>
+        </Column>
+    </EditForm>
+</div>
