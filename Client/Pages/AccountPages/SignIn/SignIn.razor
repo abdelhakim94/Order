@@ -63,7 +63,7 @@
     <EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
         <ObjectGraphDataAnnotationsValidator />
         <Modal @ref=@resetPasswordModal>
-            <Group CssClass="reset-pw-input validated">
+            <Group CssClass="reset-pw-input">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@RequestResetPassword.Email />
                 <ValidationMessage For=@( () => RequestResetPassword.Email ) />
             </Group>
