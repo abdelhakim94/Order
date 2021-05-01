@@ -21,12 +21,12 @@
 
             <OTitle Text=@M.SignIn Size=1.5 />
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@UserSignInData.Email />
                 <ValidationMessage For=@( () => UserSignInData.Email ) />
             </Group>
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText HideData=@isPasswordHidden RightIcon=@rightIcon OnRightIconClick=@TogglePasswordHide
                     PlaceHolder=@M.Password @bind-Value=@UserSignInData.Password />
                 <ValidationMessage For=@( () => UserSignInData.Password) />
@@ -63,7 +63,7 @@
     <EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
         <ObjectGraphDataAnnotationsValidator />
         <Modal @ref=@resetPasswordModal>
-            <Group CssClass="reset-pw-input">
+            <Group CssClass="reset-pw-input validated">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@RequestResetPassword.Email />
                 <ValidationMessage For=@( () => RequestResetPassword.Email ) />
             </Group>

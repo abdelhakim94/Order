@@ -12,6 +12,10 @@
   text-align: center;
 }
 
+::deep .validated{
+  text-align: start;
+}
+
 ::deep .reset-pw-input {
   margin: 1em;
 }

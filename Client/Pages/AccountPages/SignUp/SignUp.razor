@@ -12,28 +12,28 @@
         <Column CssClass="form-column" Align=@AlignItems.STRETCH ExpandVertically=@true>
             <OTitle Text=@M.SignUp Size=1.5 />
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText PlaceHolder=@M.LastName @bind-Value=@SignUpData.LastName />
                 <ValidationMessage For=@( () => SignUpData.LastName ) />
             </Group>
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText PlaceHolder=@M.FirstName @bind-Value=@SignUpData.FirstName />
                 <ValidationMessage For=@( () => SignUpData.FirstName ) />
             </Group>
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@SignUpData.Email />
                 <ValidationMessage For=@( () => SignUpData.Email ) />
             </Group>
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText HideData=@isPasswordHidden RightIcon=@passwordRightIcon OnRightIconClick=@TogglePasswordHide
                     PlaceHolder=@M.Password @bind-Value=@SignUpData.Password />
                 <ValidationMessage For=@( () => SignUpData.Password) />
             </Group>
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText HideData=@isConfirmPasswordHidden RightIcon=@confirmPasswordRightIcon
                     OnRightIconClick=@ToggleConfirmPasswordHide PlaceHolder=@M.ConfirmPassword
                     @bind-Value=@SignUpData.ConfirmPassword />

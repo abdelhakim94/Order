@@ -11,3 +11,7 @@
   padding-bottom: 0.5em;
   text-align: center;
 }
+
+::deep .validated {
+  text-align: start;
+}
