@@ -8,36 +8,35 @@
 
 <div @attributes=@AdditionalAttributes class=@CssClass>
     <Modal @ref=@Modal>
-        <EditForm Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
+        <EditForm class="address-form" Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
             <ObjectGraphDataAnnotationsValidator />
 
-            <h1>@M.DeliveryAddress</h1>
+            <OTitle Text=@M.DeliveryAddress Size=1.2 />
 
-            <div class="address-input first">
+            <Group>
                 <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
                 <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
-            </div>
+            </Group>
 
-            <div class="address-input">
+            <Group>
                 <OInputText PlaceHolder=@M.Address2 @bind-Value=@CurrentAddress.Address2 />
                 <ValidationMessage For=@( () => CurrentAddress.Address2 ) />
-            </div>
+            </Group>
 
-            <div class="address-input">
-                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions OptionChanged=@OnOptionChanged />
+            <Group>
+                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions
+                    OptionChanged=@OnOptionChanged />
                 @* The name of the city is just for the user. In the database, we are more interested in the zipcode. *@
                 <ValidationMessage For=@( () => CurrentAddress.ZipCode ) />
-            </div>
+            </Group>
 
-            @if(AllAddresses is not null && AllAddresses.Any())
+            @if (AllAddresses is not null && AllAddresses.Any())
             {
                 <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
-                <div class="address-input recent">
-                    <OInputSelect PlaceHolder=@M.Address @bind-Value=@SelectedRecentAddress Options=@RecentAddressOptions />
-                </div>
+                <OInputSelect PlaceHolder=@M.Address @bind-Value=@SelectedRecentAddress Options=@RecentAddressOptions />
             }
 
-            <Row CssClass="button-row" Align=@AlignItems.STRETCH>
+            <Row Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH ExpandHorizontally=@true>
                 <Button CssClass="button" Type="submit" Label=@M.Save />
                 <Button CssClass="button" Label=@M.Cancel Danger=@true @onclick=Close />
             </Row>
