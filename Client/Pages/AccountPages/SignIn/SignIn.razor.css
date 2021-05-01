@@ -1,100 +1,21 @@
-.form-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: stretch;
+::deep .form-container {
   height: 100vh;
   width: 90vw;
   margin: auto;
-  overflow: visible;
 }
 
-.form-header {
-  font-size: 1.5em;
-  align-self: center;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-::deep .form-input {
-  height: 2em;
-  margin-top: 0.5em;
-}
-
-::deep .form-submit {
-  height: 2em;
-  font-size: 1.1em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.social-logins {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  height: 4em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-::deep .social-login-button {
-  height: 4em;
-  width: 4em;
-  margin-left: 1.5em;
-  margin-right: 1.5em;
-}
-
-.redirection {
-  align-self: center;
-  margin-top: 0.5em;
-  margin-bottom: 1em;
-}
-
-a {
-  color: gray;
-  text-decoration: underline;
-}
-
-a.redirect {
-  font-weight: bold;
-  text-decoration: none;
-  color: #52affa;
-}
-
-a:active {
-  text-shadow: 0 0 0.1em #1b6ec2;
-}
-
-.modal-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: stretch;
-  height: 95vh;
-  width: 90vw;
-  margin: auto;
-  overflow: visible;
+::deep .form-column > * {
+  margin-top: auto;
+  margin-bottom: auto;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  text-align: center;
 }
 
 ::deep .reset-pw-input {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin: 1em;
 }
 
 ::deep .reset-pw-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: stretch;
-  height: 2em;
-  width: 100%;
   margin-bottom: 1em;
-}
-
-::deep .reset-pw-button {
-  width: 30%;
 }

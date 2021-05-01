@@ -60,7 +60,6 @@ namespace Order.Client.Components
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
             Store.OnUpdate += OnStoreAddressChanged;
             timer = new Timer(400);
             timer.AutoReset = false;
@@ -70,6 +69,7 @@ namespace Order.Client.Components
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
+            CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
             AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses");
             AllAddresses = AllAddresses is null ? new() : AllAddresses;
         }

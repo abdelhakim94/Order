@@ -1,0 +1,16 @@
+@namespace Order.Client.Components.Layout
+
+<div @attributes=@AdditionalAttributes class=@CssClass>
+    @ChildContent
+</div>
+
+@code{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}
