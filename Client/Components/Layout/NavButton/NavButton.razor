@@ -1,8 +1,10 @@
+@using Order.Client.Constants
+
 @namespace Order.Client.Components.Layout
 
 @if (DisplayHorizontal)
 {
-    <Row @attributes=@AdditionalAttributes class="@CssClass">
+    <Row @attributes=@AdditionalAttributes class="@CssClass" Align=@AlignItems.CENTER>
         <button class="button-image" type="button" style="background-image:url(@Icon); 
                                         background-position: @(Translate)% 0%;
                                         background-size: @(ImagesInSprite * 100)% 100%;">
@@ -14,7 +16,7 @@
 }
 else
 {
-    <Column @attributes=@AdditionalAttributes class="@CssClass">
+    <Column @attributes=@AdditionalAttributes class="@CssClass" Align=@AlignItems.CENTER>
         <button class="button-image" type="button" style="background-image:url(@Icon); 
                                     background-position: @(Translate)% 0%;
                                     background-size: @(ImagesInSprite * 100)% 100%;">

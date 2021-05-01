@@ -11,7 +11,7 @@
         @Body
     </CascadingValue>
 
-    <Row CssClass=@bluredPage>
+    <Row CssClass=@bluredPage Justify=@JustifyContent.SPACE_AROUND ExpandHorizontally=@true>
         <NavButton Label=@M.Search Icon="icons/search-sprite.png" Selected=@SearchSelected ImagesInSprite=2
             Translate=@translateSearchIcon @onclick=@(() => SearchSelected = true) />
         <NavButton Label=@M.IWant Icon="icons/iwant-sprite.png" Selected=@IWantSelected ImagesInSprite=2
@@ -34,6 +34,10 @@
         }
     }
 
+    // This is really bad design choice. Should refactor. Violation of the Open-Closed principle.
+    // This implies that if a new page is added, the same pattern below
+    // will be applied to it. This layout should instead have a method (AddPage)
+    // that adds the required behaviour to the page.
     private int translateSearchIcon { get => searchSelected ? 0 : 100; }
     private bool searchSelected;
     public bool SearchSelected

@@ -4,8 +4,3 @@
   box-shadow: 0 0.1em 7px 0 lightgrey;
   background-color: white;
 }
-
-::deep .button-image {
-  height: 2em;
-  width: 2em;
-}
