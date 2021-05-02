@@ -16,10 +16,9 @@ namespace Order.Client.Pages
     public partial class SignIn : ComponentBase
     {
         private bool isLoading { get; set; }
-        private string disabledPage { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
-
         private bool isResetingPassword { get; set; }
-        private string bluredPage { get => isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
+        private string shouldBlureMainPage { get => isLoading || isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
+        private string shouldBlurePwResetModal { get => isLoading ? CSSCLasses.PageBlured : string.Empty; }
 
         private Modal resetPasswordModal { get; set; }
 

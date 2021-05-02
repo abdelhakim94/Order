@@ -13,7 +13,7 @@ namespace Order.Client.Pages
     public partial class SignUp : ComponentBase
     {
         private bool isLoading { get; set; }
-        private string disabled { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
+        private string blured { get => isLoading ? CSSCLasses.PageBlured : string.Empty; }
 
         private bool isPasswordHidden = true;
         private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }

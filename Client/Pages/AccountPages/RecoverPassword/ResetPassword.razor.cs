@@ -45,7 +45,7 @@ namespace Order.Client.Pages
 
 
         private bool isLoading { get; set; }
-        private string disabled { get => isLoading ? "page-disabled" : string.Empty; }
+        private string blured { get => isLoading ? "page-blured" : string.Empty; }
 
         public async Task HandleFormSubmition(EditContext context)
         {

@@ -22,7 +22,7 @@ namespace Order.Client.Pages
         IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
 
         private bool isEditingAddress { get; set; }
-        private string bluredPage { get => isEditingAddress ? CSSCLasses.PageBlured : string.Empty; }
+        private string blured { get => isEditingAddress ? CSSCLasses.PageBlured : string.Empty; }
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }

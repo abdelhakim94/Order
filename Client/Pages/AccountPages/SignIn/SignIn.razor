@@ -12,7 +12,7 @@
 
 @* ========================================== SignIn Form =============================================================
 *@
-<div class="@bluredPage @disabledPage">
+<div class="@shouldBlureMainPage">
 
     <EditForm class="form-container" Model=@UserSignInData OnValidSubmit=@HandleSignInFormSubmition>
         <ObjectGraphDataAnnotationsValidator />
@@ -59,10 +59,10 @@
 @* ========================================== Reset Password Form =====================================================
 *@
 
-<div class="@disabledPage">
+<div>
     <EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
         <ObjectGraphDataAnnotationsValidator />
-        <Modal @ref=@resetPasswordModal>
+        <Modal CssClass=@shouldBlurePwResetModal @ref=@resetPasswordModal>
             <Group CssClass="reset-pw-input">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@RequestResetPassword.Email />
                 <ValidationMessage For=@( () => RequestResetPassword.Email ) />

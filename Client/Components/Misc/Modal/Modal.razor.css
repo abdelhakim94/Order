@@ -12,11 +12,11 @@
   max-height: 100%;
   overflow: auto;
 
-  z-index: 9;
+  z-index: 7;
 }
 
 .modal-overlay {
-  z-index: 8;
+  z-index: 6;
   position: fixed;
   top: 0;
   left: 0;

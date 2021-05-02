@@ -74,8 +74,8 @@ namespace Order.Client.Constants
         public static string Address { get => "Adresse"; }
         public static string RecentAddresses { get => "Récemment utilisées"; }
         public static string DeliveryAddress { get => "Adresse de livraison"; }
-        public static string Address1 { get => "Adresse 1"; }
-        public static string Address2 { get => "Adresse 2"; }
+        public static string Address1 { get => "Adresse"; }
+        public static string Address2 { get => "Complément"; }
         public static string ZipCode { get => "Code postal"; }
         public static string City { get => "Ville"; }
     }

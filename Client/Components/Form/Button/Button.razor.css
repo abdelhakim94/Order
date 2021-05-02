@@ -19,5 +19,7 @@
 }
 
 .danger-button {
-  background-color: #f94416;
+  background-color: transparent;
+  color: black;
+  border: 0.1em solid #52affa;
 }
