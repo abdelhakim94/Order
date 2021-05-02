@@ -13,17 +13,16 @@
 
             <OTitle Text=@M.DeliveryAddress Size=1.2 />
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
                 <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
             </Group>
 
             <Group>
                 <OInputText PlaceHolder=@M.Address2 @bind-Value=@CurrentAddress.Address2 />
-                <ValidationMessage For=@( () => CurrentAddress.Address2 ) />
             </Group>
 
-            <Group>
+            <Group CssClass="validated">
                 <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions
                     OptionChanged=@OnOptionChanged />
                 @* The name of the city is just for the user. In the database, we are more interested in the zipcode. *@
