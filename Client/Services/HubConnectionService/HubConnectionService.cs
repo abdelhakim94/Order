@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
+using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Shared.Contracts;
 
@@ -12,7 +13,6 @@ namespace Order.Client.Services
     {
         private readonly IWebAssemblyHostEnvironment hostEnvironment;
         private HubConnection hubConnection;
-        public event EventHandler<Exception> OnReconnecting;
 
         public HubConnectionService(IWebAssemblyHostEnvironment hostEnvironment)
         {
@@ -23,7 +23,6 @@ namespace Order.Client.Services
         {
             await ShutDown();
             hubConnection = new HubConnectionBuilder()
-                // .WithUrl($"{hostEnvironment.BaseAddress.Replace("/app/", "")}/AppHub", options => options.Headers.Add("Authorization", $"Bearer {accessToken}"))
                 .WithUrl($"{hostEnvironment.BaseAddress.Replace("/app/", "")}/AppHub", options => options.AccessTokenProvider = () => Task.FromResult(accessToken))
                 .WithAutomaticReconnect(new HubConnectionRetryPolicy())
                 .AddMessagePackProtocol()
@@ -44,29 +43,66 @@ namespace Order.Client.Services
             }
         }
 
-        public async Task<T> Invoke<T>(string methodName)
+        public async Task<T> Invoke<T>(string methodName, Toast toast = default(Toast))
         {
-            // Change this:
-            // See if we can know why an invocation failed.
-            // If the reason is authorization, mark the user as signed out.
-            // Hook an event handler (to the reconnection event or the 
-            // disconected event ot the reconnecting method during connection
-            // build) to see if it is an authorization problem that caused
-            // the deconnection, and if so, mark the user as signed out.
             if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
             {
-                return await hubConnection.InvokeAsync<T>(methodName);
+                try
+                {
+                    return await hubConnection.InvokeAsync<T>(methodName);
+                }
+                catch (System.Exception)
+                {
+                    if (toast is not default(Toast))
+                    {
+                        LogInternalError(toast);
+                        return default(T);
+                    }
+                    throw;
+                }
             }
-            throw new ApplicationException(UIMessages.DefaultSignalRInvocationError);
+            if (toast is not default(Toast))
+            {
+                LogConnectionLost(toast);
+                return default(T);
+            }
+            throw new ApplicationException(UIMessages.ConnectionLost);
         }
 
-        public async Task<T> Invoke<T, U>(string methodName, U arg1)
+        public async Task<T> Invoke<T, U>(string methodName, U arg1, Toast toast = default(Toast))
         {
             if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
             {
-                return await hubConnection.InvokeAsync<T>(methodName, arg1);
+                try
+                {
+                    return await hubConnection.InvokeAsync<T>(methodName, arg1);
+                }
+                catch (System.Exception)
+                {
+                    if (toast is not default(Toast))
+                    {
+                        LogInternalError(toast);
+                        return default(T);
+                    }
+                    throw;
+                }
             }
-            throw new ApplicationException(UIMessages.DefaultSignalRInvocationError);
+            if (toast is not default(Toast))
+            {
+                LogConnectionLost(toast);
+                return default(T);
+            }
+            throw new ApplicationException(UIMessages.ConnectionLost);
+        }
+
+        void LogConnectionLost(Toast toast)
+        {
+            toast.ShowError(UIMessages.ConnectionLost);
+        }
+
+        void LogInternalError(Toast toast)
+        {
+            toast.ShowError(UIMessages.DefaultInternalError);
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()

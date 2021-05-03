@@ -12,9 +12,6 @@ namespace Order.Client.Pages
 {
     public partial class SignUp : ComponentBase
     {
-        private bool isLoading { get; set; }
-        private string blured { get => isLoading ? CSSCLasses.PageBlured : string.Empty; }
-
         private bool isPasswordHidden = true;
         private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
         private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
@@ -42,7 +39,6 @@ namespace Order.Client.Pages
 
         public async Task HandleFormSubmition(EditContext context)
         {
-            isLoading = true;
             Spinner.Show();
             SignUpResultDto result;
 
@@ -60,7 +56,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 StateHasChanged();
             }

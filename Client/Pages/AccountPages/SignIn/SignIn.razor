@@ -21,10 +21,14 @@
 
             <OTitle Text=@M.SignIn Size=1.5 />
 
+            <Group CssClass="blank" />
+
             <Group CssClass="validated">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@UserSignInData.Email />
                 <ValidationMessage For=@( () => UserSignInData.Email ) />
             </Group>
+
+            <Group CssClass="blank" />
 
             <Group CssClass="validated">
                 <OInputText HideData=@isPasswordHidden RightIcon=@rightIcon OnRightIconClick=@TogglePasswordHide
@@ -32,11 +36,21 @@
                 <ValidationMessage For=@( () => UserSignInData.Password) />
             </Group>
 
+            <Group CssClass="blank" />
+
             <Button Type="submit" Label=@M.Login />
 
-            <LinkButton @onclick=@ResetPasswordModalShow Label=@M.ForgotPassword />
+            <Group CssClass="blank" />
+
+            <Column Align=@AlignItems.CENTER>
+                <LinkButton @onclick=@ResetPasswordModalShow Label=@M.ForgotPassword />
+            </Column>
+
+            <Group CssClass="blank" />
 
             <LineTextSeparator Text=@M.ContinueWith />
+
+            <Group CssClass="blank" />
 
             <Row Justify=@JustifyContent.SPACE_AROUND>
                 <SocialMediaButton SocialMediaPath=@SocialSpritePath ImagesInSprite=3 Translate=0 @onclick=@(() =>
@@ -47,10 +61,15 @@
                     CheckoutConsentScreen(new ValueWrapperDto<string>(ExternalIdentityProviders.LINKEDIN))) />
             </Row>
 
+            <Group CssClass="blank" />
+            <Group CssClass="blank" />
+
             <Group>
                 @M.AskForAccountAbsence
                 <LinkButton NavigateTo="SignUp/" Label=@M.SignUpRedirect />
             </Group>
+
+            <Group CssClass="blank" />
 
         </Column>
     </EditForm>
@@ -62,7 +81,7 @@
 <div>
     <EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
         <ObjectGraphDataAnnotationsValidator />
-        <Modal CssClass=@shouldBlurePwResetModal @ref=@resetPasswordModal>
+        <Modal @ref=@resetPasswordModal>
             <Group CssClass="reset-pw-input">
                 <OInputText PlaceHolder=@M.Email @bind-Value=@RequestResetPassword.Email />
                 <ValidationMessage For=@( () => RequestResetPassword.Email ) />

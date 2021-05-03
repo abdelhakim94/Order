@@ -43,14 +43,8 @@ namespace Order.Client.Pages
 
         public ResetPasswordDto PasswordReset { get; set; } = new ResetPasswordDto();
 
-
-        private bool isLoading { get; set; }
-        private string blured { get => isLoading ? "page-blured" : string.Empty; }
-
         public async Task HandleFormSubmition(EditContext context)
         {
-
-            isLoading = true;
             Spinner.Show();
             ResetPasswordResultDto result;
             try
@@ -70,7 +64,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 StateHasChanged();
             }

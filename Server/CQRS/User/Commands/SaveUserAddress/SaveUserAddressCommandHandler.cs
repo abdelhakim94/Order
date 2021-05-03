@@ -29,8 +29,12 @@ namespace Order.Server.CQRS.User.Commands
 
             if (address is not null)
             {
-                if (address.UsersAddress.Any(ua => ua.IdUser == command.IdUser))
-                    return true;
+                var ua = address.UsersAddress.FirstOrDefault(ua => ua.IdUser == command.IdUser);
+                if (ua is not null)
+                {
+                    ua.LastTimeUsed = DateTime.Now;
+                    return await context.SaveChangesAsync(ct) > 0;
+                }
 
                 address.UsersAddress.Add(new UserAddress { IdUser = command.IdUser, LastTimeUsed = DateTime.Now });
                 return await context.SaveChangesAsync(ct) > 0;

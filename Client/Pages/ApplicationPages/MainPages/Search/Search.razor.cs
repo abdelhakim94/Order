@@ -42,36 +42,24 @@ namespace Order.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             BottomLayout.SearchSelected = true;
-            try
-            {
-                Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
-                if (Categories is null)
-                {
-                    Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories");
-                    Categories = Categories is null ? new() : Categories;
-                    Store.Set(StoreKey.CATEGORIES, Categories);
-                }
 
-                CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
-                if (CurrentAddress is null)
-                {
-                    CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress");
-                    CurrentAddress = CurrentAddress is null ? new() : CurrentAddress;
-                    Store.Set(StoreKey.ADDRESS, CurrentAddress);
-                }
-            }
-            catch (System.Exception ex) when (ex is ApplicationException)
+            Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
+            if (Categories is null)
             {
-                Toast.ShowError(ex.Message);
+                Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories", Toast);
+                Categories = Categories is null ? new() : Categories;
+                Store.Set(StoreKey.CATEGORIES, Categories);
             }
-            catch (System.Exception)
+
+            CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
+            if (CurrentAddress is null)
             {
-                Toast.ShowError(UIMessages.DefaultInternalError);
+                CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
+                CurrentAddress = CurrentAddress is null ? new() : CurrentAddress;
+                Store.Set(StoreKey.ADDRESS, CurrentAddress);
             }
-            finally
-            {
-                Store.OnUpdate += OnStoreAddressChange;
-            }
+
+            Store.OnUpdate += OnStoreAddressChange;
         }
 
         string GetFullAddress()
@@ -103,18 +91,6 @@ namespace Order.Client.Pages
             if (args.Key is StoreKey.ADDRESS)
             {
                 CurrentAddress = args.Value as UserAddressDetailDto;
-                try
-                {
-                    HubConnection.Invoke<bool, UserAddressDetailDto>("SaveUserAddress", CurrentAddress);
-                }
-                catch (System.Exception ex) when (ex is ApplicationException)
-                {
-                    Toast.ShowError(ex.Message);
-                }
-                catch (System.Exception)
-                {
-                    Toast.ShowError(UIMessages.DefaultInternalError);
-                }
             }
         }
 

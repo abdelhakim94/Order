@@ -1,5 +1,6 @@
 ﻿@using Order.Client.Components.Misc
 @using Order.Client.Components
+@using Order.Client.Constants
 @using Order.Shared.Security.Claims
 
 @* Read more about authentication/authorozation in blazor here: *@
@@ -9,21 +10,23 @@
         <Found Context="routeData">
             <Toast @ref=@Toast />
             <CascadingValue Value=@Toast IsFixed=@true>
-                <Spinner @ref=@Spinner />
+                <Spinner @ref=@Spinner OnChange=@((isSpinning) => Blure = isSpinning) />
                 <CascadingValue Value=@Spinner IsFixed=@true>
-                    <AuthorizeRouteView RouteData="@routeData">
-                        <NotAuthorized>
-                            @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
-                            nameof(Profile) && c.Value == nameof(Profile.GUEST))))
+                    <div class=@classBlured>
+                        <AuthorizeRouteView RouteData="@routeData">
+                            <NotAuthorized>
+                                @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
+                                nameof(Profile) && c.Value == nameof(Profile.GUEST))))
                                 {
-                            <Redirect Route="SignIn/" />
-                            }
+                                <Redirect Route="SignIn/" />
+                                }
                                 else
                                 {
-                            <Redirect Route="Unauthorized/" />
-                            }
-                        </NotAuthorized>
-                    </AuthorizeRouteView>
+                                <Redirect Route="Unauthorized/" />
+                                }
+                            </NotAuthorized>
+                        </AuthorizeRouteView>
+                    </div>
                 </CascadingValue>
             </CascadingValue>
         </Found>
@@ -38,4 +41,6 @@
 @code{
     public Toast Toast { get; set; }
     public Spinner Spinner { get; set; }
+    public bool Blure { get; set; }
+    private string classBlured { get => Blure ? $"app-container {CSSCLasses.PageBlured}" : "app-container"; }
 }

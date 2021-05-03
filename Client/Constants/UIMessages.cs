@@ -12,7 +12,7 @@ namespace Order.Client.Constants
         public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
         public static string DefaultInternalError { get => "Une erreur interne est survenue. Veuillez réessayer ou contacter le support"; }
 
-        public static string DefaultSignalRInvocationError { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
+        public static string ConnectionLost { get => "Connexion perdue. Veuillez vérifier votre réseau"; }
 
         public static string SignUpSuccess { get => "Veuillez suivre le lien reçu par email pour finaliser votre inscription"; }
 
@@ -27,7 +27,7 @@ namespace Order.Client.Constants
         public static string Login { get => "Se connecter"; }
         public static string Register { get => "S'inscrire"; }
 
-        public static string AskForAccountExistance { get => "Vous avez déja un compte? "; }
+        public static string AskForAccountExistance { get => "Vous avez déja un compte?"; }
         public static string SignInRedirect { get => "Connectez vous"; }
         public static string AskForAccountAbsence { get => "Vous n'avez pas de compte?"; }
         public static string SignUpRedirect { get => "Rejoignez nous"; }

@@ -15,10 +15,8 @@ namespace Order.Client.Pages
 {
     public partial class SignIn : ComponentBase
     {
-        private bool isLoading { get; set; }
         private bool isResetingPassword { get; set; }
-        private string shouldBlureMainPage { get => isLoading || isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
-        private string shouldBlurePwResetModal { get => isLoading ? CSSCLasses.PageBlured : string.Empty; }
+        private string shouldBlureMainPage { get => isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
 
         private Modal resetPasswordModal { get; set; }
 
@@ -84,7 +82,6 @@ namespace Order.Client.Pages
 
         public async Task HandleSignInFormSubmition(EditContext context)
         {
-            isLoading = true;
             Spinner.Show();
             SignInResultDto result;
 
@@ -102,7 +99,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 StateHasChanged();
             }
@@ -140,7 +136,6 @@ namespace Order.Client.Pages
 
         public async Task HandleResetPasswordFormSubmit(EditContext context)
         {
-            isLoading = true;
             Spinner.Show();
             bool result;
             try
@@ -160,7 +155,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 isResetingPassword = false;
                 RequestResetPassword.Email = string.Empty;
@@ -181,7 +175,6 @@ namespace Order.Client.Pages
 
         public async Task CheckoutConsentScreen(ValueWrapperDto<string> provider)
         {
-            isLoading = true;
             Spinner.Show();
             ValueWrapperDto<string> result;
             try
@@ -196,7 +189,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
             }
 

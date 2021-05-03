@@ -17,10 +17,8 @@ namespace Order.Client.Components
     {
         Modal Modal;
         Timer timer { get; set; }
-
         UserAddressDetailDto CurrentAddress = new();
         List<IdentifiedUserAddressDetailDto> AllAddresses = new();
-
         string selectedRecentAddress = default(int).ToString();
         string SelectedRecentAddress
         {
@@ -31,7 +29,6 @@ namespace Order.Client.Components
                 CurrentAddress = AllAddresses?.FirstOrDefault(a => a.Id == value).Address.Clone();
             }
         }
-
         List<DatalistOption> CityOptions { get; set; } = new();
         IEnumerable<DatalistOption> RecentAddressOptions
         {
@@ -47,6 +44,12 @@ namespace Order.Client.Components
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
+
+        [CascadingParameter]
+        public Toast Toast { get; set; }
+
+        [CascadingParameter]
+        public Spinner Spinner { get; set; }
 
         [Parameter]
         public EventCallback OnClose { get; set; }
@@ -70,7 +73,7 @@ namespace Order.Client.Components
         {
             await base.OnParametersSetAsync();
             CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
-            AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses");
+            AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses", Toast);
             AllAddresses = AllAddresses is null ? new() : AllAddresses;
         }
 
@@ -90,7 +93,7 @@ namespace Order.Client.Components
 
         async Task OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            CityOptions = await HubConnection.Invoke<List<DatalistOption>, string>("SearchCities", CurrentAddress.City);
+            CityOptions = await HubConnection.Invoke<List<DatalistOption>, string>("SearchCities", CurrentAddress.City, Toast);
             StateHasChanged();
         }
 
@@ -108,7 +111,13 @@ namespace Order.Client.Components
 
         async Task HandleAddressSave(EditContext context)
         {
-            Store.Set(StoreKey.ADDRESS, CurrentAddress);
+            Spinner.Show();
+            var result = await HubConnection.Invoke<bool, UserAddressDetailDto>("SaveUserAddress", CurrentAddress, Toast);
+            if (result)
+            {
+                Store.Set(StoreKey.ADDRESS, CurrentAddress);
+            }
+            Spinner.Hide();
             await Close();
         }
 

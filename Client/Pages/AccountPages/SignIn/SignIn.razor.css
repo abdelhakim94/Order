@@ -7,12 +7,10 @@
 ::deep .form-column > * {
   margin-top: auto;
   margin-bottom: auto;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
   text-align: center;
 }
 
-::deep .validated{
+::deep .validated {
   text-align: start;
 }
 
@@ -22,4 +20,8 @@
 
 ::deep .reset-pw-buttons {
   margin-bottom: 1em;
+}
+
+::deep .blank{
+  height: 1em;
 }
