@@ -71,7 +71,6 @@ namespace Order.Client.Constants
         public static string TopCategories { get => "Nos catégories reines"; }
         public static string CategorySearchBar { get => "Rechercher un plat ou un chef"; }
 
-        public static string Address { get => "Adresse"; }
         public static string RecentAddresses { get => "Récemment utilisées"; }
         public static string DeliveryAddress { get => "Adresse de livraison"; }
         public static string Address1 { get => "Adresse"; }

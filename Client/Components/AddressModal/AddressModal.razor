@@ -32,7 +32,7 @@
             @if (AllAddresses is not null && AllAddresses.Any())
             {
                 <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
-                <OInputSelect PlaceHolder=@M.Address @bind-Value=@SelectedRecentAddress Options=@RecentAddressOptions />
+                <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress Options=@RecentAddressOptions />
             }
 
             <Row Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH ExpandHorizontally=@true>

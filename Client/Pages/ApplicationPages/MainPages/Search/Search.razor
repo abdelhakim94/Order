@@ -13,7 +13,7 @@
     <Column CssClass="search-column" Align=@AlignItems.STRETCH>
 
         <EditForm Model=@CurrentAddress>
-            <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.Address Value=@GetFullAddress() @onclick=@HandleAddressBarClick />
+            <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress Value=@GetFullAddress() @onclick=@HandleAddressBarClick />
         </EditForm>
 
         <EditForm Model=@SearchValue>

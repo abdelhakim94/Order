@@ -105,7 +105,8 @@ namespace Order.Client.Components
 
         void OnOptionChanged(DatalistOption option)
         {
-            CurrentAddress.IdCity = int.Parse(option.Id);
+            if (int.TryParse(option.Id, out var parsed))
+                CurrentAddress.IdCity = parsed;
             ResetTimer();
         }
 
