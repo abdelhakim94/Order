@@ -12,7 +12,7 @@ namespace Order.Shared.Dto.Address
         public string City { get; set; }
 
         [Required(ErrorMessage = "Veuillez choisir parmis la liste")]
-        public string ZipCode { get; set; }
+        public int IdCity { get; set; }
 
         public string Wilaya { get; set; }
 
@@ -23,16 +23,16 @@ namespace Order.Shared.Dto.Address
                 Address1 = Address1,
                 Address2 = Address2,
                 City = City,
-                ZipCode = ZipCode,
+                IdCity = IdCity,
                 Wilaya = Wilaya,
             };
         }
 
         public override string ToString()
         {
-            if (!string.IsNullOrWhiteSpace(Address1) && !string.IsNullOrWhiteSpace(ZipCode))
+            if (!string.IsNullOrWhiteSpace(Address1) && !string.IsNullOrWhiteSpace(City))
             {
-                return $"{Address1}, {Address2}, {ZipCode} {City}";
+                return $"{Address1}, {Address2}, {City}";
             }
             return string.Empty;
         }

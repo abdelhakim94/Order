@@ -25,7 +25,7 @@ namespace Order.Server.CQRS.User.Commands
                 .FirstOrDefaultAsync(a =>
                     a.Address1 == command.Address.Address1 &&
                     a.Address2 == command.Address.Address2 &&
-                    a.ZipCodeCity == command.Address.ZipCode);
+                    a.IdCity == command.Address.IdCity);
 
             if (address is not null)
             {
@@ -44,7 +44,7 @@ namespace Order.Server.CQRS.User.Commands
             {
                 Address1 = command.Address.Address1,
                 Address2 = command.Address.Address2,
-                ZipCodeCity = command.Address.ZipCode,
+                IdCity = command.Address.IdCity,
             };
             newAddress.UsersAddress.Add(new UserAddress { IdUser = command.IdUser, LastTimeUsed = DateTime.Now });
             context.Address.Add(newAddress);

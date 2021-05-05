@@ -10,17 +10,12 @@ namespace Order.Server.Persistence
         {
             builder.ToTable("wilaya", "order_schema");
 
-            builder.HasKey(w => w.Code)
+            builder.HasKey(w => w.Id)
                 .HasName("PK_WILAYA");
 
-            builder.HasIndex(w => w.ZipCode)
-                .IsUnique();
-
-            builder.Property(w => w.Code)
-                .HasColumnName("code")
-                .HasColumnType("character varying")
-                .HasMaxLength(2)
-                .ValueGeneratedNever()
+            builder.Property(w => w.Id)
+                .HasColumnName("id")
+                .HasColumnType("integer")
                 .IsRequired();
 
             builder.Property(w => w.ZipCode)

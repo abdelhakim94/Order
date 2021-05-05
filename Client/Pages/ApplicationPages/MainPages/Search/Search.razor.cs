@@ -66,7 +66,7 @@ namespace Order.Client.Pages
         {
             if (CurrentAddress.Address1 is not null)
             {
-                return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.ZipCode} {CurrentAddress.City}";
+                return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.IdCity} {CurrentAddress.City}";
             }
             return string.Empty;
         }

@@ -10,17 +10,15 @@ namespace Order.Server.Persistence
         {
             builder.ToTable("city", "order_schema");
 
-            builder.HasKey(c => c.ZipCode)
+            builder.HasKey(c => c.Id)
                 .HasName("PK_CITY");
 
             builder.HasIndex(c => c.Name)
                 .HasDatabaseName("INDEX_NAME_CITY");
 
-            builder.Property(c => c.ZipCode)
-                .HasColumnName("zip_code")
-                .HasColumnType("character varying")
-                .HasMaxLength(5)
-                .ValueGeneratedNever()
+            builder.Property(c => c.Id)
+                .HasColumnName("id")
+                .HasColumnType("integer")
                 .IsRequired();
 
             builder.Property(c => c.Name)
@@ -29,21 +27,30 @@ namespace Order.Server.Persistence
                 .HasMaxLength(30)
                 .IsRequired();
 
-            builder.Property(c => c.CodeWilaya)
-                .HasColumnName("code_wilaya")
-                .HasColumnType("character varying")
-                .HasMaxLength(2)
+            builder.Property(c => c.Latitude)
+                .HasColumnName("latitude")
+                .HasColumnType("decimal(22, 20)")
+                .IsRequired();
+
+            builder.Property(c => c.Longitude)
+                .HasColumnName("longitude")
+                .HasColumnType("decimal(23, 20)")
+                .IsRequired();
+
+            builder.Property(c => c.IdWilaya)
+                .HasColumnName("id_wilaya")
+                .HasColumnType("integer")
                 .IsRequired();
 
             builder.HasOne(c => c.Wilaya)
                 .WithMany(w => w.Cities)
-                .HasForeignKey(c => c.CodeWilaya)
+                .HasForeignKey(c => c.IdWilaya)
                 .HasConstraintName("FK_CITY_WILAYA")
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(c => c.Addresses)
                 .WithOne(a => a.City)
-                .HasForeignKey(a => a.ZipCodeCity)
+                .HasForeignKey(a => a.IdCity)
                 .HasConstraintName("FK_ADDRESS_CITY")
                 .OnDelete(DeleteBehavior.Cascade);
         }

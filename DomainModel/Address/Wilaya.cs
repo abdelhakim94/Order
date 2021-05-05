@@ -4,7 +4,7 @@ namespace Order.DomainModel
 {
     public class Wilaya
     {
-        public string Code { get; set; }
+        public int Id { get; set; }
         public string ZipCode { get; set; }
         public string Name { get; set; }
 

@@ -8,7 +8,7 @@ namespace Order.DomainModel
         public int IdUser { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
-        public string ZipCodeCity { get; set; }
+        public int IdCity { get; set; }
         public DateTime LastTimeUsed { get; set; }
 
         public virtual User User { get; set; }

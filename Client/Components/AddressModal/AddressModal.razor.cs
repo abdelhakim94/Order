@@ -105,7 +105,7 @@ namespace Order.Client.Components
 
         void OnOptionChanged(DatalistOption option)
         {
-            CurrentAddress.ZipCode = option.Id;
+            CurrentAddress.IdCity = int.Parse(option.Id);
             ResetTimer();
         }
 

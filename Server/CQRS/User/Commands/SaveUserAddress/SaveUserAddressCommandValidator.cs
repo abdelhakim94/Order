@@ -12,8 +12,8 @@ namespace Order.Server.CQRS.User.Commands
             RuleFor(cmd => cmd.Address.Address1)
                 .NotEmpty();
 
-            RuleFor(cmd => cmd.Address.ZipCode)
-                .MustAsync((zc, ct) => context.City.AnyAsync(c => c.ZipCode == zc))
+            RuleFor(cmd => cmd.Address.IdCity)
+                .MustAsync((zc, ct) => context.City.AnyAsync(c => c.Id == zc))
                 .WithMessage((cmd, zc) => $"Le code postal '{zc}' n'éxiste pas");
         }
     }

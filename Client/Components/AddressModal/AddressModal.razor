@@ -26,7 +26,7 @@
                 <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions
                     OptionChanged=@OnOptionChanged />
                 @* The name of the city is just for the user. In the database, we are more interested in the zipcode. *@
-                <ValidationMessage For=@( () => CurrentAddress.ZipCode ) />
+                <ValidationMessage For=@( () => CurrentAddress.IdCity ) />
             </Group>
 
             @if (AllAddresses is not null && AllAddresses.Any())

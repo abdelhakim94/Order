@@ -45,7 +45,7 @@ namespace Order.Client.Services
 
         public async Task<T> Invoke<T>(string methodName, Toast toast = default(Toast))
         {
-            if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
+            if (hubConnection is not null && hubConnection.State == HubConnectionState.Connected)
             {
                 try
                 {
@@ -71,7 +71,7 @@ namespace Order.Client.Services
 
         public async Task<T> Invoke<T, U>(string methodName, U arg1, Toast toast = default(Toast))
         {
-            if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
+            if (hubConnection is not null && hubConnection.State == HubConnectionState.Connected)
             {
                 try
                 {

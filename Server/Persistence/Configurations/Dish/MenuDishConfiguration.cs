@@ -25,6 +25,10 @@ namespace Order.Server.Persistence
                 .HasColumnName("id_menu")
                 .HasColumnType("integer")
                 .IsRequired();
+            
+            builder.Property(md => md.IsMandatory)
+                .HasColumnName("is_mandatory")
+                .HasColumnType("boolean");
 
             builder.HasOne(md => md.Dish)
                 .WithMany(d => d.MenuesDish)

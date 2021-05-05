@@ -14,7 +14,7 @@ namespace Order.Server.Persistence
             {
                 a.Address1,
                 a.Address2,
-                a.ZipCodeCity,
+                a.IdCity,
             }).HasName("PK_ADDRESS");
 
             builder.Property(a => a.Address1)
@@ -26,10 +26,9 @@ namespace Order.Server.Persistence
                 .HasColumnName("address2")
                 .HasColumnType("character varying");
 
-            builder.Property(a => a.ZipCodeCity)
-                .HasColumnName("zip_code_city")
-                .HasColumnType("character varying")
-                .HasMaxLength(5)
+            builder.Property(a => a.IdCity)
+                .HasColumnName("id_city")
+                .HasColumnType("integer")
                 .IsRequired();
         }
     }

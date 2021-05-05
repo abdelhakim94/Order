@@ -2,16 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Order.Server.Persistence;
 
-namespace Order.Server.Persistence.Migrations.V01
+namespace Order.Server.Persistence.Migrations.V01._08AddLongitudeAndLatitudeToCity
 {
     [DbContext(typeof(OrderContext))]
-    partial class OrderContextModelSnapshot : ModelSnapshot
+    [Migration("20210505142854_08AddLongitudeAndLatitudeToCity")]
+    partial class _08AddLongitudeAndLatitudeToCity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,14 +33,15 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("address2");
 
-                    b.Property<int>("IdCity")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_city");
+                    b.Property<string>("ZipCodeCity")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
+                        .HasColumnName("zip_code_city");
 
-                    b.HasKey("Address1", "Address2", "IdCity")
+                    b.HasKey("Address1", "Address2", "ZipCodeCity")
                         .HasName("PK_ADDRESS");
 
-                    b.HasIndex("IdCity");
+                    b.HasIndex("ZipCodeCity");
 
                     b.ToTable("address", "order_schema");
                 });
@@ -160,15 +163,16 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.City", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                    b.Property<string>("ZipCode")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
+                        .HasColumnName("zip_code");
 
-                    b.Property<int>("IdWilaya")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_wilaya");
+                    b.Property<string>("CodeWilaya")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying")
+                        .HasColumnName("code_wilaya");
 
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(22, 20)")
@@ -184,10 +188,10 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("name");
 
-                    b.HasKey("Id")
+                    b.HasKey("ZipCode")
                         .HasName("PK_CITY");
 
-                    b.HasIndex("IdWilaya");
+                    b.HasIndex("CodeWilaya");
 
                     b.HasIndex("Name")
                         .HasDatabaseName("INDEX_NAME_CITY");
@@ -521,18 +525,19 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("address2");
 
-                    b.Property<int>("IdCity")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_city");
+                    b.Property<string>("ZipCodeCity")
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying")
+                        .HasColumnName("zip_code_city");
 
                     b.Property<DateTime>("LastTimeUsed")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_time_used");
 
-                    b.HasKey("IdUser", "Address1", "Address2", "IdCity")
+                    b.HasKey("IdUser", "Address1", "Address2", "ZipCodeCity")
                         .HasName("PK_USER_ADDRESS");
 
-                    b.HasIndex("Address1", "Address2", "IdCity");
+                    b.HasIndex("Address1", "Address2", "ZipCodeCity");
 
                     b.ToTable("user_address", "order_schema");
                 });
@@ -655,11 +660,10 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.Wilaya", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                    b.Property<string>("Code")
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying")
+                        .HasColumnName("code");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -673,8 +677,11 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("zip_code");
 
-                    b.HasKey("Id")
+                    b.HasKey("Code")
                         .HasName("PK_WILAYA");
+
+                    b.HasIndex("ZipCode")
+                        .IsUnique();
 
                     b.ToTable("wilaya", "order_schema");
                 });
@@ -683,7 +690,7 @@ namespace Order.Server.Persistence.Migrations.V01
                 {
                     b.HasOne("Order.DomainModel.City", "City")
                         .WithMany("Addresses")
-                        .HasForeignKey("IdCity")
+                        .HasForeignKey("ZipCodeCity")
                         .HasConstraintName("FK_ADDRESS_CITY")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -770,7 +777,7 @@ namespace Order.Server.Persistence.Migrations.V01
                 {
                     b.HasOne("Order.DomainModel.Wilaya", "Wilaya")
                         .WithMany("Cities")
-                        .HasForeignKey("IdWilaya")
+                        .HasForeignKey("CodeWilaya")
                         .HasConstraintName("FK_CITY_WILAYA")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -884,7 +891,7 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.HasOne("Order.DomainModel.Address", "Address")
                         .WithMany("UsersAddress")
-                        .HasForeignKey("Address1", "Address2", "IdCity")
+                        .HasForeignKey("Address1", "Address2", "ZipCodeCity")
                         .HasConstraintName("FK_USER_ADDRESS_ADDRESS")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

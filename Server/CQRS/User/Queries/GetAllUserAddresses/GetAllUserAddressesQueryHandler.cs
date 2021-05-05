@@ -25,7 +25,7 @@ namespace Order.Server.CQRS.User.Queries
                 {
                     Address1 = ua.Address.Address1,
                     Address2 = ua.Address.Address2,
-                    ZipCode = ua.Address.City.ZipCode,
+                    IdCity = ua.Address.City.Id,
                     City = ua.Address.City.Name,
                     Wilaya = ua.Address.City.Wilaya.Name,
                 })

@@ -23,7 +23,7 @@ namespace Order.Server.CQRS.User.Queries
                 .OrderBy(c => c.Name)
                 .Select(c => new DatalistOption
                 {
-                    Id = c.ZipCode,
+                    Id = c.Id.ToString(),
                     Value = c.Name,
                 })
                 .ToListAsync();
