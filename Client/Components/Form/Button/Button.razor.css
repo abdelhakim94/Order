@@ -19,6 +19,10 @@
 }
 
 .danger-button {
+  background-color: orangered;
+}
+
+.neutral-button {
   background-color: transparent;
   color: black;
   border: 0.1em solid #52affa;

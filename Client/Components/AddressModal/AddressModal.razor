@@ -32,12 +32,13 @@
             @if (AllAddresses is not null && AllAddresses.Any())
             {
                 <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
-                <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress Options=@RecentAddressOptions />
+                <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress
+                Options=@RecentAddressOptions />
             }
 
             <Row Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH ExpandHorizontally=@true>
                 <Button CssClass="button" Type="submit" Label=@M.Save />
-                <Button CssClass="button" Label=@M.Cancel Danger=@true @onclick=Close />
+                <Button CssClass="button" Label=@M.Cancel Neutral=@true @onclick=Close />
             </Row>
 
         </EditForm>
