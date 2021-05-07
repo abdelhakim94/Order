@@ -30,6 +30,9 @@ namespace Order.Client.Pages
         [Inject]
         public IStateStore Store { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         [CascadingParameter]
         public MainPagesLayout BottomLayout { get; set; }
 
@@ -92,6 +95,12 @@ namespace Order.Client.Pages
             {
                 CurrentAddress = args.Value as UserAddressDetailDto;
             }
+        }
+
+        void HandleSearch(string search)
+        {
+            if (!string.IsNullOrWhiteSpace(search))
+                NavigationManager.NavigateTo($"search/results/{search}");
         }
 
         public void Dispose()

@@ -27,7 +27,7 @@ namespace Order.Client.Components.Form
         public string RightIcon { get; set; }
 
         [Parameter]
-        public EventCallback OnRightIconClick { get; set; }
+        public EventCallback<string> OnRightIconClick { get; set; }
 
         [Parameter]
         public string CssClass { get; set; }
@@ -48,7 +48,7 @@ namespace Order.Client.Components.Form
         {
             if (OnRightIconClick.HasDelegate)
             {
-                await OnRightIconClick.InvokeAsync();
+                await OnRightIconClick.InvokeAsync(Value);
             }
         }
     }
