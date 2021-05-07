@@ -28,6 +28,8 @@ namespace Order.Server.CQRS.User.Queries
                     Address2 = ua.Address.Address2,
                     IdCity = ua.Address.City.Id,
                     City = ua.Address.City.Name,
+                    Longitude = ua.Address.City.Longitude,
+                    Latitude = ua.Address.City.Latitude,
                     Wilaya = ua.Address.City.Wilaya.Name,
                 })
                 .FirstOrDefaultAsync();
