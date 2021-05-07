@@ -15,9 +15,9 @@ namespace Order.Client.Pages
 {
     public partial class Search : ComponentBase, IDisposable
     {
+        ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
         CloneableList<CategoryListItemDto> Categories = new();
-        CategorySearchBarDto SearchValue { get; set; } = new();
-        UserAddressDetailDto CurrentAddress { get; set; } = new();
+        UserAddressDetailDto CurrentAddress { get; set; }
         AddressModal AddressModal;
         IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
 
@@ -58,20 +58,17 @@ namespace Order.Client.Pages
             if (CurrentAddress is null)
             {
                 CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
-                CurrentAddress = CurrentAddress is null ? new() : CurrentAddress;
-                Store.Set(StoreKey.ADDRESS, CurrentAddress);
+                if (CurrentAddress is not null)
+                {
+                    Store.Set(StoreKey.ADDRESS, CurrentAddress);
+                }
+                else
+                {
+                    AddressModal.Show();
+                }
             }
 
             Store.OnUpdate += OnStoreAddressChange;
-        }
-
-        string GetFullAddress()
-        {
-            if (CurrentAddress.Address1 is not null)
-            {
-                return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.IdCity} {CurrentAddress.City}";
-            }
-            return string.Empty;
         }
 
         void HandleAddressBarClick()
@@ -99,8 +96,16 @@ namespace Order.Client.Pages
 
         void HandleSearch(string search)
         {
-            if (!string.IsNullOrWhiteSpace(search))
-                NavigationManager.NavigateTo($"search/results/{search}");
+            if (string.IsNullOrWhiteSpace(search))
+                return;
+
+            if (string.IsNullOrWhiteSpace(CurrentAddress?.Address1) || string.IsNullOrWhiteSpace(CurrentAddress?.City))
+            {
+                AddressModal.Show();
+                return;
+            }
+
+            NavigationManager.NavigateTo($"search/results/{search}");
         }
 
         public void Dispose()

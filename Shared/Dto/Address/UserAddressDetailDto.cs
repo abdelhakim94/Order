@@ -10,8 +10,8 @@ namespace Order.Shared.Dto.Address
         public string Address2 { get; set; }
 
         [Required(ErrorMessage = "Veuillez choisir parmis la liste")]
-        public int IdCity { get; set; }
         public string City { get; set; }
+        public int IdCity { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public string Wilaya { get; set; }
