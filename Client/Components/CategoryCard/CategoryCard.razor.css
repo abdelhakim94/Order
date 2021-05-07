@@ -1,18 +1,24 @@
 .component-container {
   position: relative;
+  width: 50%;
+  padding-top: 50%;
 }
 
 img {
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  width: 98%;
+  height: 98%;
+  filter: brightness(70%);
 }
 
 .label {
   position: absolute;
+  text-align: center;
   top: 50%;
   transform: translateY(-50);
   color: white;
   width: 100%;
-  text-align: center;
   font-weight: bold;
 }

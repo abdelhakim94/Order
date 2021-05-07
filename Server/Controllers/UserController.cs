@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Server.Services;
 using Order.Shared.Security;
 using Order.Server.Dto.Users;
@@ -16,12 +16,12 @@ namespace Order.Server.Controllers
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IAccountService accountService;
         private readonly ILogger<UserController> logger;
 
-        public UserController(IUserService userService, ILogger<UserController> logger)
+        public UserController(IAccountService accountService, ILogger<UserController> logger)
         {
-            this.userService = userService;
+            this.accountService = accountService;
             this.logger = logger;
         }
 
@@ -29,7 +29,7 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public Task<SignUpResultDto> SignUp([FromBody] SignUpDto userInfo)
         {
-            return userService.SignUp(userInfo, p => Url.Action(
+            return accountService.SignUp(userInfo, p => Url.Action(
                 "ConfirmEmail",
                 "User",
                 p,
@@ -43,7 +43,7 @@ namespace Order.Server.Controllers
         {
             try
             {
-                await userService.ConfirmEmail(confirmation, p => Url.Action(
+                await accountService.ConfirmEmail(confirmation, p => Url.Action(
                     "ConfirmEmail",
                     "User",
                     p,
@@ -64,7 +64,7 @@ namespace Order.Server.Controllers
             // SignInManager adds cookies to the response when it
             // successfully authenticates the user. We rely on JWT
             // so we delete the cookie.
-            var result = await userService.SignIn(userInfo);
+            var result = await accountService.SignIn(userInfo);
             Response.Cookies.Delete(".AspNetCore.Identity.Application");
             return result;
         }
@@ -73,7 +73,7 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public Task RequestResetPassword([FromBody] RequestResetPasswordDto request)
         {
-            return userService.RequestResetPassword(request, p => Url.Action(
+            return accountService.RequestResetPassword(request, p => Url.Action(
                 "RedirectToResetPassword",
                 "User",
                 p,
@@ -92,7 +92,7 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public Task<ResetPasswordResultDto> ResetPassword([FromBody] ResetPasswordDto resetPwInfo)
         {
-            return userService.ResetPassword(resetPwInfo, p => Url.Action(
+            return accountService.ResetPassword(resetPwInfo, p => Url.Action(
                 "RedirectToResetPassword",
                 "User",
                 p,
@@ -105,7 +105,21 @@ namespace Order.Server.Controllers
         {
             try
             {
-                return Ok(await userService.RefreshTokens(refreshInfo.Value, User.GetUserId().Value, User.Claims));
+                return Ok(await accountService.RefreshTokens(refreshInfo.Value, User.GetUserId().Value, User.Claims));
+            }
+            catch (System.Exception)
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult<TokenPairDto>> RefreshExpiredTokens([FromBody] TokenPairDto tokens)
+        {
+            try
+            {
+                return Ok(await accountService.RefreshExpiredTokens(tokens));
             }
             catch (System.Exception)
             {
@@ -116,7 +130,7 @@ namespace Order.Server.Controllers
         [HttpGet]
         public new Task SignOut()
         {
-            return userService.SignOut(User.GetUserId().Value);
+            return accountService.SignOut(User.GetUserId().Value);
         }
 
         // ====================================== External identity providers =========================================//
@@ -127,7 +141,7 @@ namespace Order.Server.Controllers
         public IActionResult ExternalProviderSignIn(ValueWrapperDto<string> provider)
         {
             var redirectUrl = Url.Action("ExternalProviderSignInCallback", "User");
-            var properties = userService.ConfigureSignInWithExternalProvider(provider.Value, redirectUrl);
+            var properties = accountService.ConfigureSignInWithExternalProvider(provider.Value, redirectUrl);
             return new ChallengeResult(provider.Value, properties);
         }
 
@@ -141,13 +155,13 @@ namespace Order.Server.Controllers
                 throw new UnauthorizedException("Nous n'avons pas réussi à vous connecter avec le fournisseur selectionné.");
             }
 
-            var info = await userService.GetExternalLoginInfoAsync();
+            var info = await accountService.GetExternalLoginInfoAsync();
             if (info is null)
             {
                 throw new UnauthorizedException("Nous n'avons pas réussi à vous connecter avec le fournisseur selectionné.");
             }
 
-            var signInResult = await userService.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey);
+            var signInResult = await accountService.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey);
             if (signInResult.Successful)
             {
                 return Redirect($"/app/SignIn/{signInResult.TokenPair.AccessToken}/{signInResult.TokenPair.RefreshToken}");
@@ -159,7 +173,7 @@ namespace Order.Server.Controllers
                 throw new UnauthorizedException($"Votre email n'a pas pu être recupéré auprés de {info.LoginProvider}");
             }
 
-            var result = await userService.HandleFirstExternalSignIn(
+            var result = await accountService.HandleFirstExternalSignIn(
                 userEmail,
                 info,
                 p => Url.Action("ConfirmExternalProviderAssociation", "User", p, Request.Scheme)
@@ -172,7 +186,7 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmExternalProviderAssociation([FromQuery] ConfirmExternalProviderAssociationDto info)
         {
-            await userService.ConfirmExternalProviderAssociation(info);
+            await accountService.ConfirmExternalProviderAssociation(info);
             return Redirect("/app/SignIn");
         }
     }

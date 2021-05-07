@@ -1,0 +1,46 @@
+@using Order.Client.Components.Misc
+@using Order.Client.Components.Form
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+@using M = Order.Client.Constants.UIMessages;
+
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class=@CssClass>
+    <Modal @ref=@Modal>
+        <EditForm class="address-form" Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
+            <ObjectGraphDataAnnotationsValidator />
+
+            <OTitle Text=@M.DeliveryAddress Size=1.2 />
+
+            <Group CssClass="validated">
+                <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
+                <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
+            </Group>
+
+            <Group>
+                <OInputText PlaceHolder=@M.Address2 @bind-Value=@CurrentAddress.Address2 />
+            </Group>
+
+            <Group CssClass="validated">
+                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions
+                    OptionChanged=@OnOptionChanged />
+                @* The name of the city is just for the user. In the database, we are more interested in the zipcode. *@
+                <ValidationMessage For=@( () => CurrentAddress.IdCity ) />
+            </Group>
+
+            @if (AllAddresses is not null && AllAddresses.Any())
+            {
+                <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
+                <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress
+                Options=@RecentAddressOptions />
+            }
+
+            <Row Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH ExpandHorizontally=@true>
+                <Button CssClass="button" Type="submit" Label=@M.Save />
+                <Button CssClass="button" Label=@M.Cancel Neutral=@true @onclick=Close />
+            </Row>
+
+        </EditForm>
+    </Modal>
+</div>

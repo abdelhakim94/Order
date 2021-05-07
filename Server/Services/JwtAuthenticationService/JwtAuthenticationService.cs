@@ -10,10 +10,11 @@ using Microsoft.IdentityModel.Tokens;
 using MediatR;
 using Order.Server.Dto.Users;
 using Order.Shared.Contracts;
-using Order.Shared.Dto.Users;
-using Order.Server.CQRS.User.Commands;
-using Order.Server.CQRS.User.Queries;
+using Order.Shared.Dto.Account;
+using Order.Server.CQRS.Account.Commands;
+using Order.Server.CQRS.Account.Queries;
 using Order.Server.Middlewares;
+using Order.Shared.Security;
 
 namespace Order.Server.Services.JwtAuthenticationService
 {
@@ -70,6 +71,30 @@ namespace Order.Server.Services.JwtAuthenticationService
             var previousRefreshToken = await mediator.Send(new LoadRefreshTokenQuery(userId));
 
             if (previousRefreshToken is null || previousRefreshToken.Token != refreshToken || previousRefreshToken.ExpireAt < now)
+            {
+                throw new BadRequestException("Invalid refresh token");
+            }
+
+            return await GenerateTokens(userId, claims, now);
+        }
+
+        public async Task<TokenPairDto> RefreshExpiredTokens(TokenPairDto tokens, DateTime now)
+        {
+            if (string.IsNullOrWhiteSpace(tokens.AccessToken) || string.IsNullOrWhiteSpace(tokens.RefreshToken))
+            {
+                throw new BadRequestException("Refresh token can't be null");
+            }
+
+            var claims = tokens.AccessToken.ParseClaimsFromJwt();
+            var idClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(idClaim) || !int.TryParse(idClaim, out var _))
+            {
+                throw new BadRequestException("Invalid access token");
+            }
+
+            var userId = int.Parse(idClaim);
+            var previousRefreshToken = await mediator.Send(new LoadRefreshTokenQuery(userId));
+            if (previousRefreshToken is null || previousRefreshToken.Token != tokens.RefreshToken || previousRefreshToken.ExpireAt < now)
             {
                 throw new BadRequestException("Invalid refresh token");
             }

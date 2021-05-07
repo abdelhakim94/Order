@@ -5,12 +5,10 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-<div>
-    <Row>
-        <NavButton Justify=@JustifyContent.FLEX_END DisplayHorizontal=@true Label=@NbElements.ToString()
-            Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon
-            @onclick=@(() => CartSelected = true) />
-    </Row>
+<div class=@bluredPage>
+    <NavButton Justify=@JustifyContent.CENTER DisplayHorizontal=@true Label=@NbElements.ToString()
+        Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon @onclick=@(()
+        => CartSelected = true) />
 </div>
 
 <CascadingValue Value=@this IsFixed=@true>
@@ -18,6 +16,18 @@
 </CascadingValue>
 
 @code{
+    private string bluredPage { get => Blured ? $"{CSSCLasses.PageBlured} cart-button" : "cart-button"; }
+    private bool blured;
+    public bool Blured
+    {
+        get => blured;
+        set
+        {
+            blured = value;
+            StateHasChanged();
+        }
+    }
+
     private int translateCartIcon { get => cartSelected ? 0 : 100; }
     private bool cartSelected;
     public bool CartSelected

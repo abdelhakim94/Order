@@ -9,24 +9,29 @@
 @namespace Order.Client.Pages
 @attribute [Authorize(Policy = IsGuest.Name)]
 
-<div>
-    <Column Align=@AlignItems.STRETCH>
-        <div class="search-bar">
-            <EditForm Model=@SearchValue >
-                <ObjectGraphDataAnnotationsValidator />
-                <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
-                    RightIcon="icons/searchbar-magnifier.png" />
-                <ValidationMessage For=@( () => SearchValue.Search ) />
-            </EditForm>
-        </div>
+<div class=@blured>
+    <Column CssClass="search-column" Align=@AlignItems.STRETCH>
+
+        <EditForm Model=@CurrentAddress>
+            <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress Value=@GetFullAddress()
+                @onclick=@HandleAddressBarClick />
+        </EditForm>
+
+        <EditForm Model=@SearchValue>
+            <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
+                RightIcon="icons/searchbar-magnifier.png" OnRightIconClick=@((string search) => HandleSearch(search)) />
+        </EditForm>
 
         <p class="text">@M.TopCategories</p>
 
-        <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.FLEX_START>
-            @foreach (var category in categories)
+        <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.SPACE_BETWEEN>
+            @foreach (var category in Categories ?? new())
             {
-                <CategoryCard CssClass="card" Label=@category.Label Picture=@category.Picture />
+                <CategoryCard Label=@category.Label Picture=@category.Picture @onclick=@(() =>
+                HandleSearch(category.Label)) />
             }
         </Row>
     </Column>
 </div>
+
+<AddressModal @ref=@AddressModal OnClose=@OnAddressModalClosed />

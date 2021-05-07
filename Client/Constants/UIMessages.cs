@@ -12,7 +12,7 @@ namespace Order.Client.Constants
         public static string DefaultHttpRequestTimedOut { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
         public static string DefaultInternalError { get => "Une erreur interne est survenue. Veuillez réessayer ou contacter le support"; }
 
-        public static string DefaultSignalRInvocationError { get => "Un problème de connexion est survenu. Veuillez vérifier votre réseau ou votre connexion internet"; }
+        public static string ConnectionLost { get => "Connexion perdue. Veuillez vérifier votre réseau"; }
 
         public static string SignUpSuccess { get => "Veuillez suivre le lien reçu par email pour finaliser votre inscription"; }
 
@@ -27,7 +27,7 @@ namespace Order.Client.Constants
         public static string Login { get => "Se connecter"; }
         public static string Register { get => "S'inscrire"; }
 
-        public static string AskForAccountExistance { get => "Vous avez déja un compte? "; }
+        public static string AskForAccountExistance { get => "Vous avez déja un compte?"; }
         public static string SignInRedirect { get => "Connectez vous"; }
         public static string AskForAccountAbsence { get => "Vous n'avez pas de compte?"; }
         public static string SignUpRedirect { get => "Rejoignez nous"; }
@@ -49,6 +49,7 @@ namespace Order.Client.Constants
         public static string DefaultSignInErrorMessage { get => "impossible de vous connecter"; }
 
         public static string Send { get => "Envoyer"; }
+        public static string Save { get => "Enregistrer"; }
         public static string Cancel { get => "Annuler"; }
 
         public static string Reset { get => "Réinitialiser"; }
@@ -69,5 +70,12 @@ namespace Order.Client.Constants
 
         public static string TopCategories { get => "Nos catégories reines"; }
         public static string CategorySearchBar { get => "Rechercher un plat ou un chef"; }
+
+        public static string RecentAddresses { get => "Récemment utilisées"; }
+        public static string DeliveryAddress { get => "Adresse de livraison"; }
+        public static string Address1 { get => "Adresse"; }
+        public static string Address2 { get => "Complément"; }
+        public static string ZipCode { get => "Code postal"; }
+        public static string City { get => "Ville"; }
     }
 }

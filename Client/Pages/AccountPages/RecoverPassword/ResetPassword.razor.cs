@@ -6,15 +6,19 @@ using Order.Client.Components;
 using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 
 namespace Order.Client.Pages
 {
     public partial class ResetPassword : ComponentBase
     {
         private bool isPasswordHidden = true;
-        private string rightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
+        private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
         private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
+
+        private bool isConfirmPasswordHidden = true;
+        private string confirmPasswordRightIcon { get => isConfirmPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
+        private void ToggleConfirmPasswordHide() => isConfirmPasswordHidden = !isConfirmPasswordHidden;
 
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
@@ -39,14 +43,8 @@ namespace Order.Client.Pages
 
         public ResetPasswordDto PasswordReset { get; set; } = new ResetPasswordDto();
 
-
-        private bool isLoading { get; set; }
-        private string disabled { get => isLoading ? "page-disabled" : string.Empty; }
-
         public async Task HandleFormSubmition(EditContext context)
         {
-
-            isLoading = true;
             Spinner.Show();
             ResetPasswordResultDto result;
             try
@@ -54,8 +52,9 @@ namespace Order.Client.Pages
                 var recoverPwDto = context.Model as ResetPasswordDto;
                 recoverPwDto.Email = UserEmail;
                 recoverPwDto.ResetToken = ResetPasswordToken;
+                recoverPwDto.Trim();
 
-                result = await AuthenticationService.ResetPassword(context.Model as ResetPasswordDto, Toast);
+                result = await AuthenticationService.ResetPassword(recoverPwDto, Toast);
                 if (result is null) return;
             }
             catch (System.Exception)
@@ -65,7 +64,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 StateHasChanged();
             }

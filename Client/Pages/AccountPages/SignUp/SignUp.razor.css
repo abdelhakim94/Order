@@ -1,49 +1,19 @@
-.form-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: stretch;
+::deep .form-container {
   height: 100vh;
   width: 90vw;
   margin: auto;
-  overflow: visible;
 }
 
-.form-header {
-  font-size: 1.5em;
-  align-self: center;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+::deep .form-column > * {
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
 }
 
-::deep .form-input {
-  height: 2em;
-  margin-top: 0.5em;
+::deep .validated {
+  text-align: start;
 }
 
-::deep .form-submit {
-  height: 2em;
-  font-size: 1.1em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.redirection {
-  align-self: center;
-  margin-top: 0.5em;
-  margin-bottom: 1em;
-}
-
-a {
-  text-decoration: none;
-  color: grey;
-}
-
-.redirect {
-  font-weight: bold;
-  color: #52affa;
-}
-
-.redirect:active {
-  text-shadow: 0 0 0.1em white;
+::deep .blank {
+  height: 0.5em;
 }

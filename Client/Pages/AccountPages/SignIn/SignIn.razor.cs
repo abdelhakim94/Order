@@ -8,18 +8,15 @@ using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Services;
 using Order.Shared.Dto;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Shared.Security.Claims;
 
 namespace Order.Client.Pages
 {
     public partial class SignIn : ComponentBase
     {
-        private bool isLoading { get; set; }
-        private string disabledPage { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
-
         private bool isResetingPassword { get; set; }
-        private string bluredPage { get => isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
+        private string shouldBlureMainPage { get => isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
 
         private Modal resetPasswordModal { get; set; }
 
@@ -66,6 +63,7 @@ namespace Order.Client.Pages
                 state.User.Claims.Any(c => c.Type == nameof(Profile) && c.Value == nameof(Profile.GUEST)))
             {
                 NavigationManager.NavigateTo("search/");
+                return;
             }
 
             if (!string.IsNullOrWhiteSpace(AccessToken) && !(string.IsNullOrWhiteSpace(RefreshToken)))
@@ -84,12 +82,13 @@ namespace Order.Client.Pages
 
         public async Task HandleSignInFormSubmition(EditContext context)
         {
-            isLoading = true;
             Spinner.Show();
             SignInResultDto result;
 
             try
             {
+                var userInfo = context.Model as SignInDto;
+                userInfo.Trim();
                 result = await AuthenticationService.SignIn(context.Model as SignInDto, Toast);
                 if (result is null) return;
             }
@@ -100,7 +99,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 StateHasChanged();
             }
@@ -138,13 +136,15 @@ namespace Order.Client.Pages
 
         public async Task HandleResetPasswordFormSubmit(EditContext context)
         {
-            isLoading = true;
             Spinner.Show();
             bool result;
             try
             {
+                var info = context.Model as RequestResetPasswordDto;
+                info.Trim();
+
                 result = await AuthenticationService.RequestResetPassword(
-                    context.Model as RequestResetPasswordDto,
+                    info,
                     Toast);
                 if (!result) return;
             }
@@ -155,7 +155,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 isResetingPassword = false;
                 RequestResetPassword.Email = string.Empty;
@@ -176,7 +175,6 @@ namespace Order.Client.Pages
 
         public async Task CheckoutConsentScreen(ValueWrapperDto<string> provider)
         {
-            isLoading = true;
             Spinner.Show();
             ValueWrapperDto<string> result;
             try
@@ -191,7 +189,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
             }
 

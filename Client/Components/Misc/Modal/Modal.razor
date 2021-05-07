@@ -1,11 +1,17 @@
-@namespace Order.Client.Components.Misc
-
 @using Order.Client.Constants
+@using Order.Client.Components.Layout
+
+@namespace Order.Client.Components.Misc
 
 @if (ShowModal)
 {
     <div @attributes=@AdditionalAttributes class="@CSSCLasses.ComponentContainer @CssClass">
-        @ChildContent
+        <Column Align=@AlignItems.STRETCH>
+            @ChildContent
+        </Column>
+    </div>
+
+    <div class="modal-overlay">
     </div>
 }
 
@@ -33,7 +39,10 @@
     public async Task Close()
     {
         ShowModal = false;
-        await OnClose.InvokeAsync();
+        if (OnClose.HasDelegate)
+        {
+            await OnClose.InvokeAsync();
+        }
         StateHasChanged();
     }
 }

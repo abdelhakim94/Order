@@ -3,6 +3,8 @@
 
 @using Order.Client.Components.Form
 @using Order.Client.Components.Misc
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
 @using Order.Shared.Dto
 @using Order.Shared.Constants.Users
 
@@ -10,71 +12,84 @@
 
 @* ========================================== SignIn Form =============================================================
 *@
+<div class="@shouldBlureMainPage">
 
-<EditForm Model=@UserSignInData OnValidSubmit=@HandleSignInFormSubmition>
+    <EditForm class="form-container" Model=@UserSignInData OnValidSubmit=@HandleSignInFormSubmition>
+        <ObjectGraphDataAnnotationsValidator />
 
-    <ObjectGraphDataAnnotationsValidator />
+        <Column CssClass="form-column" Align=@AlignItems.STRETCH ExpandVertically=@true>
 
-    <div class="form-container @disabledPage @bluredPage">
+            <OTitle Text=@M.SignIn Size=1.5 />
 
-        <h1 class="form-header">@M.SignIn</h1>
+            <Group CssClass="blank" />
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@UserSignInData.Email />
-            <ValidationMessage For=@( () => UserSignInData.Email ) />
-        </div>
+            <Group CssClass="validated">
+                <OInputText PlaceHolder=@M.Email @bind-Value=@UserSignInData.Email />
+                <ValidationMessage For=@( () => UserSignInData.Email ) />
+            </Group>
 
-        <div>
-            <OInputText HideData=@isPasswordHidden RightIcon=@rightIcon OnRightIconClick=@TogglePasswordHide
-                CssClass="form-input" PlaceHolder=@M.Password @bind-Value=@UserSignInData.Password />
-            <ValidationMessage For=@( () => UserSignInData.Password) />
-        </div>
+            <Group CssClass="blank" />
 
-        <Button CssClass="form-submit" Type="submit" Label=@M.Login />
+            <Group CssClass="validated">
+                <OInputText HideData=@isPasswordHidden RightIcon=@rightIcon OnRightIconClick=@TogglePasswordHide
+                    PlaceHolder=@M.Password @bind-Value=@UserSignInData.Password />
+                <ValidationMessage For=@( () => UserSignInData.Password) />
+            </Group>
 
-        <div class="redirection">
-            <a @onclick=@ResetPasswordModalShow>@M.ForgotPassword</a>
-        </div>
+            <Group CssClass="blank" />
 
-        <LineTextSeparator Text=@M.ContinueWith />
+            <Button Type="submit" Label=@M.Login />
 
-        <div class="social-logins">
-            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=0 @onclick=@(() => CheckoutConsentScreen(new
-                ValueWrapperDto<string>(ExternalIdentityProviders.FACEBOOK))) />
-            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=50 @onclick=@(() => CheckoutConsentScreen(new
-                ValueWrapperDto<string>(ExternalIdentityProviders.GOOGLE))) />
-            <SocialMediaButton CssClass="social-login-button" SocialMediaPath=@SocialSpritePath ImagesInSprite=3
-                Translate=100 @onclick=@(() => CheckoutConsentScreen(new
-                ValueWrapperDto<string>(ExternalIdentityProviders.LINKEDIN))) />
-        </div>
+            <Group CssClass="blank" />
 
-        <div class="redirection">
-            @M.AskForAccountAbsence <a href="SignUp/" class="redirect">@M.SignUpRedirect</a>
-        </div>
+            <Column Align=@AlignItems.CENTER>
+                <LinkButton @onclick=@ResetPasswordModalShow Label=@M.ForgotPassword />
+            </Column>
 
-    </div>
-</EditForm>
+            <Group CssClass="blank" />
+
+            <LineTextSeparator Text=@M.ContinueWith />
+
+            <Group CssClass="blank" />
+
+            <Row Justify=@JustifyContent.SPACE_AROUND>
+                <SocialMediaButton SocialMediaPath=@SocialSpritePath ImagesInSprite=3 Translate=0 @onclick=@(() =>
+                    CheckoutConsentScreen(new ValueWrapperDto<string>(ExternalIdentityProviders.FACEBOOK))) />
+                <SocialMediaButton SocialMediaPath=@SocialSpritePath ImagesInSprite=3 Translate=50 @onclick=@(() =>
+                    CheckoutConsentScreen(new ValueWrapperDto<string>(ExternalIdentityProviders.GOOGLE))) />
+                <SocialMediaButton SocialMediaPath=@SocialSpritePath ImagesInSprite=3 Translate=100 @onclick=@(() =>
+                    CheckoutConsentScreen(new ValueWrapperDto<string>(ExternalIdentityProviders.LINKEDIN))) />
+            </Row>
+
+            <Group CssClass="blank" />
+            <Group CssClass="blank" />
+
+            <Group>
+                @M.AskForAccountAbsence
+                <LinkButton NavigateTo="SignUp/" Label=@M.SignUpRedirect />
+            </Group>
+
+            <Group CssClass="blank" />
+
+        </Column>
+    </EditForm>
+</div>
 
 @* ========================================== Reset Password Form =====================================================
 *@
 
-<EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
-
-    <ObjectGraphDataAnnotationsValidator />
-
-    <div class="@disabledPage">
-        <Modal @ref=@resetPasswordModal CssClass="reset-pw-modal">
-            <div class="reset-pw-input">
-                <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@RequestResetPassword.Email />
+<div>
+    <EditForm Model=@RequestResetPassword OnValidSubmit=@HandleResetPasswordFormSubmit>
+        <ObjectGraphDataAnnotationsValidator />
+        <Modal @ref=@resetPasswordModal>
+            <Group CssClass="reset-pw-input">
+                <OInputText PlaceHolder=@M.Email @bind-Value=@RequestResetPassword.Email />
                 <ValidationMessage For=@( () => RequestResetPassword.Email ) />
-            </div>
-            <div class="reset-pw-buttons">
-                <Button CssClass="reset-pw-button" Type="submit" Label=@M.Send />
-                <Button CssClass="reset-pw-button" Label=@M.Cancel @onclick=@HandleResetPasswordCanceled Danger=@true />
-            </div>
+            </Group>
+            <Row Justify=@JustifyContent.SPACE_AROUND CssClass="reset-pw-buttons">
+                <Button Type="submit" Label=@M.Send />
+                <Button Label=@M.Cancel @onclick=@HandleResetPasswordCanceled Neutral=@true />
+            </Row>
         </Modal>
-    </div>
-
-</EditForm>
+    </EditForm>
+</div>

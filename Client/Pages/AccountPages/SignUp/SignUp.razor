@@ -1,50 +1,68 @@
 @page "/SignUp"
 
 @using Order.Client.Components.Form
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
 
 @namespace Order.Client.Pages
 
-<EditForm Model=SignUpData OnValidSubmit=@HandleFormSubmition>
+<div>
+    <EditForm class="form-container" Model=SignUpData OnValidSubmit=@HandleFormSubmition>
+        <ObjectGraphDataAnnotationsValidator />
+        <Column CssClass="form-column" Align=@AlignItems.STRETCH ExpandVertically=@true>
+            <OTitle Text=@M.SignUp Size=1.5 />
 
-    <ObjectGraphDataAnnotationsValidator />
+            <Group CssClass="blank" />
 
-    <div class="form-container @disabled">
+            <Group CssClass="validated">
+                <OInputText PlaceHolder=@M.LastName @bind-Value=@SignUpData.LastName />
+                <ValidationMessage For=@( () => SignUpData.LastName ) />
+            </Group>
 
-        <h1 class="form-header">@M.SignUp</h1>
+            <Group CssClass="blank" />
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.LastName @bind-Value=@SignUpData.LastName />
-            <ValidationMessage For=@( () => SignUpData.LastName ) />
-        </div>
+            <Group CssClass="validated">
+                <OInputText PlaceHolder=@M.FirstName @bind-Value=@SignUpData.FirstName />
+                <ValidationMessage For=@( () => SignUpData.FirstName ) />
+            </Group>
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.FirstName @bind-Value=@SignUpData.FirstName />
-            <ValidationMessage For=@( () => SignUpData.FirstName ) />
-        </div>
+            <Group CssClass="blank" />
 
-        <div>
-            <OInputText CssClass="form-input" PlaceHolder=@M.Email @bind-Value=@SignUpData.Email />
-            <ValidationMessage For=@( () => SignUpData.Email ) />
-        </div>
+            <Group CssClass="validated">
+                <OInputText PlaceHolder=@M.Email @bind-Value=@SignUpData.Email />
+                <ValidationMessage For=@( () => SignUpData.Email ) />
+            </Group>
 
-        <div>
-            <OInputText HideData=@isPasswordHidden RightIcon=@passwordRightIcon OnRightIconClick=@TogglePasswordHide
-                CssClass="form-input" PlaceHolder=@M.Password @bind-Value=@SignUpData.Password />
-            <ValidationMessage For=@( () => SignUpData.Password) />
-        </div>
+            <Group CssClass="blank" />
 
-        <div>
-            <OInputText HideData=@isConfirmPasswordHidden RightIcon=@confirmPasswordRightIcon OnRightIconClick=@ToggleConfirmPasswordHide
-                CssClass="form-input" PlaceHolder=@M.ConfirmPassword @bind-Value=@SignUpData.ConfirmPassword />
-            <ValidationMessage For=@( () => SignUpData.ConfirmPassword ) />
-        </div>
+            <Group CssClass="validated">
+                <OInputText HideData=@isPasswordHidden RightIcon=@passwordRightIcon OnRightIconClick=@TogglePasswordHide
+                    PlaceHolder=@M.Password @bind-Value=@SignUpData.Password />
+                <ValidationMessage For=@( () => SignUpData.Password) />
+            </Group>
 
-        <Button CssClass="form-submit" Type="submit" Label=@M.Register />
+            <Group CssClass="blank" />
 
-        <div class="redirection">
-            @M.AskForAccountExistance <a href="SignIn/" class="redirect">@M.SignInRedirect</a>
-        </div>
+            <Group CssClass="validated">
+                <OInputText HideData=@isConfirmPasswordHidden RightIcon=@confirmPasswordRightIcon
+                    OnRightIconClick=@ToggleConfirmPasswordHide PlaceHolder=@M.ConfirmPassword
+                    @bind-Value=@SignUpData.ConfirmPassword />
+                <ValidationMessage For=@( () => SignUpData.ConfirmPassword ) />
+            </Group>
 
-    </div>
+            <Group CssClass="blank" />
 
-</EditForm>
+            <Button Type="submit" Label=@M.Register />
+
+            <Group CssClass="blank" />
+
+            <Group>
+                @M.AskForAccountExistance
+                <LinkButton NavigateTo="SignIn/" Label=@M.SignInRedirect />
+            </Group>
+
+            <Group CssClass="blank" />
+
+        </Column>
+    </EditForm>
+</div>

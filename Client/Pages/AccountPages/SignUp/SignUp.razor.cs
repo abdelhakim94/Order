@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Forms;
 using Order.Client.Services;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Client.Constants;
 using Order.Client.Components.Misc;
 using Order.Client.Components;
@@ -12,9 +12,6 @@ namespace Order.Client.Pages
 {
     public partial class SignUp : ComponentBase
     {
-        private bool isLoading { get; set; }
-        private string disabled { get => isLoading ? CSSCLasses.PageDisabled : string.Empty; }
-
         private bool isPasswordHidden = true;
         private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
         private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
@@ -42,12 +39,13 @@ namespace Order.Client.Pages
 
         public async Task HandleFormSubmition(EditContext context)
         {
-            isLoading = true;
             Spinner.Show();
             SignUpResultDto result;
 
             try
             {
+                var userInfo = context.Model as SignUpDto;
+                userInfo.Trim();
                 result = await AuthenticationService.SignUp(context.Model as SignUpDto, Toast);
                 if (result is null) return;
             }
@@ -58,7 +56,6 @@ namespace Order.Client.Pages
             }
             finally
             {
-                isLoading = false;
                 Spinner.Hide();
                 StateHasChanged();
             }

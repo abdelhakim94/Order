@@ -1,0 +1,21 @@
+@namespace Order.Client.Components
+
+<h1 @attributes=@AdditionalAttributes class=@CssClass style=@sizeStyle>
+    @Text
+</h1>
+
+@code{
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public double Size { get; set; }
+
+    string sizeStyle { get => $"font-size: {Size}em"; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,18 @@
+::deep select {
+  padding: 0.5em 0.7rem;
+  border: 0.1em solid lightgrey;
+  border-radius: 3em;
+  outline-style: none;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+
+::deep select:focus,
+::deep select:hover {
+  box-shadow: 0 0 0.2em #52affa;
+}
+
+::deep select.invalid {
+  box-shadow: 0 0 0.2em red;
+}

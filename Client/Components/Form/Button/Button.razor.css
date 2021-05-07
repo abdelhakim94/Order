@@ -5,6 +5,13 @@
   border-radius: 3em;
   outline: none;
   box-sizing: border-box;
+  height: 2.5em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.label {
+  font-size: 1.2em;
 }
 
 .component-container:active {
@@ -12,5 +19,11 @@
 }
 
 .danger-button {
-  background-color: #f94416;
+  background-color: orangered;
+}
+
+.neutral-button {
+  background-color: transparent;
+  color: black;
+  border: 0.1em solid #52affa;
 }

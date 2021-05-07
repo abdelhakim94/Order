@@ -2,28 +2,110 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Order.Client.Components;
+using Order.Client.Components.Misc;
+using Order.Client.Constants;
 using Order.Client.Layouts;
 using Order.Client.Services;
+using Order.Shared.Dto;
+using Order.Shared.Dto.Address;
 using Order.Shared.Dto.Category;
 
 namespace Order.Client.Pages
 {
-    public partial class Search : ComponentBase
+    public partial class Search : ComponentBase, IDisposable
     {
-        private List<CategoryListItemDto> categories = new();
-        public CategorySearchBarDto SearchValue { get; set; } = new();
+        CloneableList<CategoryListItemDto> Categories = new();
+        CategorySearchBarDto SearchValue { get; set; } = new();
+        UserAddressDetailDto CurrentAddress { get; set; } = new();
+        AddressModal AddressModal;
+        IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
+
+        private bool isEditingAddress { get; set; }
+        private string blured { get => isEditingAddress ? CSSCLasses.PageBlured : string.Empty; }
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
 
+        [Inject]
+        public IStateStore Store { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         [CascadingParameter]
-        public MainPagesLayout Layout { get; set; }
+        public MainPagesLayout BottomLayout { get; set; }
+
+        [CascadingParameter]
+        public MainLayout TopLayout { get; set; }
+
+        [CascadingParameter]
+        public Toast Toast { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            Layout.SearchSelected = true;
-            categories = await HubConnection.Invoke<List<CategoryListItemDto>>("GetCategories");
-            StateHasChanged();
+            BottomLayout.SearchSelected = true;
+
+            Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
+            if (Categories is null)
+            {
+                Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories", Toast);
+                Categories = Categories is null ? new() : Categories;
+                Store.Set(StoreKey.CATEGORIES, Categories);
+            }
+
+            CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
+            if (CurrentAddress is null)
+            {
+                CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
+                CurrentAddress = CurrentAddress is null ? new() : CurrentAddress;
+                Store.Set(StoreKey.ADDRESS, CurrentAddress);
+            }
+
+            Store.OnUpdate += OnStoreAddressChange;
+        }
+
+        string GetFullAddress()
+        {
+            if (CurrentAddress.Address1 is not null)
+            {
+                return $"{CurrentAddress.Address1}, {CurrentAddress.Address2}, {CurrentAddress.IdCity} {CurrentAddress.City}";
+            }
+            return string.Empty;
+        }
+
+        void HandleAddressBarClick()
+        {
+            isEditingAddress = true;
+            BottomLayout.Blured = true;
+            TopLayout.Blured = true;
+            AddressModal.Show();
+        }
+
+        void OnAddressModalClosed()
+        {
+            isEditingAddress = false;
+            BottomLayout.Blured = false;
+            TopLayout.Blured = false;
+        }
+
+        void OnStoreAddressChange(object sender, StoreUpdateArgs args)
+        {
+            if (args.Key is StoreKey.ADDRESS)
+            {
+                CurrentAddress = args.Value as UserAddressDetailDto;
+            }
+        }
+
+        void HandleSearch(string search)
+        {
+            if (!string.IsNullOrWhiteSpace(search))
+                NavigationManager.NavigateTo($"search/results/{search}");
+        }
+
+        public void Dispose()
+        {
+            Store.OnUpdate -= OnStoreAddressChange;
         }
     }
 }

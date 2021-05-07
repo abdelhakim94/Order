@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -11,12 +9,10 @@ using Order.Shared.Contracts;
 
 namespace Order.Client.Services
 {
-    public class HubConnectionService : IHubConnectionService, ISingletonService
+    public class HubConnectionService : IHubConnectionService, ISingletonService, IAsyncDisposable
     {
         private readonly IWebAssemblyHostEnvironment hostEnvironment;
         private HubConnection hubConnection;
-        public bool IsConnected { get => !string.IsNullOrWhiteSpace(LastAccessToken); }
-        public string LastAccessToken { get; private set; }
 
         public HubConnectionService(IWebAssemblyHostEnvironment hostEnvironment)
         {
@@ -27,13 +23,11 @@ namespace Order.Client.Services
         {
             await ShutDown();
             hubConnection = new HubConnectionBuilder()
-                // .WithUrl($"{hostEnvironment.BaseAddress.Replace("/app/", "")}/AppHub", options => options.Headers.Add("Authorization", $"Bearer {accessToken}"))
                 .WithUrl($"{hostEnvironment.BaseAddress.Replace("/app/", "")}/AppHub", options => options.AccessTokenProvider = () => Task.FromResult(accessToken))
                 .WithAutomaticReconnect(new HubConnectionRetryPolicy())
                 .AddMessagePackProtocol()
                 .Build();
             await hubConnection.StartAsync();
-            LastAccessToken = accessToken;
         }
 
         public async Task ShutDown()
@@ -47,32 +41,73 @@ namespace Order.Client.Services
                 await hubConnection.DisposeAsync();
                 hubConnection = null;
             }
-            LastAccessToken = null;
         }
 
         public async Task<T> Invoke<T>(string methodName, Toast toast = default(Toast))
         {
-            if (hubConnection is not null && hubConnection.State != HubConnectionState.Disconnected)
+            if (hubConnection is not null && hubConnection.State == HubConnectionState.Connected)
             {
                 try
                 {
-                    var response = await hubConnection.InvokeAsync<T>(methodName);
-                    return response;
+                    return await hubConnection.InvokeAsync<T>(methodName);
                 }
                 catch (System.Exception)
                 {
-                    if (toast != default(Toast))
+                    if (toast is not default(Toast))
                     {
-                        toast.ShowError(UIMessages.DefaultSignalRInvocationError);
+                        LogInternalError(toast);
+                        return default(T);
                     }
-                    return default(T);
+                    throw;
                 }
             }
-            if (toast != default(Toast))
+            if (toast is not default(Toast))
             {
-                toast.ShowError(UIMessages.DefaultSignalRInvocationError);
+                LogConnectionLost(toast);
+                return default(T);
             }
-            return default(T);
+            throw new ApplicationException(UIMessages.ConnectionLost);
+        }
+
+        public async Task<T> Invoke<T, U>(string methodName, U arg1, Toast toast = default(Toast))
+        {
+            if (hubConnection is not null && hubConnection.State == HubConnectionState.Connected)
+            {
+                try
+                {
+                    return await hubConnection.InvokeAsync<T>(methodName, arg1);
+                }
+                catch (System.Exception)
+                {
+                    if (toast is not default(Toast))
+                    {
+                        LogInternalError(toast);
+                        return default(T);
+                    }
+                    throw;
+                }
+            }
+            if (toast is not default(Toast))
+            {
+                LogConnectionLost(toast);
+                return default(T);
+            }
+            throw new ApplicationException(UIMessages.ConnectionLost);
+        }
+
+        void LogConnectionLost(Toast toast)
+        {
+            toast.ShowError(UIMessages.ConnectionLost);
+        }
+
+        void LogInternalError(Toast toast)
+        {
+            toast.ShowError(UIMessages.DefaultInternalError);
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            await hubConnection.DisposeAsync();
         }
     }
 }

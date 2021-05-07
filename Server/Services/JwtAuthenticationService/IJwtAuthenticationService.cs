@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Order.Shared.Dto.Users;
+using Order.Shared.Dto.Account;
 using Order.Shared.Contracts;
 
 namespace Order.Server.Services.JwtAuthenticationService
@@ -11,6 +11,7 @@ namespace Order.Server.Services.JwtAuthenticationService
     {
         Task<TokenPairDto> GenerateTokens(int userId, IEnumerable<Claim> claims, DateTime now);
         Task<TokenPairDto> RefreshTokens(string refreshToken, int userId, IEnumerable<Claim> claims, DateTime now);
+        Task<TokenPairDto> RefreshExpiredTokens(TokenPairDto tokens, DateTime now);
         Task<bool> DeleteRefreshToken(int userId);
     }
 }

@@ -3,6 +3,8 @@
   outline: none;
   border-radius: 50%;
   background-color: transparent;
+  height: 4em;
+  width: 4em;
 }
 
 .component-container:active {

@@ -34,7 +34,7 @@ namespace Order.Server.Middlewares
                         await context.Response.WriteAsJsonAsync<ValueWrapperDto<string>>(
                             new ValueWrapperDto<string>(redirectUrl)
                         );
-                        logger.LogInformation($"An Attempt to signin with an external provider was detected. Rewriting the response to pass the redirection URL {redirectUrl}");
+                        logger.LogDebug($"An Attempt to signin with an external provider was detected. Rewriting the response to pass the redirection URL {redirectUrl}");
                     }
                 }
             }
