@@ -29,6 +29,7 @@ using Order.Server.Middlewares;
 using Order.Server.CQRS;
 using Order.Server.Hubs;
 using Order.Server.Services;
+using Order.Server.Dto;
 
 namespace Order.Server
 {
@@ -54,9 +55,11 @@ namespace Order.Server
             #region Configuration
             var jwtTokenConfig = Configuration.GetSection("JwtTokenConfig").Get<JwtTokenConfigDto>();
             var emailBoxConfig = Configuration.GetSection("EmailBox").Get<EmailBox>();
+            var distanceConfig = Configuration.GetSection("DistanceConfig").Get<DistanceConfig>();
             var OAuthCredentials = Configuration.GetSection("OAuthCredentials").Get<OAuthCredentials>();
             services.AddSingleton(jwtTokenConfig);
             services.AddSingleton(emailBoxConfig);
+            services.AddSingleton(distanceConfig);
             #endregion
 
             services.AddSingleton<INpgsqlLoggingProvider, NLogLoggingProvider>();

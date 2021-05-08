@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Order.DomainModel;
+using Order.Server.Helpers;
 
 namespace Order.Server.Persistence
 {
@@ -32,6 +33,14 @@ namespace Order.Server.Persistence
                 .ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly())
                 .HasAnnotation("Relational:Collation", "English_United States.1252")
                 .HasDefaultSchema("order_schema");
+            modelBuilder.HasDbFunction(typeof(DistanceHelper).GetMethod(nameof(DistanceHelper.IsNear), new[]
+            {
+                typeof(int),
+                typeof(decimal),
+                typeof(decimal),
+                typeof(decimal)
+            }))
+            .HasName("is_near");
         }
 
         public DbSet<Address> Address { get; set; }

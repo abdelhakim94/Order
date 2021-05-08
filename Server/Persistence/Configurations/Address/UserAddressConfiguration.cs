@@ -30,7 +30,9 @@ namespace Order.Server.Persistence
 
             builder.Property(ua => ua.Address2)
                 .HasColumnName("address2")
-                .HasColumnType("character varying");
+                .HasColumnType("character varying")
+                .IsRequired()
+                .HasDefaultValue<string>(string.Empty);
 
             builder.Property(ua => ua.IdCity)
                 .HasColumnName("id_city")
