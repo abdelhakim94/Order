@@ -2,16 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Order.Server.Persistence;
 
-namespace Order.Server.Persistence.Migrations.V01
+namespace Order.Server.Persistence.Migrations.V01._11AddFlagDishIsMenuOnly
 {
     [DbContext(typeof(OrderContext))]
-    partial class OrderContextModelSnapshot : ModelSnapshot
+    [Migration("20210508092151_11AddFlagDishIsMenuOnly")]
+    partial class _11AddFlagDishIsMenuOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +30,7 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnName("address1");
 
                     b.Property<string>("Address2")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("character varying")
-                        .HasDefaultValue("")
                         .HasColumnName("address2");
 
                     b.Property<int>("IdCity")
@@ -529,7 +529,6 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.Property<string>("Address2")
                         .HasColumnType("character varying")
-                        .HasDefaultValue("")
                         .HasColumnName("address2");
 
                     b.Property<int>("IdCity")
