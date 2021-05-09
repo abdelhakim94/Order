@@ -51,6 +51,7 @@ namespace Order.Server.CQRS.Dish.Queries
                                     distanceConfig.MinDistance))
                          || d.DishSections
                                 .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
+                                .Where(ms => ms.MenuOwns)
                                 .SelectMany(ms => ms.Menu.CardsMenu, (ms, cm) => cm)
                                 .Any(cm => cm.Card.IsActive && DistanceHelper.IsNear(
                                     cm.Card.User.Id,
@@ -78,6 +79,7 @@ namespace Order.Server.CQRS.Dish.Queries
                             .FirstOrDefault() ??
                         d.DishSections
                             .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
+                            .Where(ms => ms.MenuOwns)
                             .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
                             .Select(cs => $"{cs.Card.User.FirstName} {cs.Card.User.LastName}")
                             .FirstOrDefault(),
