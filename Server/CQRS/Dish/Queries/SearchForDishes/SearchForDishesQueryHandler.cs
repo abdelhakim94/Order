@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Order.Server.Helpers;
 using Order.Server.Persistence;
 using Order.Shared.Dto;
 using Order.Server.Extensions;
+using Order.Shared.Dto.Dish;
 
 namespace Order.Server.CQRS.Dish.Queries
 {
@@ -25,9 +25,10 @@ namespace Order.Server.CQRS.Dish.Queries
         public async Task<PaginatedList<DishDetailsDto>> Handle(SearchForDishesQuery query, CancellationToken ct)
         {
             var filter = query.Filter;
+            var dbQuery = context.Dish.Where(d => !d.IsMenuOnly);
+            dbQuery = ApplyFilter(dbQuery, filter);
 
-            return await context.Dish.Where(d => !d.IsMenuOnly
-                    && (
+            return await dbQuery.Where(d =>
                             d.CardsDish
                                 .Any(cd => cd.Card.IsActive && DistanceHelper.IsNear(
                                     cd.Card.User.Id,
@@ -56,8 +57,8 @@ namespace Order.Server.CQRS.Dish.Queries
                                     filter.Latitude,
                                     filter.Longitude,
                                     distanceConfig.MinDistance))
-                    )
-                ).Select(d => new DishDetailsDto
+                )
+                .Select(d => new DishDetailsDto
                 {
                     Id = d.Id,
                     Name = d.Name,
@@ -82,6 +83,19 @@ namespace Order.Server.CQRS.Dish.Queries
                             .FirstOrDefault(),
                 })
                 .ToPaginatedListAsync(filter.PageIndex, filter.ItemsPerPage, ct);
+        }
+
+        private IQueryable<DomainModel.Dish> ApplyFilter(IQueryable<DomainModel.Dish> source, DishesSearchFilter filter)
+        {
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                filter.Search = filter.Search.ToLowerInvariant();
+                source = source.Where(d => d.Name.ToLower().Contains(filter.Search)
+                    || d.Description.ToLower().Contains(filter.Search)
+                    || d.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(filter.Search)));
+            }
+
+            return source;
         }
     }
 }
