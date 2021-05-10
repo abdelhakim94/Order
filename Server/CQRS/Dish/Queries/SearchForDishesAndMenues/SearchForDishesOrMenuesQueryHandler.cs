@@ -40,7 +40,6 @@ namespace Order.Server.CQRS.Dish.Queries
                 default:
                     throw new InvalidOperationException($"The value {query.DishOrMenu} is not supported");
             }
-
         }
 
         private async Task<PaginatedList<DishOrMenuDetailsDto>> LoadDishesAndMenues(DishesOrMenuesSearchFilter filter, CancellationToken ct)
@@ -56,6 +55,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Picture = d.Picture,
                 Price = d.Price,
                 IsMenu = false,
+
                 ChefFullName = d.CardsDish
                         .Select(cd => cd.Card.User.FirstName + " " + cd.Card.User.LastName)
                         .FirstOrDefault() ??
@@ -73,6 +73,44 @@ namespace Order.Server.CQRS.Dish.Queries
                         .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault(),
+
+                ChefCity = d.CardsDish
+                        .Select(cd => cd.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    d.DishSections
+                        .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    d.MenuesDish
+                        .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    d.DishSections
+                        .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
+                        .Where(ms => ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault(),
             });
 
             var menues = menuQuery.Select(m => new
@@ -83,6 +121,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Picture = m.Picture,
                 Price = m.Price,
                 IsMenu = true,
+
                 ChefFullName = m.CardsMenu
                         .Select(cm => cm.Card.User.FirstName + " " + cm.Card.User.LastName)
                         .FirstOrDefault() ??
@@ -91,6 +130,25 @@ namespace Order.Server.CQRS.Dish.Queries
                         .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault(),
+
+                ChefCity = m.CardsMenu
+                        .Select(cm => cm.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    m.MenuSections
+                        .Where(ms => !ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault()
             });
 
             return await dishes.Union(menues)
@@ -103,6 +161,7 @@ namespace Order.Server.CQRS.Dish.Queries
                     Price = e.Price,
                     IsMenu = e.IsMenu,
                     ChefFullName = e.ChefFullName,
+                    ChefCity = e.ChefCity,
                 })
                 .ToPaginatedListAsync(filter.PageIndex, filter.ItemsPerPage, ct);
         }
@@ -110,7 +169,8 @@ namespace Order.Server.CQRS.Dish.Queries
         private async Task<PaginatedList<DishOrMenuDetailsDto>> LoadMenues(DishesOrMenuesSearchFilter filter, CancellationToken ct)
         {
             var query = BuildMenuesQuery(filter);
-            return await query.Select(m => new DishOrMenuDetailsDto
+            return await query
+            .Select(m => new DishOrMenuDetailsDto
             {
                 Id = m.Id,
                 Name = m.Name,
@@ -118,6 +178,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Picture = m.Picture,
                 Price = m.Price,
                 IsMenu = true,
+
                 ChefFullName = m.CardsMenu
                         .Select(cm => cm.Card.User.FirstName + " " + cm.Card.User.LastName)
                         .FirstOrDefault() ??
@@ -125,6 +186,25 @@ namespace Order.Server.CQRS.Dish.Queries
                         .Where(ms => !ms.MenuOwns)
                         .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
+                        .FirstOrDefault(),
+
+                ChefCity = m.CardsMenu
+                        .Select(cm => cm.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    m.MenuSections
+                        .Where(ms => !ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
                         .FirstOrDefault()
             })
             .ToPaginatedListAsync(filter.PageIndex, filter.ItemsPerPage, ct);
@@ -141,6 +221,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Picture = d.Picture,
                 Price = d.Price,
                 IsMenu = false,
+
                 ChefFullName = d.CardsDish
                         .Select(cd => cd.Card.User.FirstName + " " + cd.Card.User.LastName)
                         .FirstOrDefault() ??
@@ -157,6 +238,44 @@ namespace Order.Server.CQRS.Dish.Queries
                         .Where(ms => ms.MenuOwns)
                         .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
+                        .FirstOrDefault(),
+
+                ChefCity = d.CardsDish
+                        .Select(cd => cd.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    d.DishSections
+                        .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    d.MenuesDish
+                        .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault() ??
+                    d.DishSections
+                        .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
+                        .Where(ms => ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
                         .FirstOrDefault(),
             })
             .ToPaginatedListAsync(filter.PageIndex, filter.ItemsPerPage, ct);
