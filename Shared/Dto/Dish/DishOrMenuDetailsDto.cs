@@ -1,6 +1,6 @@
 namespace Order.Shared.Dto
 {
-    public class DishAndMenuDetailsDto
+    public class DishOrMenuDetailsDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -8,5 +8,6 @@ namespace Order.Shared.Dto
         public string Picture { get; set; }
         public decimal Price { get; set; }
         public string ChefFullName { get; set; }
+        public bool IsMenu { get; set; }
     }
 }

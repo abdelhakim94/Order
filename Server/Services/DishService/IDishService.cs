@@ -8,8 +8,8 @@ namespace Order.Server.Services
 {
     public interface IDishService : IScopedService
     {
-        Task<PaginatedList<DishDetailsDto>> SearchForDishes(DishesSearchFilter filter);
-        Task<PaginatedList<MenuDetailsDto>> SearchForMenues(MenuesSearchFilter filter);
-        Task<PaginatedList<DishAndMenuDetailsDto>> SearchForDishesAndMenues(DishesAndMenuesSearchFilter filter);
+        Task<PaginatedList<DishOrMenuDetailsDto>> SearchForDishes(DishesOrMenuesSearchFilter filter);
+        Task<PaginatedList<DishOrMenuDetailsDto>> SearchForMenues(DishesOrMenuesSearchFilter filter);
+        Task<PaginatedList<DishOrMenuDetailsDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter);
     }
 }

@@ -18,6 +18,7 @@ namespace Order.Server.CQRS.Category.Queries
         public async Task<List<CategoryListItemDto>> Handle(GetCategoriesQuery query, CancellationToken ct)
         {
             return await context.Category
+                .AsNoTracking()
                 .Select(c => new CategoryListItemDto
                 {
                     Id = c.Id,
