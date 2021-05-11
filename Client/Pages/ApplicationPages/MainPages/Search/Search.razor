@@ -28,7 +28,7 @@
         <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.SPACE_BETWEEN>
             @foreach (var category in Categories ?? new())
             {
-                <CategoryCard Label=@category.Label Picture=@category.Picture @onclick=@(() =>
+                <CategoryCard @key=@category Label=@category.Label Picture=@category.Picture @onclick=@(() =>
                 HandleSearch(category.Label)) />
             }
         </Row>
