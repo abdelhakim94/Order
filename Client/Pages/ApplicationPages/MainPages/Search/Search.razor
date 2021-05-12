@@ -12,14 +12,18 @@
 <div class=@blured>
     <Column CssClass="search-column" Align=@AlignItems.STRETCH>
 
-        @* The "Model" does not really matter here because we are not submitting the form *@
-        <EditForm Model=@(new object())>
-            <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress
-                Value=@CurrentAddress?.ToString() @onclick=@HandleAddressBarClick />
-        </EditForm>
+        <LayoutSetter>
+            <Top>
+                @* The "Model" does not really matter here because we are not submitting the form *@
+                <EditForm Model=@(new object())>
+                    <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress
+                        Value=@CurrentAddress?.ToString() @onclick=@HandleAddressBarClick />
+                </EditForm>
+            </Top>
+        </LayoutSetter>
 
         <EditForm Model=@SearchValue>
-            <OInputText PlaceHolder=@M.CategorySearchBar RightIcon="icons/searchbar-magnifier.png"
+            <OInputText CssClass="search-bar" PlaceHolder=@M.CategorySearchBar RightIcon="icons/searchbar-magnifier.png"
                 @bind-Value=@SearchValue.Value OnRightIconClick=@((string search) => HandleSearch(search)) />
         </EditForm>
 

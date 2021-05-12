@@ -45,6 +45,7 @@ namespace Order.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             BottomLayout.SearchSelected = true;
+            TopLayout.PreviousPage = string.Empty;
 
             Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
             if (Categories is null)

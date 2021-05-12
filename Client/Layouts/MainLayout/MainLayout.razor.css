@@ -1,6 +1,14 @@
-.cart-button {
-  position: absolute;
-  right: 0%;
-  margin-top: 2vw;
-  margin-right: 2vw;
+::deep .cart-button {
+  padding: 2vw;
+  padding-bottom: 0%;
+}
+
+::deep .address-bar {
+  width: 70vw;
+}
+
+::deep div.address-bar input {
+  border: none;
+  border-radius: 0%;
+  border-bottom: 0.1em solid lightgrey;
 }
