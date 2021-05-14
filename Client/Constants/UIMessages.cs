@@ -77,5 +77,8 @@ namespace Order.Client.Constants
         public static string Address2 { get => "Complément"; }
         public static string ZipCode { get => "Code postal"; }
         public static string City { get => "Ville"; }
+
+        public static string Meals { get => "Repas"; }
+        public static string Chefs { get => "Chefs"; }
     }
 }
