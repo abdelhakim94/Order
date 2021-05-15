@@ -291,21 +291,21 @@ namespace Order.Server.CQRS.Dish.Queries
 
             return dbQuery.Where(d =>
                     d.CardsDish
-                    .Any(cd => cd.Card.IsActive && DistanceHelper.IsNear(
+                    .Any(cd => cd.Card.IsActive && DatabaseFunctions.IsNear(
                         cd.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,
                         distanceConfig.MinDistance))
                 || d.DishSections
                     .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                    .Any(cs => cs.Card.IsActive && DistanceHelper.IsNear(
+                    .Any(cs => cs.Card.IsActive && DatabaseFunctions.IsNear(
                         cs.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,
                         distanceConfig.MinDistance))
                 || d.MenuesDish
                     .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
-                    .Any(mc => mc.Card.IsActive && DistanceHelper.IsNear(
+                    .Any(mc => mc.Card.IsActive && DatabaseFunctions.IsNear(
                         mc.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,
@@ -314,7 +314,7 @@ namespace Order.Server.CQRS.Dish.Queries
                     .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
                     .Where(ms => ms.MenuOwns)
                     .SelectMany(ms => ms.Menu.CardsMenu, (ms, cm) => cm)
-                    .Any(cm => cm.Card.IsActive && DistanceHelper.IsNear(
+                    .Any(cm => cm.Card.IsActive && DatabaseFunctions.IsNear(
                         cm.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,
@@ -343,7 +343,7 @@ namespace Order.Server.CQRS.Dish.Queries
             dbQuery = ApplyFilter(dbQuery, filter);
 
             return dbQuery.Where(m =>
-                m.CardsMenu.Any(cm => cm.Card.IsActive && DistanceHelper.IsNear(
+                m.CardsMenu.Any(cm => cm.Card.IsActive && DatabaseFunctions.IsNear(
                         cm.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,
@@ -351,7 +351,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 || m.MenuSections
                     .Where(ms => !ms.MenuOwns)
                     .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
-                    .Any(cs => cs.Card.IsActive && DistanceHelper.IsNear(
+                    .Any(cs => cs.Card.IsActive && DatabaseFunctions.IsNear(
                         cs.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,

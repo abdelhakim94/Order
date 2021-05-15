@@ -20,6 +20,9 @@ namespace Order.Server.Persistence
                 .HasMaxLength(50)
                 .IsRequired();
 
+            builder.Property(e => e.Picture)
+                .HasColumnName("Picture");
+
             // Each User can have many UserClaims
             builder.HasMany(e => e.Claims)
                 .WithOne(e => e.User)

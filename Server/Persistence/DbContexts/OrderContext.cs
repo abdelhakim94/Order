@@ -29,11 +29,13 @@ namespace Order.Server.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder
                 .ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly())
                 .HasAnnotation("Relational:Collation", "English_United States.1252")
                 .HasDefaultSchema("order_schema");
-            modelBuilder.HasDbFunction(typeof(DistanceHelper).GetMethod(nameof(DistanceHelper.IsNear), new[]
+
+            modelBuilder.HasDbFunction(typeof(DatabaseFunctions).GetMethod(nameof(DatabaseFunctions.IsNear), new[]
             {
                 typeof(int),
                 typeof(decimal),
@@ -41,6 +43,12 @@ namespace Order.Server.Persistence
                 typeof(decimal)
             }))
             .HasName("is_near");
+
+            modelBuilder.HasDbFunction(typeof(DatabaseFunctions).GetMethod(nameof(DatabaseFunctions.UserCategories), new[]
+            {
+                typeof(int),
+            }))
+            .HasName("user_categories");
         }
 
         public DbSet<Address> Address { get; set; }
