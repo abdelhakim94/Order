@@ -1,4 +1,4 @@
-namespace Order.Shared.Dto
+namespace Order.Shared.Dto.Dish
 {
     public class DishOrMenuDetailsDto
     {

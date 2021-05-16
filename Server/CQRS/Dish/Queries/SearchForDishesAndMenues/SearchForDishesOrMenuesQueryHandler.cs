@@ -52,7 +52,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Id = d.Id,
                 Name = d.Name,
                 Description = d.Description,
-                Picture = d.Picture,
+                Picture = d.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                 Price = d.Price,
                 IsMenu = false,
 
@@ -118,7 +118,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Id = m.Id,
                 Name = m.Name,
                 Description = m.Description,
-                Picture = m.Picture,
+                Picture = m.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                 Price = m.Price,
                 IsMenu = true,
 
@@ -157,7 +157,7 @@ namespace Order.Server.CQRS.Dish.Queries
                     Id = e.Id,
                     Name = e.Name,
                     Description = e.Description,
-                    Picture = e.Picture,
+                    Picture = e.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                     Price = e.Price,
                     IsMenu = e.IsMenu,
                     ChefFullName = e.ChefFullName,
@@ -175,7 +175,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Id = m.Id,
                 Name = m.Name,
                 Description = m.Description,
-                Picture = m.Picture,
+                Picture = m.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                 Price = m.Price,
                 IsMenu = true,
 
@@ -218,7 +218,7 @@ namespace Order.Server.CQRS.Dish.Queries
                 Id = d.Id,
                 Name = d.Name,
                 Description = d.Description,
-                Picture = d.Picture,
+                Picture = d.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                 Price = d.Price,
                 IsMenu = false,
 

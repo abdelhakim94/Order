@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Order.Server.Dto
 {
@@ -19,6 +20,17 @@ namespace Order.Server.Dto
             ItemsPerPage = itemsPerPage;
             TotalItems = totalItems;
             Items = items ?? new();
+        }
+
+        public void AddRange(IEnumerable<T> toAdd, IEqualityComparer<T> comparer = null)
+        {
+            foreach (var item in toAdd)
+            {
+                if (!Items.Contains(item, comparer))
+                {
+                    Items.Add(item);
+                }
+            }
         }
     }
 }

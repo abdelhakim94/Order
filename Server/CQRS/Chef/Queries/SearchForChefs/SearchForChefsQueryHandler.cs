@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Order.Server.Constants;
 using Order.Server.Dto;
 using Order.Server.Extensions;
 using Order.Server.Helpers;
@@ -35,7 +36,7 @@ namespace Order.Server.CQRS.Chef.Queries
             return await dbQuery.Select(u => new ChefDetailsDto
             {
                 Id = u.Id,
-                Picture = u.Picture,
+                Picture = u.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                 ChefFullName = u.FirstName + " " + u.LastName,
                 City = u.UserAddresses
                     .OrderBy(ua => ua.LastTimeUsed)

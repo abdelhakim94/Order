@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Order.Server.Constants;
 using Order.Server.Persistence;
 using Order.Shared.Dto.Category;
 
@@ -23,7 +24,7 @@ namespace Order.Server.CQRS.Category.Queries
                 {
                     Id = c.Id,
                     Label = c.Label,
-                    Picture = c.Picture,
+                    Picture = c.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                     IsMain = c.IsMain,
                 })
                 .ToListAsync();

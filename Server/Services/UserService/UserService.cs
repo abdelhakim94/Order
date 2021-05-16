@@ -21,10 +21,9 @@ namespace Order.Server.Services
         public async Task<List<IdentifiedUserAddressDetailDto>> GetAllUserAddresses(int userId)
         {
             var result = await mediator.Send(new GetAllUserAddressesQuery(userId));
-            var counter = 0;
             return result?.Select(r => new IdentifiedUserAddressDetailDto
             {
-                Id = (counter++).ToString(),
+                Id = r.ToString(),
                 Address = r,
             }).ToList();
         }
