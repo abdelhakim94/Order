@@ -1,0 +1,16 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Components.Dish
+
+<div class=@CSSCLasses.ComponentContainer>
+    <Row>
+        <div class="picture" style=@pictureUrl></div>
+        <Column CssClass="data-column" Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
+            <OTitle CssClass="element first" Text=@DishOrMenu.Name Size=1.2 />
+            <p class="element second">@DishOrMenu.Description</p>
+            <p class="element third">@DishOrMenu.ChefFullName - @DishOrMenu.ChefCity</p>
+            <p class="element fourth">@DishOrMenu.Price @M.DA</p>
+        </Column>
+    </Row>
+</div>

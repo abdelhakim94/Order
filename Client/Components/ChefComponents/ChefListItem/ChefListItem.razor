@@ -1,0 +1,15 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Components.Chef
+
+<div class=@CSSCLasses.ComponentContainer>
+    <Row>
+        <div class="picture" style=@pictureUrl></div>
+        <Column CssClass="data-column" Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
+            <OTitle CssClass="element first" Text=@Chef.ChefFullName Size=1.2 />
+            <p class="element second">@Chef.Categories</p>
+            <p class="element third">@Chef.City</p>
+        </Column>
+    </Row>
+</div>

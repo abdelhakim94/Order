@@ -1,0 +1,35 @@
+@page "/search/results/{Search}"
+
+@using Order.Client.Components
+@using Order.Client.Components.Layout
+@using Order.Client.Components.Dish
+@using Order.Client.Components.Chef
+@using Order.Client.Layouts
+
+@namespace Order.Client.Pages
+
+<LayoutSetter>
+    <Top>
+        <DishOrChefToggle LeftLabel=@M.Meals RightLabel=@M.Chefs Value=@searchByChefs
+            ValueChanged=@HandleDishOrChefToggle />
+    </Top>
+</LayoutSetter>
+
+<Column>
+    @if (searchByChefs)
+    {
+        <p class="text">@M.ChefsFound(chefs?.TotalItems)</p>
+        foreach (var item in chefs?.Items ?? new())
+        {
+            <ChefListItem @key=@item Chef=@item />
+        }
+    }
+    else
+    {
+        <p class="text">@M.DishesAndMenuesFound(dishAndMenues?.TotalItems)</p>
+        foreach (var item in dishAndMenues?.Items ?? new())
+        {
+            <DishOrMenuListItem @key=@item DishOrMenu=@item />
+        }
+    }
+</Column>

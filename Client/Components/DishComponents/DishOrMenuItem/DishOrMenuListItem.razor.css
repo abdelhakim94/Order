@@ -1,0 +1,44 @@
+.component-container {
+  border: solid 1px lightgray;
+  margin: 0.5em;
+  box-shadow: 0 0 5px rgba(102, 179, 251, 0.5);
+  border-radius: 0.5em;
+}
+
+.picture {
+  height: 8em;
+  width: 8em;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 0.5em;
+}
+
+::deep .element {
+  margin: 0%;
+  margin-left: 0.5em;
+  overflow: scroll;
+}
+
+::deep .data-column {
+  width: calc((100%) - 8.5em);
+}
+
+::deep .first,
+.third,
+.fourth {
+  max-height: 1.4;
+}
+
+.third {
+  color: lightslategray;
+}
+
+.second {
+  max-height: 2.9em;
+}
+
+.fourth {
+  align-self: flex-end;
+  font-weight: bold;
+}
