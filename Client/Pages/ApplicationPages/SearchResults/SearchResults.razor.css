@@ -3,3 +3,15 @@
   margin: 7%;
   margin-left: 1em;
 }
+
+::deep .search-bar {
+  margin-top: 7%;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+::deep .right-icon {
+  top: 20%;
+  height: 60%;
+  padding-left: 0.5em;
+}

@@ -6,6 +6,7 @@ using Order.Client.Constants;
 using Order.Client.Layouts;
 using Order.Client.Services;
 using Order.Server.Dto;
+using Order.Shared.Dto;
 using Order.Shared.Dto.Address;
 using Order.Shared.Dto.Chef;
 using Order.Shared.Dto.Dish;
@@ -14,6 +15,8 @@ namespace Order.Client.Pages
 {
     public partial class SearchResults : ComponentBase
     {
+        ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
+
         private PaginatedList<DishOrMenuListItemDto> dishAndMenues;
         private DishesOrMenuesSearchFilter dishAndMenuesFilter;
         private int dishAndMenuesPageIndex;
@@ -132,6 +135,7 @@ namespace Order.Client.Pages
 
         async Task SearchChefsOrDishesAndMenues()
         {
+            SearchValue.Value = Search;
             if (searchByChefs)
             {
                 await SearchChefs();
@@ -152,6 +156,23 @@ namespace Order.Client.Pages
         {
             MainLayout.PreviousPage = $"search/results/{Search}";
             NavigationManager.NavigateTo($"ChefDetails/{item.Id}");
+        }
+
+        async Task HandleSearch(string search)
+        {
+
+            if (string.IsNullOrWhiteSpace(search))
+                return;
+
+            if (string.IsNullOrWhiteSpace(address?.Address1) || string.IsNullOrWhiteSpace(address?.City))
+                return;
+
+            dishAndMenues = null;
+            dishAndMenuesPageIndex = 1;
+            chefs = null;
+            chefsPageIndex = 1;
+            Search = search;
+            await SearchChefsOrDishesAndMenues();
         }
     }
 }
