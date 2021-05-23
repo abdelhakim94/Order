@@ -9,7 +9,7 @@ namespace Order.Client.Components.Dish
         private string pictureUrl { get => $"background-image:url({DishOrMenu?.Picture})"; }
 
         [Parameter]
-        public DishOrMenuDetailsDto DishOrMenu { get; set; }
+        public DishOrMenuListItemDto DishOrMenu { get; set; }
 
         [Parameter]
         public string CssClass { get; set; }

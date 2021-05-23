@@ -1,6 +1,6 @@
 namespace Order.Shared.Dto.Dish
 {
-    public class DishOrMenuDetailsDto
+    public class DishOrMenuListItemDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

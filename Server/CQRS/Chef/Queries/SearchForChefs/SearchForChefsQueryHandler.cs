@@ -12,7 +12,7 @@ using Order.Shared.Security.Claims;
 
 namespace Order.Server.CQRS.Chef.Queries
 {
-    public class SearchForChefsQueryHandler : IRequestHandler<SearchForChefsQuery, PaginatedList<ChefDetailsDto>>
+    public class SearchForChefsQueryHandler : IRequestHandler<SearchForChefsQuery, PaginatedList<ChefListItemDto>>
     {
         private IOrderContext context;
         private DistanceConfig distanceConfig;
@@ -23,7 +23,7 @@ namespace Order.Server.CQRS.Chef.Queries
             this.distanceConfig = distanceConfig;
         }
 
-        public async Task<PaginatedList<ChefDetailsDto>> Handle(SearchForChefsQuery query, CancellationToken ct)
+        public async Task<PaginatedList<ChefListItemDto>> Handle(SearchForChefsQuery query, CancellationToken ct)
         {
             var filter = query.Filter;
 
@@ -33,7 +33,7 @@ namespace Order.Server.CQRS.Chef.Queries
 
             dbQuery = ApplyFilters(dbQuery, filter);
 
-            return await dbQuery.Select(u => new ChefDetailsDto
+            return await dbQuery.Select(u => new ChefListItemDto
             {
                 Id = u.Id,
                 Picture = u.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,

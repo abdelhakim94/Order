@@ -14,11 +14,11 @@ namespace Order.Client.Pages
 {
     public partial class SearchResults : ComponentBase
     {
-        private PaginatedList<DishOrMenuDetailsDto> dishAndMenues;
+        private PaginatedList<DishOrMenuListItemDto> dishAndMenues;
         private DishesOrMenuesSearchFilter dishAndMenuesFilter;
         private int dishAndMenuesPageIndex;
 
-        private PaginatedList<ChefDetailsDto> chefs;
+        private PaginatedList<ChefListItemDto> chefs;
         private ChefsSearchFilter chefsSearchFilter;
         private int chefsPageIndex;
 
@@ -94,11 +94,11 @@ namespace Order.Client.Pages
             };
 
             Spinner.Show();
-            var results = await HubConnection.Invoke<PaginatedList<DishOrMenuDetailsDto>, DishesOrMenuesSearchFilter>(
+            var results = await HubConnection.Invoke<PaginatedList<DishOrMenuListItemDto>, DishesOrMenuesSearchFilter>(
                 "GetDishesAndMenues",
                 dishAndMenuesFilter,
                 Toast);
-            if (dishAndMenues is not null) dishAndMenues.AddRange(results.Items, new DishOrMenuDetailEqualityComparer());
+            if (dishAndMenues is not null) dishAndMenues.AddRange(results.Items, new DishOrMenuListItemEqualityComparer());
             else dishAndMenues = results;
             Spinner.Hide();
         }
@@ -121,11 +121,11 @@ namespace Order.Client.Pages
             };
 
             Spinner.Show();
-            var results = await HubConnection.Invoke<PaginatedList<ChefDetailsDto>, ChefsSearchFilter>(
+            var results = await HubConnection.Invoke<PaginatedList<ChefListItemDto>, ChefsSearchFilter>(
                 "GetChefs",
                 chefsSearchFilter,
                 Toast);
-            if (chefs is not null) chefs.AddRange(results.Items, new ChefDetailsComparer());
+            if (chefs is not null) chefs.AddRange(results.Items, new ChefListItemComparer());
             else chefs = results;
             Spinner.Hide();
         }
@@ -140,6 +140,18 @@ namespace Order.Client.Pages
             {
                 await SearchDishesAndMenues();
             }
+        }
+
+        void NavigateToDishOrMenuDetails(DishOrMenuListItemDto item)
+        {
+            MainLayout.PreviousPage = $"search/results/{Search}";
+            NavigationManager.NavigateTo($"DishOrMenuDetails/{item.IsMenu}/{item.Id}");
+        }
+
+        void NavigateToChefDetails(ChefListItemDto item)
+        {
+            MainLayout.PreviousPage = $"search/results/{Search}";
+            NavigationManager.NavigateTo($"ChefDetails/{item.Id}");
         }
     }
 }

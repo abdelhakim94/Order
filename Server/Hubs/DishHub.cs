@@ -9,17 +9,17 @@ namespace Order.Server.Hubs
 {
     public partial class AppHub : Hub<IClientHubMessage>
     {
-        public async Task<PaginatedList<DishOrMenuDetailsDto>> GetDishes(DishesOrMenuesSearchFilter filter)
+        public async Task<PaginatedList<DishOrMenuListItemDto>> GetDishes(DishesOrMenuesSearchFilter filter)
         {
             return await dishService.SearchForDishes(filter);
         }
 
-        public async Task<PaginatedList<DishOrMenuDetailsDto>> GetMenues(DishesOrMenuesSearchFilter filter)
+        public async Task<PaginatedList<DishOrMenuListItemDto>> GetMenues(DishesOrMenuesSearchFilter filter)
         {
             return await dishService.SearchForMenues(filter);
         }
 
-        public async Task<PaginatedList<DishOrMenuDetailsDto>> GetDishesAndMenues(DishesOrMenuesSearchFilter filter)
+        public async Task<PaginatedList<DishOrMenuListItemDto>> GetDishesAndMenues(DishesOrMenuesSearchFilter filter)
         {
             return await dishService.SearchForDishesAndMenues(filter);
         }

@@ -6,7 +6,7 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Server.CQRS.Dish.Queries
 {
-    public class SearchForDishesOrMenuesQuery : IRequest<PaginatedList<DishOrMenuDetailsDto>>
+    public class SearchForDishesOrMenuesQuery : IRequest<PaginatedList<DishOrMenuListItemDto>>
     {
         public DishesOrMenuesSearchFilter Filter { get; }
         public SearchDishOrMenu DishOrMenu { get; }

@@ -15,17 +15,17 @@ namespace Order.Server.Services
 
         public DishService(IMediator mediator) => this.mediator = mediator;
 
-        public Task<PaginatedList<DishOrMenuDetailsDto>> SearchForDishes(DishesOrMenuesSearchFilter filter)
+        public Task<PaginatedList<DishOrMenuListItemDto>> SearchForDishes(DishesOrMenuesSearchFilter filter)
         {
             return mediator.Send(new SearchForDishesOrMenuesQuery(filter, SearchDishOrMenu.DISHES));
         }
 
-        public Task<PaginatedList<DishOrMenuDetailsDto>> SearchForMenues(DishesOrMenuesSearchFilter filter)
+        public Task<PaginatedList<DishOrMenuListItemDto>> SearchForMenues(DishesOrMenuesSearchFilter filter)
         {
             return mediator.Send(new SearchForDishesOrMenuesQuery(filter, SearchDishOrMenu.MENUES));
         }
 
-        public Task<PaginatedList<DishOrMenuDetailsDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter)
+        public Task<PaginatedList<DishOrMenuListItemDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter)
         {
             return mediator.Send(new SearchForDishesOrMenuesQuery(filter, SearchDishOrMenu.DISHES_AND_MENUES));
         }

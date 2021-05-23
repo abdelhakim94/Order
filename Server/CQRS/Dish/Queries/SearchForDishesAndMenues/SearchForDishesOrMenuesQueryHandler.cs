@@ -14,7 +14,7 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Server.CQRS.Dish.Queries
 {
-    public class SearchForDishesOrMenuesQueryHandler : IRequestHandler<SearchForDishesOrMenuesQuery, PaginatedList<DishOrMenuDetailsDto>>
+    public class SearchForDishesOrMenuesQueryHandler : IRequestHandler<SearchForDishesOrMenuesQuery, PaginatedList<DishOrMenuListItemDto>>
     {
         private readonly IOrderContext context;
         private readonly DistanceConfig distanceConfig;
@@ -25,7 +25,7 @@ namespace Order.Server.CQRS.Dish.Queries
             this.distanceConfig = distanceConfig;
         }
 
-        public async Task<PaginatedList<DishOrMenuDetailsDto>> Handle(SearchForDishesOrMenuesQuery query, CancellationToken ct)
+        public async Task<PaginatedList<DishOrMenuListItemDto>> Handle(SearchForDishesOrMenuesQuery query, CancellationToken ct)
         {
             var filter = query.Filter;
 
@@ -42,7 +42,7 @@ namespace Order.Server.CQRS.Dish.Queries
             }
         }
 
-        private async Task<PaginatedList<DishOrMenuDetailsDto>> LoadDishesAndMenues(DishesOrMenuesSearchFilter filter, CancellationToken ct)
+        private async Task<PaginatedList<DishOrMenuListItemDto>> LoadDishesAndMenues(DishesOrMenuesSearchFilter filter, CancellationToken ct)
         {
             var dishQuery = BuildDishesQuery(filter);
             var menuQuery = BuildMenuesQuery(filter);
@@ -152,7 +152,7 @@ namespace Order.Server.CQRS.Dish.Queries
             });
 
             return await dishes.Union(menues)
-                .Select(e => new DishOrMenuDetailsDto
+                .Select(e => new DishOrMenuListItemDto
                 {
                     Id = e.Id,
                     Name = e.Name,
@@ -166,11 +166,11 @@ namespace Order.Server.CQRS.Dish.Queries
                 .ToPaginatedListAsync(filter.PageIndex, filter.ItemsPerPage, ct);
         }
 
-        private async Task<PaginatedList<DishOrMenuDetailsDto>> LoadMenues(DishesOrMenuesSearchFilter filter, CancellationToken ct)
+        private async Task<PaginatedList<DishOrMenuListItemDto>> LoadMenues(DishesOrMenuesSearchFilter filter, CancellationToken ct)
         {
             var query = BuildMenuesQuery(filter);
             return await query
-            .Select(m => new DishOrMenuDetailsDto
+            .Select(m => new DishOrMenuListItemDto
             {
                 Id = m.Id,
                 Name = m.Name,
@@ -210,10 +210,10 @@ namespace Order.Server.CQRS.Dish.Queries
             .ToPaginatedListAsync(filter.PageIndex, filter.ItemsPerPage, ct);
         }
 
-        private async Task<PaginatedList<DishOrMenuDetailsDto>> LoadDishes(DishesOrMenuesSearchFilter filter, CancellationToken ct)
+        private async Task<PaginatedList<DishOrMenuListItemDto>> LoadDishes(DishesOrMenuesSearchFilter filter, CancellationToken ct)
         {
             var query = BuildDishesQuery(filter);
-            return await query.Select(d => new DishOrMenuDetailsDto
+            return await query.Select(d => new DishOrMenuListItemDto
             {
                 Id = d.Id,
                 Name = d.Name,

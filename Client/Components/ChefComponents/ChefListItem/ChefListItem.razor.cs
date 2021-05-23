@@ -9,7 +9,7 @@ namespace Order.Client.Components.Chef
         private string pictureUrl { get => $"background-image:url({Chef?.Picture})"; }
 
         [Parameter]
-        public ChefDetailsDto Chef { get; set; }
+        public ChefListItemDto Chef { get; set; }
 
         [Parameter]
         public string CssClass { get; set; }

@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-
 namespace Order.Shared.Dto.Chef
 {
-    public class ChefDetailsDto
+    public class ChefListItemDto
     {
         public int Id { get; set; }
         public string Picture { get; set; }

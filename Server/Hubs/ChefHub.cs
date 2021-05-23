@@ -8,7 +8,7 @@ namespace Order.Server.Hubs
 {
     public partial class AppHub : Hub<IClientHubMessage>
     {
-        public Task<PaginatedList<ChefDetailsDto>> GetChefs(ChefsSearchFilter filter)
+        public Task<PaginatedList<ChefListItemDto>> GetChefs(ChefsSearchFilter filter)
         {
             return chefService.SearchForChefs(filter);
         }

@@ -15,7 +15,7 @@ namespace Order.Server.Services
         {
             this.mediator = mediator;
         }
-        public Task<PaginatedList<ChefDetailsDto>> SearchForChefs(ChefsSearchFilter filter)
+        public Task<PaginatedList<ChefListItemDto>> SearchForChefs(ChefsSearchFilter filter)
         {
             return mediator.Send(new SearchForChefsQuery(filter));
         }

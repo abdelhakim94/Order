@@ -21,7 +21,7 @@
         <p class="text">@M.ChefsFound(chefs?.TotalItems)</p>
         foreach (var item in chefs?.Items ?? new())
         {
-            <ChefListItem @key=@item Chef=@item @onclick=@(() => NavigationManager.NavigateTo($"ChefDetails/{item.Id}"))/>
+            <ChefListItem @key=@item Chef=@item @onclick=@(() => NavigateToChefDetails(item))/>
         }
         if (chefs is not null && chefs.Items.Count < chefs.TotalItems)
         {
@@ -33,7 +33,7 @@
         <p class="text">@M.DishesAndMenuesFound(dishAndMenues?.TotalItems)</p>
         foreach (var item in dishAndMenues?.Items ?? new())
         {
-            <DishOrMenuListItem @key=@item DishOrMenu=@item @onclick=@(() => NavigationManager.NavigateTo($"DishOrMenuDetails/{item.IsMenu}/{item.Id}"))/>
+            <DishOrMenuListItem @key=@item DishOrMenu=@item @onclick=@(() => NavigateToDishOrMenuDetails(item))/>
         }
         if (dishAndMenues is not null && dishAndMenues.Items.Count < dishAndMenues.TotalItems)
         {

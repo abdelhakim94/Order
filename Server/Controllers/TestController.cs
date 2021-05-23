@@ -30,14 +30,14 @@ namespace Order.Server.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public Task<PaginatedList<ChefDetailsDto>> SearchForChefs(ChefsSearchFilter filter)
+        public Task<PaginatedList<ChefListItemDto>> SearchForChefs(ChefsSearchFilter filter)
         {
             return chefService.SearchForChefs(filter);
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public Task<PaginatedList<DishOrMenuDetailsDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter)
+        public Task<PaginatedList<DishOrMenuListItemDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter)
         {
             return dishService.SearchForDishesAndMenues(filter);
         }
