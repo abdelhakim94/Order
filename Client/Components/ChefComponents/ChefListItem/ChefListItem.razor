@@ -9,7 +9,10 @@
         <Column CssClass="data-column" Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
             <OTitle CssClass="element first" Text=@Chef.ChefFullName Size=1.2 />
             <p class="element second">@Chef.Categories</p>
-            <p class="element third">@Chef.City</p>
+            <Row CssClass="group" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+                <img class="icon-info" src="icons/position.png" />
+                <p class="element third">@Chef.City</p>
+            </Row>
         </Column>
     </Row>
 </div>

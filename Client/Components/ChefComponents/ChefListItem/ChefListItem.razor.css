@@ -1,8 +1,5 @@
 .component-container {
-  border: solid 1px lightgray;
   margin: 0.5em;
-  box-shadow: 0 0 5px rgba(102, 179, 251, 0.5);
-  border-radius: 0.5em;
 }
 
 .picture {
@@ -11,30 +8,29 @@
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
-  border-radius: 0.5em;
-}
-
-::deep .element {
-  margin: 0%;
-  margin-left: 0.5em;
-  overflow: scroll;
 }
 
 ::deep .data-column {
   width: calc((100%) - 8.5em);
+  margin-left: 0.5em;
 }
 
-::deep .first,
-.third,
-.fourth {
-  max-height: 1.4;
-}
-
-.third {
-  color: lightslategray;
-  margin-bottom: 0.5em;
+::deep .element,
+::deep .group {
+  margin: 0%;
+  overflow: scroll;
+  max-height: 1.4em;
 }
 
 .second {
   max-height: 2.9em;
+}
+
+.third {
+  color: lightslategray;
+  margin-left: 0.4em;
+}
+
+.icon-info {
+  max-height: 1.1em;
 }
