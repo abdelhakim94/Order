@@ -3,8 +3,8 @@
 
 @namespace Order.Client.Components.Dish
 
-<div class=@CSSCLasses.ComponentContainer>
-    <Row ExpandHorizontally=@true>
+<div class="@CSSCLasses.ComponentContainer @CssClass">
+    <Row AdditionalAttributes=@AdditionalAttributes ExpandHorizontally=@true>
         <div class="picture" style=@pictureUrl></div>
         <Column CssClass="data-column" Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
             <OTitle CssClass="element first" Text=@DishOrMenu.Name Size=1.2 />
@@ -12,7 +12,7 @@
             <Row CssClass="group" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
                 <img class="icon-info" src="icons/chef-hat.png" />
                 <p class="element third">@DishOrMenu.ChefFullName</p>
-            </Row> 
+            </Row>
             <Row CssClass="group" ExpandHorizontally=@true Justify=@JustifyContent.SPACE_BETWEEN
                 Align=@AlignItems.CENTER>
                 <Row CssClass="group city" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>

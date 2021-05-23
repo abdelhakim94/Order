@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
@@ -66,16 +65,13 @@ namespace Order.Client.Pages
 
         async Task HandleDishOrChefToggle(bool value)
         {
-            Console.WriteLine("changing value");
             if (value && chefs is null)
             {
                 await SearchChefs();
-                Console.WriteLine("searching for chefs");
             }
             else if (!value && dishAndMenues is null)
             {
                 await SearchDishesAndMenues();
-                Console.WriteLine("searching for dishes and menues");
             }
             searchByChefs = value;
         }

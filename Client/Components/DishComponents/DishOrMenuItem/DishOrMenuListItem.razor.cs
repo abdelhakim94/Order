@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Order.Shared.Dto.Dish;
 
@@ -9,5 +10,11 @@ namespace Order.Client.Components.Dish
 
         [Parameter]
         public DishOrMenuDetailsDto DishOrMenu { get; set; }
+
+        [Parameter]
+        public string CssClass { get; set; }
+
+        [Parameter(CaptureUnmatchedValues = true)]
+        public Dictionary<string, object> AdditionalAttributes { get; set; }
     }
 }
