@@ -85,5 +85,7 @@ namespace Order.Client.Constants
 
         public static string DishesAndMenuesFound(int? elements) => $"{elements ?? 0} repas et menus trouvés";
         public static string ChefsFound(int? elements) => $"{elements ?? 0} chefs trouvés";
+
+        public static string Remaining { get => "éléments de plus"; }
     }
 }

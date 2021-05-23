@@ -26,6 +26,13 @@ namespace Order.Client.Pages
         private bool searchByChefs;
         private UserAddressDetailDto address;
 
+        private string remaining
+        {
+            get => searchByChefs
+                ? $"{chefs?.TotalItems - chefs?.Items?.Count} {UIMessages.Remaining}"
+                : $"{dishAndMenues?.TotalItems - dishAndMenues?.Items?.Count} {UIMessages.Remaining}";
+        }
+
         [Parameter]
         public string Search { get; set; }
 

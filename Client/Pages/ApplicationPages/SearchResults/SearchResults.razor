@@ -23,6 +23,10 @@
         {
             <ChefListItem @key=@item Chef=@item />
         }
+        if (chefs is not null && chefs.Items.Count < chefs.TotalItems)
+        {
+            <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues/>
+        }
     }
     else
     {
@@ -30,6 +34,10 @@
         foreach (var item in dishAndMenues?.Items ?? new())
         {
             <DishOrMenuListItem @key=@item DishOrMenu=@item />
+        }
+        if (dishAndMenues is not null && dishAndMenues.Items.Count < dishAndMenues.TotalItems)
+        {
+            <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues/>
         }
     }
 </Column>
