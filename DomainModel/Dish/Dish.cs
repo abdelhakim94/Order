@@ -9,6 +9,7 @@ namespace Order.DomainModel
         public string Description { get; set; }
         public string Picture { get; set; }
         public decimal Price { get; set; }
+        public bool IsMenuOnly { get; set; }
 
         public virtual ICollection<DishCategory> DishCategories { get; set; }
              = new HashSet<DishCategory>();
@@ -21,5 +22,11 @@ namespace Order.DomainModel
 
         public virtual ICollection<MenuDish> MenuesDish { get; set; }
             = new HashSet<MenuDish>();
+
+        public virtual ICollection<DishOption> DishOptions { get; set; }
+            = new HashSet<DishOption>();
+
+        public virtual ICollection<DishExtra> DishExtras { get; set; }
+            = new HashSet<DishExtra>();
     }
 }

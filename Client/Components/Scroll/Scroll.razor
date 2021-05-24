@@ -1,0 +1,21 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+<Column AdditionalAttributes=@AdditionalAttributes CssClass=@CssClass Justify=@JustifyContent.CENTER
+    Align=@AlignItems.CENTER>
+    <p class="text">@Text</p>
+    <img class="arrow" src="icons/arrow.gif" />
+</Column>
+
+@code{
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+}

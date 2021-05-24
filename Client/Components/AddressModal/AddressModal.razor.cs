@@ -19,16 +19,14 @@ namespace Order.Client.Components
         Timer timer { get; set; }
         UserAddressDetailDto CurrentAddress = new();
         List<IdentifiedUserAddressDetailDto> AllAddresses = new();
-        string selectedRecentAddress = default(int).ToString();
         string SelectedRecentAddress
         {
-            get => selectedRecentAddress;
-            set
-            {
-                selectedRecentAddress = value;
+            get =>
+                AllAddresses?.FirstOrDefault(a => a.Id == CurrentAddress?.ToString())?.Id;
+            set =>
                 CurrentAddress = AllAddresses?.FirstOrDefault(a => a.Id == value).Address.Clone();
-            }
         }
+
         List<DatalistOption> CityOptions { get; set; } = new();
         IEnumerable<DatalistOption> RecentAddressOptions
         {

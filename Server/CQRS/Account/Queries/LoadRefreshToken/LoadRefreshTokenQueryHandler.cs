@@ -17,6 +17,7 @@ namespace Order.Server.CQRS.Account.Queries
         public Task<RefreshTokenDto> Handle(LoadRefreshTokenQuery query, CancellationToken ct)
         {
             return context.UserRefreshToken
+                .AsNoTracking()
                 .Select(rt => new RefreshTokenDto
                 {
                     UserId = rt.UserId,

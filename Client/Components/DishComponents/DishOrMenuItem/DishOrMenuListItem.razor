@@ -1,0 +1,26 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Components.Dish
+
+<div class="@CSSCLasses.ComponentContainer @CssClass">
+    <Row AdditionalAttributes=@AdditionalAttributes ExpandHorizontally=@true>
+        <div class="picture" style=@pictureUrl></div>
+        <Column CssClass="data-column" Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
+            <OTitle CssClass="element first" Text=@DishOrMenu.Name Size=1.2 />
+            <p class="element second">@DishOrMenu.Description</p>
+            <Row CssClass="group" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+                <img class="icon-info" src="icons/chef-hat.png" />
+                <p class="element third">@DishOrMenu.ChefFullName</p>
+            </Row>
+            <Row CssClass="group" ExpandHorizontally=@true Justify=@JustifyContent.SPACE_BETWEEN
+                Align=@AlignItems.CENTER>
+                <Row CssClass="group city" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+                    <img class="icon-info" src=icons/position.png />
+                    <p class="element fourth">@DishOrMenu.ChefCity</p>
+                </Row>
+                <p class="element fifth">@DishOrMenu.Price @M.DA</p>
+            </Row>
+        </Column>
+    </Row>
+</div>

@@ -28,7 +28,9 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnName("address1");
 
                     b.Property<string>("Address2")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("character varying")
+                        .HasDefaultValue("")
                         .HasColumnName("address2");
 
                     b.Property<int>("IdCity")
@@ -208,6 +210,10 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("description");
 
+                    b.Property<bool>("IsMenuOnly")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_menu_only");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -246,6 +252,42 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.ToTable("dish_category", "order_schema");
                 });
 
+            modelBuilder.Entity("Order.DomainModel.DishExtra", b =>
+                {
+                    b.Property<int>("IdDish")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_dish");
+
+                    b.Property<int>("IdExtra")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_extra");
+
+                    b.HasKey("IdDish", "IdExtra")
+                        .HasName("PK_DISH_EXTRA");
+
+                    b.HasIndex("IdExtra");
+
+                    b.ToTable("dish_extra", "order_schema");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.DishOption", b =>
+                {
+                    b.Property<int>("IdDish")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_dish");
+
+                    b.Property<int>("IdOption")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_option");
+
+                    b.HasKey("IdDish", "IdOption")
+                        .HasName("PK_DISH_OPTION");
+
+                    b.HasIndex("IdOption");
+
+                    b.ToTable("dish_option", "order_schema");
+                });
+
             modelBuilder.Entity("Order.DomainModel.DishSection", b =>
                 {
                     b.Property<int>("IdDish")
@@ -266,6 +308,30 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.HasIndex("IdSection");
 
                     b.ToTable("dish_section", "order_schema");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.Extra", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(8, 2)")
+                        .HasColumnName("price");
+
+                    b.HasKey("Id")
+                        .HasName("PK_EXTRA");
+
+                    b.ToTable("extra", "order_schema");
                 });
 
             modelBuilder.Entity("Order.DomainModel.Menu", b =>
@@ -323,6 +389,42 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.ToTable("menu_dish", "order_schema");
                 });
 
+            modelBuilder.Entity("Order.DomainModel.MenuExtra", b =>
+                {
+                    b.Property<int>("IdMenu")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_menu");
+
+                    b.Property<int>("IdExtra")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_extra");
+
+                    b.HasKey("IdMenu", "IdExtra")
+                        .HasName("PK_MENU_EXTRA");
+
+                    b.HasIndex("IdExtra");
+
+                    b.ToTable("menu_extra", "order_schema");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.MenuOption", b =>
+                {
+                    b.Property<int>("IdMenu")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_menu");
+
+                    b.Property<int>("IdOption")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_option");
+
+                    b.HasKey("IdMenu", "IdOption")
+                        .HasName("PK_MENU_OPTION");
+
+                    b.HasIndex("IdOption");
+
+                    b.ToTable("menu_option", "order_schema");
+                });
+
             modelBuilder.Entity("Order.DomainModel.MenuSection", b =>
                 {
                     b.Property<int>("IdMenu")
@@ -343,6 +445,26 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.HasIndex("IdSection");
 
                     b.ToTable("menu_section", "order_schema");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.Option", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("PK_OPTION");
+
+                    b.ToTable("option", "order_schema");
                 });
 
             modelBuilder.Entity("Order.DomainModel.Profile", b =>
@@ -489,6 +611,10 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Picture")
+                        .HasColumnType("text")
+                        .HasColumnName("Picture");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -523,6 +649,7 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.Property<string>("Address2")
                         .HasColumnType("character varying")
+                        .HasDefaultValue("")
                         .HasColumnName("address2");
 
                     b.Property<int>("IdCity")
@@ -803,6 +930,44 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.Navigation("Dish");
                 });
 
+            modelBuilder.Entity("Order.DomainModel.DishExtra", b =>
+                {
+                    b.HasOne("Order.DomainModel.Dish", "Dish")
+                        .WithMany("DishExtras")
+                        .HasForeignKey("IdDish")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Order.DomainModel.Extra", "Extra")
+                        .WithMany("DishesExtra")
+                        .HasForeignKey("IdExtra")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dish");
+
+                    b.Navigation("Extra");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.DishOption", b =>
+                {
+                    b.HasOne("Order.DomainModel.Dish", "Dish")
+                        .WithMany("DishOptions")
+                        .HasForeignKey("IdDish")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Order.DomainModel.Option", "Option")
+                        .WithMany("DishesOption")
+                        .HasForeignKey("IdOption")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dish");
+
+                    b.Navigation("Option");
+                });
+
             modelBuilder.Entity("Order.DomainModel.DishSection", b =>
                 {
                     b.HasOne("Order.DomainModel.Dish", "Dish")
@@ -843,6 +1008,44 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.Navigation("Dish");
 
                     b.Navigation("Menu");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.MenuExtra", b =>
+                {
+                    b.HasOne("Order.DomainModel.Extra", "Extra")
+                        .WithMany("MenusExtra")
+                        .HasForeignKey("IdExtra")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Order.DomainModel.Menu", "Menu")
+                        .WithMany("MenuExtras")
+                        .HasForeignKey("IdMenu")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Extra");
+
+                    b.Navigation("Menu");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.MenuOption", b =>
+                {
+                    b.HasOne("Order.DomainModel.Menu", "Menu")
+                        .WithMany("MenuOptions")
+                        .HasForeignKey("IdMenu")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Order.DomainModel.Option", "Option")
+                        .WithMany("MenuesOption")
+                        .HasForeignKey("IdOption")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Option");
                 });
 
             modelBuilder.Entity("Order.DomainModel.MenuSection", b =>
@@ -1012,9 +1215,20 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.Navigation("DishCategories");
 
+                    b.Navigation("DishExtras");
+
+                    b.Navigation("DishOptions");
+
                     b.Navigation("DishSections");
 
                     b.Navigation("MenuesDish");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.Extra", b =>
+                {
+                    b.Navigation("DishesExtra");
+
+                    b.Navigation("MenusExtra");
                 });
 
             modelBuilder.Entity("Order.DomainModel.Menu", b =>
@@ -1023,7 +1237,18 @@ namespace Order.Server.Persistence.Migrations.V01
 
                     b.Navigation("MenuDishes");
 
+                    b.Navigation("MenuExtras");
+
+                    b.Navigation("MenuOptions");
+
                     b.Navigation("MenuSections");
+                });
+
+            modelBuilder.Entity("Order.DomainModel.Option", b =>
+                {
+                    b.Navigation("DishesOption");
+
+                    b.Navigation("MenuesOption");
                 });
 
             modelBuilder.Entity("Order.DomainModel.Profile", b =>

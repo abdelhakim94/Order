@@ -19,6 +19,7 @@ namespace Order.Server.CQRS.User.Queries
         public async Task<List<UserAddressDetailDto>> Handle(GetAllUserAddressesQuery query, CancellationToken ct)
         {
             return await context.UserAddress
+                .AsNoTracking()
                 .Where(ua => ua.IdUser == query.IdUser)
                 .OrderByDescending(ua => ua.LastTimeUsed)
                 .Select(ua => new UserAddressDetailDto

@@ -5,10 +5,22 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-<div class=@bluredPage>
-    <NavButton Justify=@JustifyContent.CENTER DisplayHorizontal=@true Label=@NbElements.ToString()
-        Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon @onclick=@(()
-        => CartSelected = true) />
+<div>
+    <Row CssClass=@bluredPage Justify=@justifyTopContent>
+
+        @if (!string.IsNullOrWhiteSpace(PreviousPage))
+        {
+            <NavButton ImagesInSprite=1 Icon="icons/previous.png" @onclick=@(() =>
+            NavigationManager.NavigateTo(PreviousPage)) />
+        }
+
+        @Top
+
+        <NavButton Justify=@JustifyContent.CENTER DisplayHorizontal=@true Label=@NbElements.ToString()
+            Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon
+            @onclick=@(() => CartSelected = true) />
+
+    </Row>
 </div>
 
 <CascadingValue Value=@this IsFixed=@true>
@@ -16,6 +28,21 @@
 </CascadingValue>
 
 @code{
+    private RenderFragment Top;
+    public void SetTop(RenderFragment top)
+    {
+        Top = top;
+        StateHasChanged();
+    }
+
+    public string PreviousPage { get; set; }
+    private string justifyTopContent
+    {
+        get => Top is null && string.IsNullOrWhiteSpace(PreviousPage)
+        ? JustifyContent.FLEX_END
+        : JustifyContent.SPACE_BETWEEN;
+    }
+
     private string bluredPage { get => Blured ? $"{CSSCLasses.PageBlured} cart-button" : "cart-button"; }
     private bool blured;
     public bool Blured

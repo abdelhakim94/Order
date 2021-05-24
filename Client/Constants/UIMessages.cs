@@ -70,6 +70,9 @@ namespace Order.Client.Constants
 
         public static string TopCategories { get => "Nos catégories reines"; }
         public static string CategorySearchBar { get => "Rechercher un plat ou un chef"; }
+        public static string DishOrMenuSearchBar { get => "Rechercher des plats et des menus"; }
+        public static string ChefSearchBar { get => "Rechercher des chefs par nom ou spécialitées"; }
+
 
         public static string RecentAddresses { get => "Récemment utilisées"; }
         public static string DeliveryAddress { get => "Adresse de livraison"; }
@@ -77,5 +80,15 @@ namespace Order.Client.Constants
         public static string Address2 { get => "Complément"; }
         public static string ZipCode { get => "Code postal"; }
         public static string City { get => "Ville"; }
+
+        public static string Meals { get => "Repas"; }
+        public static string Chefs { get => "Chefs"; }
+
+        public static string DA { get => "DA"; }
+
+        public static string DishesAndMenuesFound(int? elements) => $"{elements ?? 0} repas et menus trouvés";
+        public static string ChefsFound(int? elements) => $"{elements ?? 0} chefs trouvés";
+
+        public static string Remaining { get => "éléments de plus"; }
     }
 }

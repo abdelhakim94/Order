@@ -12,14 +12,19 @@
 <div class=@blured>
     <Column CssClass="search-column" Align=@AlignItems.STRETCH>
 
-        <EditForm Model=@CurrentAddress>
-            <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress Value=@GetFullAddress()
-                @onclick=@HandleAddressBarClick />
-        </EditForm>
+        <LayoutSetter>
+            <Top>
+                @* The "Model" does not really matter here because we are not submitting the form *@
+                <EditForm Model=@(new object())>
+                    <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress
+                        Value=@CurrentAddress?.ToString() @onclick=@HandleAddressBarClick />
+                </EditForm>
+            </Top>
+        </LayoutSetter>
 
         <EditForm Model=@SearchValue>
-            <OInputText PlaceHolder=@M.CategorySearchBar @bind-Value=@SearchValue.Search
-                RightIcon="icons/searchbar-magnifier.png" OnRightIconClick=@((string search) => HandleSearch(search)) />
+            <OInputText CssClass="search-bar" PlaceHolder=@M.CategorySearchBar RightIcon="icons/searchbar-magnifier.png"
+                @bind-Value=@SearchValue.Value OnRightIconClick=@((string search) => HandleSearch(search)) />
         </EditForm>
 
         <p class="text">@M.TopCategories</p>
@@ -27,7 +32,7 @@
         <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.SPACE_BETWEEN>
             @foreach (var category in Categories ?? new())
             {
-                <CategoryCard Label=@category.Label Picture=@category.Picture @onclick=@(() =>
+                <CategoryCard @key=@category Label=@category.Label Picture=@category.Picture @onclick=@(() =>
                 HandleSearch(category.Label)) />
             }
         </Row>

@@ -7,15 +7,21 @@ namespace Order.Server.Hubs
     // Contains all the dependencies of the Hub.
     public partial class AppHub : Hub<IClientHubMessage>
     {
-        private readonly ICategoryService categoryService;
         private readonly IUserService userService;
+        private readonly ICategoryService categoryService;
+        private readonly IDishService dishService;
+        public readonly IChefService chefService;
 
         public AppHub(
+            IUserService userService,
             ICategoryService categoryService,
-            IUserService userService)
+            IDishService dishService,
+            IChefService chefService)
         {
-            this.categoryService = categoryService;
             this.userService = userService;
+            this.categoryService = categoryService;
+            this.dishService = dishService;
+            this.chefService = chefService;
         }
     }
 }

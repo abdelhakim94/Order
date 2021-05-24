@@ -1,0 +1,49 @@
+.component-container {
+  margin: 0.5em;
+}
+
+.picture {
+  height: 8em;
+  width: 8em;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+::deep .data-column {
+  width: calc((100%) - 8.5em);
+  margin-left: 0.5em;
+}
+
+::deep .element,
+::deep .group {
+  margin: 0%;
+  overflow: scroll;
+  max-height: 1.4em;
+}
+
+.second {
+  max-height: 2.9em;
+}
+
+.third,
+.fourth {
+  color: lightslategray;
+  margin-left: 0.4em;
+}
+
+.fifth {
+  font-weight: bold;
+  background-color: #f9a624;
+  border-radius: 0.2em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+
+.icon-info {
+  max-height: 1em;
+}
+
+::deep .city{
+  max-width: 60%;
+}

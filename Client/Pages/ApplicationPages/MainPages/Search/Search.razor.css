@@ -9,14 +9,8 @@
   padding-bottom: 5%;
 }
 
-::deep .address-bar {
-  width: 75%;
-}
-
-::deep div.address-bar input {
-  border: none;
-  border-radius: 0%;
-  border-bottom: 0.1em solid lightgrey;
+::deep .search-bar{
+  margin-top: 7%;
 }
 
 ::deep .right-icon {
