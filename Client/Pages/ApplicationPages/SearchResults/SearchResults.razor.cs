@@ -149,7 +149,15 @@ namespace Order.Client.Pages
         void NavigateToDishOrMenuDetails(DishOrMenuListItemDto item)
         {
             MainLayout.PreviousPage = $"search/results/{Search}";
-            NavigationManager.NavigateTo($"DishOrMenuDetails/{item.IsMenu}/{item.Id}");
+            if (item.IsMenu)
+            {
+                NavigationManager.NavigateTo($"MenuDetails/{item.Id}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"DishDetails/{item.Id}");
+            }
+
         }
 
         void NavigateToChefDetails(ChefListItemDto item)
