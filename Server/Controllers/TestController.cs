@@ -37,9 +37,9 @@ namespace Order.Server.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public Task<PaginatedList<DishOrMenuListItemDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter)
+        public Task<PaginatedList<DishOrMenuListItemDto>> SearchForMenues(DishesOrMenuesSearchFilter filter)
         {
-            return dishService.SearchForDishesAndMenues(filter);
+            return dishService.SearchForMenues(filter);
         }
     }
 }

@@ -16,10 +16,14 @@ namespace Order.Server.Persistence
         DbSet<City> City { get; set; }
         DbSet<Dish> Dish { get; set; }
         DbSet<DishCategory> DishCategory { get; set; }
+        DbSet<DishExtra> DishExtra { get; set; }
+        DbSet<DishOption> DishOption { get; set; }
         DbSet<DishSection> DishSection { get; set; }
+        DbSet<Extra> Extra { get; set; }
         DbSet<Menu> Menu { get; set; }
         DbSet<MenuDish> MenuDish { get; set; }
         DbSet<MenuSection> MenuSection { get; set; }
+        DbSet<Option> Option { get; set; }
         DbSet<Profile> Profile { get; set; }
         DbSet<Section> Section { get; set; }
         DbSet<User> Users { get; set; }

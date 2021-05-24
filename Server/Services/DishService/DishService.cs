@@ -4,7 +4,6 @@ using Order.Server.Constants;
 using Order.Server.CQRS.Dish.Queries;
 using Order.Server.Dto;
 using Order.Shared.Contracts;
-using Order.Shared.Dto;
 using Order.Shared.Dto.Dish;
 
 namespace Order.Server.Services
@@ -28,6 +27,16 @@ namespace Order.Server.Services
         public Task<PaginatedList<DishOrMenuListItemDto>> SearchForDishesAndMenues(DishesOrMenuesSearchFilter filter)
         {
             return mediator.Send(new SearchForDishesOrMenuesQuery(filter, SearchDishOrMenu.DISHES_AND_MENUES));
+        }
+
+        public Task<DishDetailsDto> GetDishDetails(int id)
+        {
+            return mediator.Send(new GetDishDetailsQuery(id));
+        }
+
+        public Task<MenuDetailsDto> GetMenuDetails(int id)
+        {
+            return mediator.Send(new GetMenuDetailsQuery(id));
         }
     }
 }

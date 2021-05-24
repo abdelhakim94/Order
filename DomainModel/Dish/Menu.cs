@@ -18,5 +18,11 @@ namespace Order.DomainModel
 
         public virtual ICollection<CardMenu> CardsMenu { get; set; }
             = new HashSet<CardMenu>();
+
+        public virtual ICollection<MenuOption> MenuOptions { get; set; }
+            = new HashSet<MenuOption>();
+
+        public virtual ICollection<MenuExtra> MenuExtras { get; set; }
+            = new HashSet<MenuExtra>();
     }
 }

@@ -22,5 +22,11 @@ namespace Order.DomainModel
 
         public virtual ICollection<MenuDish> MenuesDish { get; set; }
             = new HashSet<MenuDish>();
+
+        public virtual ICollection<DishOption> DishOptions { get; set; }
+            = new HashSet<DishOption>();
+
+        public virtual ICollection<DishExtra> DishExtras { get; set; }
+            = new HashSet<DishExtra>();
     }
 }

@@ -23,5 +23,15 @@ namespace Order.Server.Hubs
         {
             return await dishService.SearchForDishesAndMenues(filter);
         }
+
+        public async Task<DishDetailsDto> GetDishDetails(int id)
+        {
+            return await dishService.GetDishDetails(id);
+        }
+
+        public async Task<MenuDetailsDto> GetMenuDetails(int id)
+        {
+            return await dishService.GetMenuDetails(id);
+        }
     }
 }

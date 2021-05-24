@@ -9,7 +9,6 @@ using Order.Server.Dto;
 using Order.Server.Extensions;
 using Order.Server.Helpers;
 using Order.Server.Persistence;
-using Order.Shared.Dto;
 using Order.Shared.Dto.Dish;
 
 namespace Order.Server.CQRS.Dish.Queries
@@ -283,9 +282,7 @@ namespace Order.Server.CQRS.Dish.Queries
 
         private IQueryable<DomainModel.Dish> BuildDishesQuery(DishesOrMenuesSearchFilter filter)
         {
-            var dbQuery = context.Dish
-                .AsNoTracking()
-                .Where(d => !d.IsMenuOnly);
+            var dbQuery = context.Dish.Where(d => !d.IsMenuOnly);
 
             dbQuery = ApplyFilter(dbQuery, filter);
 
@@ -324,10 +321,12 @@ namespace Order.Server.CQRS.Dish.Queries
             {
                 if (!string.IsNullOrWhiteSpace(filter.Search))
                 {
-                    filter.Search = filter.Search.ToLowerInvariant();
-                    source = source.Where(d => d.Name.ToLower().Contains(filter.Search)
-                        || d.Description.ToLower().Contains(filter.Search)
-                        || d.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(filter.Search)));
+                    var search = filter.Search.ToLowerInvariant();
+                    source = source.Where(d => d.Name.ToLower().Contains(search)
+                        || d.Description.ToLower().Contains(search)
+                        || d.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(search))
+                        || d.DishOptions.Any(dop => dop.Option.Name.ToLower().Contains(search))
+                        || d.DishExtras.Any(de => de.Extra.Name.ToLower().Contains(search)));
                 }
 
                 return source;
@@ -336,9 +335,7 @@ namespace Order.Server.CQRS.Dish.Queries
 
         private IQueryable<DomainModel.Menu> BuildMenuesQuery(DishesOrMenuesSearchFilter filter)
         {
-            var dbQuery = context.Menu
-                .AsNoTracking()
-                .AsQueryable<DomainModel.Menu>();
+            var dbQuery = context.Menu.AsQueryable<DomainModel.Menu>();
 
             dbQuery = ApplyFilter(dbQuery, filter);
 
@@ -361,16 +358,22 @@ namespace Order.Server.CQRS.Dish.Queries
             {
                 if (!string.IsNullOrWhiteSpace(filter.Search))
                 {
-                    filter.Search = filter.Search.ToLowerInvariant();
-                    source = source.Where(m => m.Name.ToLower().Contains(filter.Search)
-                        || m.Description.ToLower().Contains(filter.Search)
-                        || m.MenuDishes.Any(md => md.Dish.Name.ToLower().Contains(filter.Search)
-                            || md.Dish.Description.ToLower().Contains(filter.Search)
-                            || md.Dish.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(filter.Search)))
+                    var search = filter.Search.ToLowerInvariant();
+                    source = source.Where(m => m.Name.ToLower().Contains(search)
+                        || m.Description.ToLower().Contains(search)
+                        || m.MenuDishes.Any(md => md.Dish.Name.ToLower().Contains(search)
+                            || md.Dish.Description.ToLower().Contains(search)
+                            || md.Dish.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(search))
+                            || md.Dish.DishOptions.Any(dop => dop.Option.Name.ToLower().Contains(search))
+                            || md.Dish.DishExtras.Any(de => de.Extra.Name.ToLower().Contains(search)))
                         || m.MenuSections.Where(m => m.MenuOwns).Any(ms => ms.Section.DishesSection
-                            .Any(ds => ds.Dish.Name.ToLower().Contains(filter.Search)
-                                || ds.Dish.Description.ToLower().Contains(filter.Search)
-                                || ds.Dish.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(filter.Search)))));
+                            .Any(ds => ds.Dish.Name.ToLower().Contains(search)
+                                || ds.Dish.Description.ToLower().Contains(search)
+                                || ds.Dish.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(search))
+                                || ds.Dish.DishOptions.Any(dop => dop.Option.Name.ToLower().Contains(search))
+                                || ds.Dish.DishExtras.Any(de => de.Extra.Name.ToLower().Contains(search))))
+                        || m.MenuOptions.Any(mo => mo.Option.Name.ToLower().Contains(search))
+                        || m.MenuExtras.Any(me => me.Extra.Name.ToLower().Contains(search)));
                 }
 
                 return source;

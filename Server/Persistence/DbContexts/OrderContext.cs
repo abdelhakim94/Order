@@ -60,10 +60,14 @@ namespace Order.Server.Persistence
         public DbSet<City> City { get; set; }
         public DbSet<Dish> Dish { get; set; }
         public DbSet<DishCategory> DishCategory { get; set; }
+        public DbSet<DishExtra> DishExtra { get; set; }
+        public DbSet<DishOption> DishOption { get; set; }
         public DbSet<DishSection> DishSection { get; set; }
+        public DbSet<Extra> Extra { get; set; }
         public DbSet<Menu> Menu { get; set; }
         public DbSet<MenuDish> MenuDish { get; set; }
         public DbSet<MenuSection> MenuSection { get; set; }
+        public DbSet<Option> Option { get; set; }
         public DbSet<Profile> Profile { get; set; }
         public DbSet<Section> Section { get; set; }
         public override DbSet<User> Users { get; set; }
