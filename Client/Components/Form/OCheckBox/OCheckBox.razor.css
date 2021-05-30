@@ -1,0 +1,11 @@
+.component-container {
+  width: fit-content;
+  height: fit-content;
+}
+
+::deep .check-box {
+  height: 1.5em;
+  width: 1.5em;
+  display: block;
+  margin: 0.5em;
+}

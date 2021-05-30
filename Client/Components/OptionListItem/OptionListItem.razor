@@ -1,0 +1,40 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Components.Form
+@using Order.Client.Constants
+@using Order.Shared.Dto.Dish
+
+@namespace Order.Client.Components
+
+<Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.FLEX_START>
+    <OCheckBox ValueChanged=@HandleSelectionChange />
+    <span class="name">@Option.Name</span>
+</Row>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> ValueChenged { get; set; }
+
+    [Parameter]
+    public OptionDetailsDto Option { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnSelect { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnUnselect { get; set; }
+
+    async Task HandleSelectionChange(bool value)
+    {
+        if (Option is not null)
+        {
+            if (value && OnSelect.HasDelegate)
+            {
+                await OnSelect.InvokeAsync(Option.Id);
+            }
+            else if (!value && OnUnselect.HasDelegate)
+            {
+                await OnUnselect.InvokeAsync(Option.Id);
+            }
+        }
+    }
+}

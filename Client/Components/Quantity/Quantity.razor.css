@@ -1,0 +1,23 @@
+.quantity-button {
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  background-color: lightgray;
+  width: 3.5em;
+  height: 3.5em;
+  margin: 1em;
+  margin-left: 1.5em;
+  margin-right: 1.5em;
+}
+
+.quantity-button:active {
+  box-shadow: 0 0 0.3em #52affa;
+}
+
+.quantity-change {
+  font-size: 2em;
+}
+
+.quantity {
+  font-size: 1.5em;
+}

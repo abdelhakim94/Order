@@ -1,0 +1,39 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+<Row @attributes=@AdditionalAttributes class=@CssClass Justify=@JustifyContent.CENTER Align=@AlignItems.CENTER>
+    <button class="quantity-button" type="button" @onclick=@OnIncrement><span class="quantity-change">+</span></button>
+    <span class="quantity">@Value</span>
+    <button class="quantity-button" type="button" @onclick=@OnDecrement><span class="quantity-change"
+            style=@disableDecrement>‒</span></button>
+</Row>
+
+@code {
+    private string disableDecrement { get => Value == 1 ? "color: lightslategray;" : string.Empty; }
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+
+    async Task OnIncrement()
+    {
+        Value++;
+        if (ValueChanged.HasDelegate) await ValueChanged.InvokeAsync(Value);
+    }
+
+    async Task OnDecrement()
+    {
+        if (Value == 1) return;
+        Value--;
+        if (ValueChanged.HasDelegate) await ValueChanged.InvokeAsync(Value);
+    }
+}

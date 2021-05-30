@@ -1,0 +1,44 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Components.Form
+@using Order.Client.Components.Dish
+@using Order.Client.Constants
+@using Order.Shared.Dto.Dish
+
+@namespace Order.Client.Components
+
+<Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
+    <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
+        <OCheckBox ValueChanged=@HandleSelectionChange />
+        <span class="name">@Extra.Name</span>
+    </Row>
+    <Price Value=@(Extra?.Price ?? 0) />
+</Row>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> ValueChenged { get; set; }
+
+    [Parameter]
+    public ExtraDetailsDto Extra { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnSelect { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnUnselect { get; set; }
+
+    async Task HandleSelectionChange(bool value)
+    {
+        if (Extra is not null)
+        {
+            if (value && OnSelect.HasDelegate)
+            {
+                await OnSelect.InvokeAsync(Extra.Id);
+            }
+            else if (!value && OnUnselect.HasDelegate)
+            {
+                await OnUnselect.InvokeAsync(Extra.Id);
+            }
+        }
+    }
+}
