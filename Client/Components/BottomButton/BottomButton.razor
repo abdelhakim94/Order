@@ -1,0 +1,19 @@
+@namespace Order.Client.Components
+
+<button @attributes=@AdditionalAttributes class="@ComponentContainer @CssClass" type="button">
+    <span class="label">@Label</span>
+</button>
+
+@code {
+    [Parameter]
+    public string Type { get; set; } = "button";
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}
