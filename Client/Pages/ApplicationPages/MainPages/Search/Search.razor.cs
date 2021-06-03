@@ -15,6 +15,8 @@ namespace Order.Client.Pages
 {
     public partial class Search : ComponentBase, IDisposable
     {
+        private bool canDispose;
+
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
         CloneableList<CategoryListItemDto> Categories = new();
         UserAddressDetailDto CurrentAddress { get; set; }
@@ -45,6 +47,7 @@ namespace Order.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
+            canDispose = false;
             if (BottomLayout is not null) BottomLayout.SearchSelected = true;
             if (TopLayout is not null) TopLayout.PreviousPage = string.Empty;
 
@@ -71,6 +74,12 @@ namespace Order.Client.Pages
             }
 
             Store.OnUpdate += OnStoreAddressChange;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+            canDispose = true;
         }
 
         void HandleAddressBarClick()
@@ -112,7 +121,11 @@ namespace Order.Client.Pages
 
         public void Dispose()
         {
-            Store.OnUpdate -= OnStoreAddressChange;
+            if(canDispose)
+            {
+                Store.OnUpdate -= OnStoreAddressChange;
+                if (TopLayout is not null) TopLayout.PreviousPage = "search/";
+            }
         }
     }
 }
