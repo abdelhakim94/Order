@@ -6,13 +6,15 @@
 
 @namespace Order.Client.Components
 
-<Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
-    <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.FLEX_START>
+<div>
+<Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+    <Row CssClass="first-block" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
         <OCheckBox ValueChanged=@HandleSelectionChange />
         <span class="name">@Extra.Name</span>
     </Row>
     <Price Value=@(Extra?.Price ?? 0) />
 </Row>
+</div>
 
 @code {
     [Parameter]
