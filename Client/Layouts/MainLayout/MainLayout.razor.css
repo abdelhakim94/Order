@@ -1,14 +1,21 @@
 ::deep .cart-button {
   padding: 2vw;
-  padding-bottom: 0%;
 }
 
 ::deep .address-bar {
-  width: 70vw;
+  width: 65vw;
 }
 
 ::deep div.address-bar input {
   border: none;
   border-radius: 0%;
+  padding: 0.5em;
+}
+
+::deep .address-container {
   border-bottom: 0.1em solid lightgrey;
+}
+
+::deep .address-icon {
+  height: 1.3em;
 }

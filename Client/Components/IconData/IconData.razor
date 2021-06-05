@@ -1,0 +1,25 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class=@CssClass>
+    <Row CssClass="group" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+        <img class="icon" src=@IconPath />
+        <p class="data">@Data</p>
+    </Row>
+</div>
+
+@code{
+    [Parameter]
+    public string IconPath { get; set; }
+
+    [Parameter]
+    public string Data { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, Object> AdditionalAttributes { get; set; }
+}

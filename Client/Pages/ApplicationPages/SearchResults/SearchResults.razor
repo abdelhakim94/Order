@@ -6,8 +6,11 @@
 @using Order.Client.Components.Chef
 @using Order.Client.Components.Form
 @using Order.Client.Layouts
+@using Order.Shared.Security.Policies
+@using Microsoft.AspNetCore.Authorization
 
 @namespace Order.Client.Pages
+@attribute [Authorize(Policy = IsGuest.Name)]
 
 <div>
     <LayoutSetter>

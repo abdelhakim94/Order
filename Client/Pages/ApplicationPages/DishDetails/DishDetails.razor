@@ -1,0 +1,59 @@
+@page "/DishDetails/{search}/{Id:int}"
+
+@using Order.Client.Layouts
+@using Order.Client.Constants
+@using Order.Client.Components
+@using Order.Client.Components.Form
+@using Order.Client.Components.Layout
+@using Order.Client.Components.Dish
+@using Order.Shared.Security.Policies
+@using Microsoft.AspNetCore.Authorization
+
+@namespace Order.Client.Pages
+@attribute [Authorize(Policy = IsGuest.Name)]
+
+<LayoutSetter />
+
+<div>
+
+    <div class="picture" style=@pictureUrl></div>
+
+    <Column CssClass="main" Justify=@JustifyContent.FLEX_START Align=@AlignItems.STRETCH>
+
+        <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+            <OTitle CssClass="dish-name" Text=@dish?.Name Size=1.8 />
+            <Price CssClass="price" Value=@(dish?.Price ?? 0) />
+        </Row>
+
+        <Row CssClass="descrition" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+            @dish?.Description
+        </Row>
+
+        <Group CssClass="blank" />
+
+        <Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+            <IconData CssClass="chef-data" IconPath="icons/chef-hat.png" Data=@dish?.ChefFullName />
+            <IconData CssClass="chef-data" IconPath="icons/position.png" Data=@dish?.ChefCity />
+        </Row>
+
+        <Group CssClass="blank" />
+
+        <Quantity @bind-Value=@quantity />
+
+        @if (dish?.Options is not null && dish.Options.Any())
+        {
+            <OTitle Text=@M.Options Size=1.1 />
+            <OptionList Options=@dish?.Options OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption />
+        }
+
+        @if (dish?.Extras is not null && dish.Extras.Any())
+        {
+            <OTitle Text=@M.Extras Size=1.1 />
+            <ExtraList Extras=@dish?.Extras OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra />
+        }
+
+    </Column>
+
+    <BottomButton Label=@M.AddToCart />
+
+</div>

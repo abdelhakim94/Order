@@ -1,0 +1,14 @@
+@namespace Order.Client.Components.Dish
+
+<p @attributes=@AdditionalAttributes class="price @CssClass">@Value @M.DA</p>
+
+@code {
+    [Parameter]
+    public decimal Value { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+}

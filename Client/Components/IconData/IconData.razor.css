@@ -1,0 +1,15 @@
+::deep .group {
+  margin: 0%;
+  overflow: scroll;
+  max-height: 1.4em;
+}
+
+.icon {
+  max-height: 1.1em;
+}
+
+.data {
+  color: lightslategray;
+  margin: 0%;
+  margin-left: 0.5em;
+}

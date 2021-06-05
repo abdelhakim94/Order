@@ -25,7 +25,7 @@ namespace Order.Server.Persistence
             builder.Property(a => a.Address2)
                 .HasColumnName("address2")
                 .HasColumnType("character varying")
-                .HasDefaultValue<string>(string.Empty);
+                .HasDefaultValue<string>("");
 
             builder.Property(a => a.IdCity)
                 .HasColumnName("id_city")

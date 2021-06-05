@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
@@ -13,8 +14,10 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Client.Pages
 {
-    public partial class SearchResults : ComponentBase
+    public partial class SearchResults : ComponentBase, IDisposable
     {
+        private bool canDispose;
+
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
 
         private PaginatedList<DishOrMenuListItemDto> dishAndMenues;
@@ -59,11 +62,18 @@ namespace Order.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            MainLayout.PreviousPage = "search/";
+            canDispose = false;
             address = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
             dishAndMenuesPageIndex = 1;
             chefsPageIndex = 1;
             await SearchChefsOrDishesAndMenues();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+            MainLayout.PreviousPage = "search/";
+            canDispose = true;
         }
 
         async Task HandleDishOrChefToggle(bool value)
@@ -148,14 +158,19 @@ namespace Order.Client.Pages
 
         void NavigateToDishOrMenuDetails(DishOrMenuListItemDto item)
         {
-            MainLayout.PreviousPage = $"search/results/{Search}";
-            NavigationManager.NavigateTo($"DishOrMenuDetails/{item.IsMenu}/{item.Id}");
+            if (item.IsMenu)
+            {
+                NavigationManager.NavigateTo($"MenuDetails/{Search}/{item.Id}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"DishDetails/{Search}/{item.Id}");
+            }
         }
 
         void NavigateToChefDetails(ChefListItemDto item)
         {
-            MainLayout.PreviousPage = $"search/results/{Search}";
-            NavigationManager.NavigateTo($"ChefDetails/{item.Id}");
+            NavigationManager.NavigateTo($"ChefDetails/{Search}/{item.Id}");
         }
 
         async Task HandleSearch(string search)
@@ -173,6 +188,14 @@ namespace Order.Client.Pages
             chefsPageIndex = 1;
             Search = search;
             await SearchChefsOrDishesAndMenues();
+        }
+
+        public void Dispose()
+        {
+            if (canDispose)
+            {
+                MainLayout.PreviousPage = $"search/results/{Search}";
+            }
         }
     }
 }

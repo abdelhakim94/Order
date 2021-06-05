@@ -15,10 +15,13 @@
         <LayoutSetter>
             <Top>
                 @* The "Model" does not really matter here because we are not submitting the form *@
-                <EditForm Model=@(new object())>
-                    <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress
-                        Value=@CurrentAddress?.ToString() @onclick=@HandleAddressBarClick />
-                </EditForm>
+                <Row CssClass="address-container" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER @onclick=@HandleAddressBarClick >
+                    <img class="address-icon" src="icons/position.png" />
+                    <EditForm Model=@(new object())>
+                        <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress
+                            Value=@CurrentAddress?.ToString()/>
+                    </EditForm>
+                </Row>
             </Top>
         </LayoutSetter>
 
