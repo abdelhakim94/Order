@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Order.Server.Constants;
 using Order.Server.Persistence;
 using Order.Shared.Dto.Dish;
 
@@ -22,7 +23,7 @@ namespace Order.Server.CQRS.Dish.Queries
                     Id = d.Id,
                     Name = d.Name,
                     Description = d.Description,
-                    Picture = d.Picture,
+                    Picture = d.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                     Price = d.Price,
 
                     ChefId = d.CardsDish
