@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Order.Server.Constants;
 using Order.Server.Persistence;
 using Order.Shared.Dto.Dish;
 
@@ -22,7 +23,7 @@ namespace Order.Server.CQRS.Dish.Queries
                     Id = m.Id,
                     Name = m.Name,
                     Description = m.Description,
-                    Picture = m.Picture,
+                    Picture = m.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                     Price = m.Price,
 
                     ChefId = m.CardsMenu
@@ -66,7 +67,7 @@ namespace Order.Server.CQRS.Dish.Queries
                         Id = md.Dish.Id,
                         Name = md.Dish.Name,
                         Description = md.Dish.Description,
-                        Picture = md.Dish.Picture,
+                        Picture = md.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                         Price = md.Dish.Price,
                         IsMandatory = md.Dish.IsMenuOnly,
                     })
@@ -80,7 +81,7 @@ namespace Order.Server.CQRS.Dish.Queries
                             Id = ds.Dish.Id,
                             Name = ds.Dish.Name,
                             Description = ds.Dish.Description,
-                            Picture = ds.Dish.Picture,
+                            Picture = ds.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                             Price = ds.Dish.Price,
                             IsMandatory = ds.Dish.IsMenuOnly,
                         }).ToList(),
