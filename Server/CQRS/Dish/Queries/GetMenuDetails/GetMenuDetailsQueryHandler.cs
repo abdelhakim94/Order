@@ -66,9 +66,6 @@ namespace Order.Server.CQRS.Dish.Queries
                     {
                         Id = md.Dish.Id,
                         Name = md.Dish.Name,
-                        Description = md.Dish.Description,
-                        Picture = md.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
-                        Price = md.Dish.Price,
                         IsMandatory = md.Dish.IsMenuOnly,
                     })
                     .ToList(),
@@ -80,9 +77,6 @@ namespace Order.Server.CQRS.Dish.Queries
                         {
                             Id = ds.Dish.Id,
                             Name = ds.Dish.Name,
-                            Description = ds.Dish.Description,
-                            Picture = ds.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
-                            Price = ds.Dish.Price,
                             IsMandatory = ds.Dish.IsMenuOnly,
                         }).ToList(),
                     })

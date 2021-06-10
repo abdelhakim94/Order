@@ -91,8 +91,8 @@ namespace Order.Client.Constants
 
         public static string Remaining { get => "éléments de plus"; }
 
-        public static string Options { get => "Options:"; }
-        public static string Extras { get => "Suppléments:"; }
+        public static string Options { get => "Options"; }
+        public static string Extras { get => "Suppléments"; }
 
         public static string AddToCart { get => "Ajouter au panier"; }
     }

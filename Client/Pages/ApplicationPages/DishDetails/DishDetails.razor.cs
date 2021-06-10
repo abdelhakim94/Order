@@ -14,12 +14,15 @@ namespace Order.Client.Pages
     {
         private bool canDispose;
 
+        private bool OptionsUnfolded;
+        private bool ExtrasUnfolded;
+
         private DishDetailsDto dish { get; set; }
         private string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
         private int quantity { get; set; } = 1;
 
-        private List<int> SelectedOptions = new();
-        private List<int> SelectedExtras = new();
+        private HashSet<int> SelectedOptions = new();
+        private HashSet<int> SelectedExtras = new();
 
         [Parameter]
         public int Id { get; set; }

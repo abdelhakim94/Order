@@ -1,0 +1,62 @@
+@using Order.Client.Components.Layout
+@using Order.Client.Constants
+@using Order.Shared.Dto.Dish
+
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class="@CssClass">
+    <Row @onclick=@HandleClick CssClass="title" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER
+        ExpandHorizontally=@true>
+        <img src=@selectorArrow class="arrow" />
+        <div class="name">@Name</div>
+    </Row>
+    @if (Unfolded)
+    {
+        <div class="options">
+            @ChildContent
+        </div>
+    }
+</div>
+
+@code {
+    string selectorArrow
+    {
+        get => unfolded ? "icons/open-selector-arrow.png" : "icons/closed-selector-arrow.png";
+    }
+
+    bool unfolded;
+    [Parameter]
+    public bool Unfolded
+    {
+        get => unfolded;
+        set
+        {
+            unfolded = value;
+            if (UnfoldedChanged.HasDelegate)
+            {
+                UnfoldedChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<bool> UnfoldedChanged { get; set; }
+
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+
+    void HandleClick()
+    {
+        Unfolded = !unfolded;
+        StateHasChanged();
+    }
+}

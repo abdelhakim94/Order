@@ -40,17 +40,33 @@
 
         <Quantity @bind-Value=@quantity />
 
-        @if (dish?.Options is not null && dish.Options.Any())
-        {
-            <OTitle Text=@M.Options Size=1.1 />
-            <OptionList Options=@dish?.Options OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption />
-        }
+        <EditForm Model=new()>
+            @if (dish?.Options is not null && dish.Options.Any())
+            {
+                <Selector Name=@M.Options @bind-Unfolded=@OptionsUnfolded>
+                    @foreach (var option in dish?.Options ?? new())
+                    {
+                        <SelectorOption @key=@option.Id T=int Id=@option.Id Selected=@SelectedOptions.Contains(option.Id)
+                    OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption>
+                            @option.Name
+                        </SelectorOption>
+                    }
+                </Selector>
+            }
 
-        @if (dish?.Extras is not null && dish.Extras.Any())
-        {
-            <OTitle Text=@M.Extras Size=1.1 />
-            <ExtraList Extras=@dish?.Extras OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra />
-        }
+            @if (dish?.Extras is not null && dish.Extras.Any())
+            {
+                <Selector Name=@M.Extras @bind-Unfolded=@ExtrasUnfolded>
+                    @foreach (var extra in dish?.Extras ?? new())
+                    {
+                        <SelectorOption @key=@extra.Id T=int Id=@extra.Id Selected=@SelectedExtras.Contains(extra.Id)
+                    OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra>
+                            @extra.Name
+                        </SelectorOption>
+                    }
+                </Selector>
+            }
+        </EditForm>
 
     </Column>
 

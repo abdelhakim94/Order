@@ -9,8 +9,9 @@
 
 ::deep .main {
   width: 95%;
+  height: fit-content;
   margin: auto;
-  padding-bottom: 7em;
+  padding-bottom: 5em;
 }
 
 ::deep .dish-name {

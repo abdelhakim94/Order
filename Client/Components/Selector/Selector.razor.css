@@ -1,0 +1,18 @@
+::deep .title {
+  min-height: 3em;
+}
+
+.arrow {
+  width: 1.2em;
+}
+
+.name {
+  max-width: calc(100% - 1.2em);
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-left: 0.5em;
+}
+
+.options {
+  margin-left: 1.2em;
+}
