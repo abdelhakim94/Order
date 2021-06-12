@@ -61,7 +61,10 @@
                     {
                         <SelectorOption @key=@extra.Id T=int Id=@extra.Id Selected=@SelectedExtras.Contains(extra.Id)
                     OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra>
-                            @extra.Name
+                            <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+                                @extra.Name
+                                <Price Value=@extra.Price />
+                            </Row>
                         </SelectorOption>
                     }
                 </Selector>

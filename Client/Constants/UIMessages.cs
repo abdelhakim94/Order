@@ -91,6 +91,8 @@ namespace Order.Client.Constants
 
         public static string Remaining { get => "éléments de plus"; }
 
+        public static string IncludedInMenu => "Inclus dans le menu";
+        public static string MenuDishes => "Les repas du menu";
         public static string Options { get => "Options"; }
         public static string Extras { get => "Suppléments"; }
 

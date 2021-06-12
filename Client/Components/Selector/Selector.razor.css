@@ -1,5 +1,9 @@
 ::deep .title {
   min-height: 3em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 0.5em;
+  background-color: floralwhite;
 }
 
 .arrow {
@@ -14,5 +18,5 @@
 }
 
 .options {
-  margin-left: 1.2em;
+  margin-left: 1.7em;
 }

@@ -62,25 +62,40 @@ namespace Order.Server.CQRS.Dish.Queries
                                 .Name)
                             .FirstOrDefault(),
 
-                    Dishes = m.MenuDishes.Select(md => new MenuDishListItem
-                    {
-                        Id = md.Dish.Id,
-                        Name = md.Dish.Name,
-                        IsMandatory = md.Dish.IsMenuOnly,
-                    })
-                    .ToList(),
-
-                    Sections = m.MenuSections.Select(ms => new SectionDto<MenuDishListItem>
-                    {
-                        Name = ms.Section.Name,
-                        Items = ms.Section.DishesSection.Select(ds => new MenuDishListItem
+                    MandatoryDishes = m.MenuDishes
+                        .Where(md => md.IsMandatory)
+                        .Select(md => new MenuDishListItem
                         {
-                            Id = ds.Dish.Id,
-                            Name = ds.Dish.Name,
-                            IsMandatory = ds.Dish.IsMenuOnly,
-                        }).ToList(),
-                    })
-                    .ToList(),
+                            Id = md.Dish.Id,
+                            Name = md.Dish.Name,
+                            Picture = md.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
+                        })
+                        .ToList(),
+
+                    Dishes = m.MenuDishes
+                        .Where(md => !md.IsMandatory)
+                        .Select(md => new MenuDishListItem
+                        {
+                            Id = md.Dish.Id,
+                            Name = md.Dish.Name,
+                            Picture = md.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
+                        })
+                        .ToList(),
+
+                    Sections = m.MenuSections
+                        .Where(ms => ms.MenuOwns)
+                        .Select(ms => new SectionDto<MenuDishListItem>
+                        {
+                            Id = ms.Section.Id,
+                            Name = ms.Section.Name,
+                            Items = ms.Section.DishesSection.Select(ds => new MenuDishListItem
+                            {
+                                Id = ds.Dish.Id,
+                                Name = ds.Dish.Name,
+                                Picture = ds.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
+                            }).ToList(),
+                        })
+                        .ToList(),
 
                     Options = m.MenuOptions.Select(mo => new OptionDetailsDto
                     {

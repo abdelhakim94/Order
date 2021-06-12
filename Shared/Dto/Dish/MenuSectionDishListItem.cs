@@ -1,7 +1,9 @@
 namespace Order.Shared.Dto.Dish
 {
-    public class MenuDishListItem : DishListItemDto
+    public class MenuDishListItem
     {
-        public bool IsMandatory { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Picture { get; set; }
     }
 }
