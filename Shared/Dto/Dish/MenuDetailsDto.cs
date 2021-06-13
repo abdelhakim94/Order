@@ -14,8 +14,6 @@ namespace Order.Shared.Dto.Dish
         public string ChefFullName { get; set; }
         public string ChefCity { get; set; }
 
-        public List<MenuDishListItem> MandatoryDishes { get; set; }
-        public List<MenuDishListItem> Dishes { get; set; }
         public List<SectionDto<MenuDishListItem>> Sections { get; set; }
 
         public List<OptionDetailsDto> Options { get; set; }

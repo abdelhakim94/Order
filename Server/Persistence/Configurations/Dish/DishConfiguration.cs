@@ -37,11 +37,6 @@ namespace Order.Server.Persistence
                 .HasColumnName("price")
                 .HasColumnType("decimal(8, 2)")
                 .IsRequired();
-
-            builder.Property(d => d.IsMenuOnly)
-                .HasColumnName("is_menu_only")
-                .HasColumnType("boolean")
-                .IsRequired();
         }
     }
 }

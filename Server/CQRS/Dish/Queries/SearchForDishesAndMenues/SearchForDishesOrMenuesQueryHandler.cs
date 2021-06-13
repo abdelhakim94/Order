@@ -55,15 +55,8 @@ namespace Order.Server.CQRS.Dish.Queries
                 Price = d.Price,
                 IsMenu = false,
 
-                ChefFullName = d.CardsDish
-                        .Select(cd => cd.Card.User.FirstName + " " + cd.Card.User.LastName)
-                        .FirstOrDefault() ??
-                    d.DishSections
+                ChefFullName = d.DishSections
                         .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                        .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
-                        .FirstOrDefault() ??
-                    d.MenuesDish
-                        .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault() ??
                     d.DishSections
@@ -73,25 +66,8 @@ namespace Order.Server.CQRS.Dish.Queries
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault(),
 
-                ChefCity = d.CardsDish
-                        .Select(cd => cd.Card.User.UserAddresses
-                            .OrderByDescending(ua => ua.LastTimeUsed)
-                            .FirstOrDefault()
-                            .Address
-                            .City
-                            .Name)
-                        .FirstOrDefault() ??
-                    d.DishSections
+                ChefCity = d.DishSections
                         .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                        .Select(cs => cs.Card.User.UserAddresses
-                            .OrderByDescending(ua => ua.LastTimeUsed)
-                            .FirstOrDefault()
-                            .Address
-                            .City
-                            .Name)
-                        .FirstOrDefault() ??
-                    d.MenuesDish
-                        .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
                         .Select(cs => cs.Card.User.UserAddresses
                             .OrderByDescending(ua => ua.LastTimeUsed)
                             .FirstOrDefault()
@@ -121,24 +97,13 @@ namespace Order.Server.CQRS.Dish.Queries
                 Price = m.Price,
                 IsMenu = true,
 
-                ChefFullName = m.CardsMenu
-                        .Select(cm => cm.Card.User.FirstName + " " + cm.Card.User.LastName)
-                        .FirstOrDefault() ??
-                    m.MenuSections
+                ChefFullName = m.MenuSections
                         .Where(ms => !ms.MenuOwns)
                         .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault(),
 
-                ChefCity = m.CardsMenu
-                        .Select(cm => cm.Card.User.UserAddresses
-                            .OrderByDescending(ua => ua.LastTimeUsed)
-                            .FirstOrDefault()
-                            .Address
-                            .City
-                            .Name)
-                        .FirstOrDefault() ??
-                    m.MenuSections
+                ChefCity = m.MenuSections
                         .Where(ms => !ms.MenuOwns)
                         .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.UserAddresses
@@ -178,24 +143,13 @@ namespace Order.Server.CQRS.Dish.Queries
                 Price = m.Price,
                 IsMenu = true,
 
-                ChefFullName = m.CardsMenu
-                        .Select(cm => cm.Card.User.FirstName + " " + cm.Card.User.LastName)
-                        .FirstOrDefault() ??
-                    m.MenuSections
+                ChefFullName = m.MenuSections
                         .Where(ms => !ms.MenuOwns)
                         .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault(),
 
-                ChefCity = m.CardsMenu
-                        .Select(cm => cm.Card.User.UserAddresses
-                            .OrderByDescending(ua => ua.LastTimeUsed)
-                            .FirstOrDefault()
-                            .Address
-                            .City
-                            .Name)
-                        .FirstOrDefault() ??
-                    m.MenuSections
+                ChefCity = m.MenuSections
                         .Where(ms => !ms.MenuOwns)
                         .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.UserAddresses
@@ -221,15 +175,8 @@ namespace Order.Server.CQRS.Dish.Queries
                 Price = d.Price,
                 IsMenu = false,
 
-                ChefFullName = d.CardsDish
-                        .Select(cd => cd.Card.User.FirstName + " " + cd.Card.User.LastName)
-                        .FirstOrDefault() ??
-                    d.DishSections
+                ChefFullName = d.DishSections
                         .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                        .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
-                        .FirstOrDefault() ??
-                    d.MenuesDish
-                        .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault() ??
                     d.DishSections
@@ -239,25 +186,8 @@ namespace Order.Server.CQRS.Dish.Queries
                         .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                         .FirstOrDefault(),
 
-                ChefCity = d.CardsDish
-                        .Select(cd => cd.Card.User.UserAddresses
-                            .OrderByDescending(ua => ua.LastTimeUsed)
-                            .FirstOrDefault()
-                            .Address
-                            .City
-                            .Name)
-                        .FirstOrDefault() ??
-                    d.DishSections
+                ChefCity = d.DishSections
                         .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                        .Select(cs => cs.Card.User.UserAddresses
-                            .OrderByDescending(ua => ua.LastTimeUsed)
-                            .FirstOrDefault()
-                            .Address
-                            .City
-                            .Name)
-                        .FirstOrDefault() ??
-                    d.MenuesDish
-                        .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
                         .Select(cs => cs.Card.User.UserAddresses
                             .OrderByDescending(ua => ua.LastTimeUsed)
                             .FirstOrDefault()
@@ -282,37 +212,14 @@ namespace Order.Server.CQRS.Dish.Queries
 
         private IQueryable<DomainModel.Dish> BuildDishesQuery(DishesOrMenuesSearchFilter filter)
         {
-            var dbQuery = context.Dish.Where(d => !d.IsMenuOnly);
+            var dbQuery = context.Dish.AsQueryable();
 
             dbQuery = ApplyFilter(dbQuery, filter);
 
-            return dbQuery.Where(d =>
-                    d.CardsDish
-                    .Any(cd => cd.Card.IsActive && DatabaseFunctions.IsNear(
-                        cd.Card.User.Id,
-                        filter.Latitude,
-                        filter.Longitude,
-                        distanceConfig.MinDistance))
-                || d.DishSections
+            return dbQuery.Where(d => d.DishSections
                     .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
                     .Any(cs => cs.Card.IsActive && DatabaseFunctions.IsNear(
                         cs.Card.User.Id,
-                        filter.Latitude,
-                        filter.Longitude,
-                        distanceConfig.MinDistance))
-                || d.MenuesDish
-                    .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
-                    .Any(mc => mc.Card.IsActive && DatabaseFunctions.IsNear(
-                        mc.Card.User.Id,
-                        filter.Latitude,
-                        filter.Longitude,
-                        distanceConfig.MinDistance))
-                || d.DishSections
-                    .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
-                    .Where(ms => ms.MenuOwns)
-                    .SelectMany(ms => ms.Menu.CardsMenu, (ms, cm) => cm)
-                    .Any(cm => cm.Card.IsActive && DatabaseFunctions.IsNear(
-                        cm.Card.User.Id,
                         filter.Latitude,
                         filter.Longitude,
                         distanceConfig.MinDistance)));
@@ -335,17 +242,11 @@ namespace Order.Server.CQRS.Dish.Queries
 
         private IQueryable<DomainModel.Menu> BuildMenuesQuery(DishesOrMenuesSearchFilter filter)
         {
-            var dbQuery = context.Menu.AsQueryable<DomainModel.Menu>();
+            var dbQuery = context.Menu.AsQueryable();
 
             dbQuery = ApplyFilter(dbQuery, filter);
 
-            return dbQuery.Where(m =>
-                m.CardsMenu.Any(cm => cm.Card.IsActive && DatabaseFunctions.IsNear(
-                        cm.Card.User.Id,
-                        filter.Latitude,
-                        filter.Longitude,
-                        distanceConfig.MinDistance))
-                || m.MenuSections
+            return dbQuery.Where(m => m.MenuSections
                     .Where(ms => !ms.MenuOwns)
                     .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
                     .Any(cs => cs.Card.IsActive && DatabaseFunctions.IsNear(
@@ -361,11 +262,6 @@ namespace Order.Server.CQRS.Dish.Queries
                     var search = filter.Search.ToLowerInvariant();
                     source = source.Where(m => m.Name.ToLower().Contains(search)
                         || m.Description.ToLower().Contains(search)
-                        || m.MenuDishes.Any(md => md.Dish.Name.ToLower().Contains(search)
-                            || md.Dish.Description.ToLower().Contains(search)
-                            || md.Dish.DishCategories.Any(dc => dc.Category.Label.ToLower().Contains(search))
-                            || md.Dish.DishOptions.Any(dop => dop.Option.Name.ToLower().Contains(search))
-                            || md.Dish.DishExtras.Any(de => de.Extra.Name.ToLower().Contains(search)))
                         || m.MenuSections.Where(m => m.MenuOwns).Any(ms => ms.Section.DishesSection
                             .Any(ds => ds.Dish.Name.ToLower().Contains(search)
                                 || ds.Dish.Description.ToLower().Contains(search)

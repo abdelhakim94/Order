@@ -10,19 +10,20 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Client.Pages
 {
-    public partial class DishDetails : ComponentBase, IDisposable
+    public partial class MenuDetails : ComponentBase, IDisposable
     {
         private bool canDispose;
 
-        private bool OptionsUnfolded = true;
-        private bool ExtrasUnfolded = true;
-
-        private DishDetailsDto dish { get; set; }
-        private string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
+        private MenuDetailsDto menu { get; set; }
         private int quantity { get; set; } = 1;
 
-        private HashSet<int> SelectedOptions = new();
-        private HashSet<int> SelectedExtras = new();
+        private bool optionsUnfolded = true;
+        private bool extrasUnfolded = true;
+        private Dictionary<int, bool> sectionsUnfolded = new();
+
+        private List<int> SelectedOptions = new();
+        private List<int> SelectedExtras = new();
+        private Dictionary<int, int?> selectedSectionDish = new();
 
         [Parameter]
         public int Id { get; set; }
@@ -49,7 +50,7 @@ namespace Order.Client.Pages
         {
             await base.OnInitializedAsync();
             canDispose = false;
-            await GetDishDetails();
+            await GetMenuDetails();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -71,15 +72,18 @@ namespace Order.Client.Pages
             canDispose = true;
         }
 
-        async Task GetDishDetails()
+        async Task GetMenuDetails()
         {
             Spinner.Show();
-            dish = await HubConnection.Invoke<DishDetailsDto, int>("GetDishDetails", Id, Toast);
+            menu = await HubConnection.Invoke<MenuDetailsDto, int>("GetMenuDetails", Id, Toast);
             Spinner.Hide();
         }
 
+        string getBackgroundPicture(string url) => $"background-image:url({url})";
+
         void OnSelectedOption(int id) => SelectedOptions.Add(id);
         void OnUnselectedOption(int id) => SelectedOptions.Remove(id);
+
         void OnSelectedExtra(int id) => SelectedExtras.Add(id);
         void OnUnselectedExtra(int id) => SelectedExtras.Remove(id);
 
@@ -89,11 +93,11 @@ namespace Order.Client.Pages
             {
                 if (!string.IsNullOrWhiteSpace(Search))
                 {
-                    MainLayout.PreviousPage = $"DishDetails/{Search}/{Id}";
+                    MainLayout.PreviousPage = $"MenuDetails/{Search}/{Id}";
                 }
                 else
                 {
-                    MainLayout.PreviousPage = $"DishDetails/{Search}/{Id}";
+                    MainLayout.PreviousPage = $"MenuDetails/{Search}/{Id}";
                 }
             }
         }

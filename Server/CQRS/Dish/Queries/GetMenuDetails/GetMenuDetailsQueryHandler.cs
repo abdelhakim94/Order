@@ -26,61 +26,28 @@ namespace Order.Server.CQRS.Dish.Queries
                     Picture = m.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                     Price = m.Price,
 
-                    ChefId = m.CardsMenu
-                        .Select(cm => cm.Card.User.Id)
-                        .Union(m.MenuSections
-                            .Where(ms => !ms.MenuOwns)
-                            .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
-                            .Select(cs => cs.Card.User.Id))
+                    ChefId = m.MenuSections
+                        .Where(ms => !ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.Id)
                         .Single(id => id != 0),
 
-                    ChefFullName = m.CardsMenu
-                            .Select(cm => cm.Card.User.FirstName + " " + cm.Card.User.LastName)
-                            .FirstOrDefault() ??
-                        m.MenuSections
-                            .Where(ms => !ms.MenuOwns)
-                            .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
-                            .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
-                            .FirstOrDefault(),
+                    ChefFullName = m.MenuSections
+                        .Where(ms => !ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
+                        .FirstOrDefault(),
 
-                    ChefCity = m.CardsMenu
-                            .Select(cm => cm.Card.User.UserAddresses
-                                .OrderByDescending(ua => ua.LastTimeUsed)
-                                .FirstOrDefault()
-                                .Address
-                                .City
-                                .Name)
-                            .FirstOrDefault() ??
-                        m.MenuSections
-                            .Where(ms => !ms.MenuOwns)
-                            .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
-                            .Select(cs => cs.Card.User.UserAddresses
-                                .OrderByDescending(ua => ua.LastTimeUsed)
-                                .FirstOrDefault()
-                                .Address
-                                .City
-                                .Name)
-                            .FirstOrDefault(),
-
-                    MandatoryDishes = m.MenuDishes
-                        .Where(md => md.IsMandatory)
-                        .Select(md => new MenuDishListItem
-                        {
-                            Id = md.Dish.Id,
-                            Name = md.Dish.Name,
-                            Picture = md.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
-                        })
-                        .ToList(),
-
-                    Dishes = m.MenuDishes
-                        .Where(md => !md.IsMandatory)
-                        .Select(md => new MenuDishListItem
-                        {
-                            Id = md.Dish.Id,
-                            Name = md.Dish.Name,
-                            Picture = md.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
-                        })
-                        .ToList(),
+                    ChefCity = m.MenuSections
+                        .Where(ms => !ms.MenuOwns)
+                        .SelectMany(ms => ms.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.UserAddresses
+                            .OrderByDescending(ua => ua.LastTimeUsed)
+                            .FirstOrDefault()
+                            .Address
+                            .City
+                            .Name)
+                        .FirstOrDefault(),
 
                     Sections = m.MenuSections
                         .Where(ms => ms.MenuOwns)

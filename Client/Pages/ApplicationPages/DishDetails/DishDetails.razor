@@ -40,6 +40,8 @@
 
         <Quantity @bind-Value=@quantity />
 
+        <Group CssClass="blank" />
+
         <EditForm Model=new()>
             @if (dish?.Options is not null && dish.Options.Any())
             {

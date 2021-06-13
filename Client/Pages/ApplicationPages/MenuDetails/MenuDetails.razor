@@ -1,0 +1,113 @@
+@page "/MenuDetails/{search}/{Id:int}"
+
+@using Order.Client.Layouts
+@using Order.Client.Constants
+@using Order.Client.Components
+@using Order.Client.Components.Form
+@using Order.Client.Components.Layout
+@using Order.Client.Components.Dish
+@using Order.Shared.Security.Policies
+@using Microsoft.AspNetCore.Authorization
+
+@namespace Order.Client.Pages
+@attribute [Authorize(Policy = IsGuest.Name)]
+
+<LayoutSetter />
+
+<div>
+
+    <div class="picture main-picture" style=@getBackgroundPicture(menu?.Picture)></div>
+
+    <Column CssClass="main" Justify=@JustifyContent.FLEX_START Align=@AlignItems.STRETCH>
+
+        <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+            <OTitle CssClass="menu-name" Text=@menu?.Name Size=1.8 />
+            <Price CssClass="price" Value=@(menu?.Price ?? 0) />
+        </Row>
+
+        <Row CssClass="descrition" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+            @menu?.Description
+        </Row>
+
+        <Group CssClass="blank" />
+
+        <Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+            <IconData CssClass="chef-data" IconPath="icons/chef-hat.png" Data=@menu?.ChefFullName />
+            <IconData CssClass="chef-data" IconPath="icons/position.png" Data=@menu?.ChefCity />
+        </Row>
+
+        <Group CssClass="blank" />
+
+        <Quantity @bind-Value=@quantity />
+
+        <Group CssClass="blank" />
+
+        <EditForm Model=new()>
+            @if (menu?.Sections?.Any() is true)
+            {
+                @foreach (var section in menu?.Sections ?? new())
+                {
+                    @if (section.Items?.Any() is true)
+                    {
+
+                        @if (sectionsUnfolded?.ContainsKey(section.Id) is not true)
+                        {
+                            sectionsUnfolded?.Add(section.Id, true);
+                        }
+                        @if (selectedSectionDish?.ContainsKey(section.Id) is not true)
+                        {
+                            selectedSectionDish?.Add(section.Id, null);
+                        }
+
+                        <Selector Name=@section?.Name @bind-Unfolded=@sectionsUnfolded[section.Id]>
+                            @foreach (var dish in section.Items ?? new())
+                            {
+                                <SelectorOption @key=@dish.Id T=int Id=@dish.Id Selected=@(selectedSectionDish[section.Id] == dish?.Id)
+                    OnSelect=@(() => selectedSectionDish[section.Id] = dish?.Id) OnUnselect=@(() =>
+                    selectedSectionDish[section.Id] = null)>
+                                    <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+                                        @dish.Name
+                                        <div class="picture" style=@getBackgroundPicture(dish?.Picture)></div>
+                                    </Row>
+                                </SelectorOption>
+                            }
+                        </Selector>
+                    }
+                }
+            }
+
+            @if (menu?.Options?.Any() is true)
+            {
+                <Selector Name=@M.Options @bind-Unfolded=@optionsUnfolded>
+                    @foreach (var option in menu?.Options ?? new())
+                    {
+                        <SelectorOption @key=@option.Id T=int Id=@option.Id Selected=@SelectedOptions.Contains(option.Id)
+                    OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption>
+                            @option.Name
+                        </SelectorOption>
+                    }
+                </Selector>
+            }
+
+            @if (menu?.Extras?.Any() is true)
+            {
+                <Selector Name=@M.Extras @bind-Unfolded=@extrasUnfolded>
+                    @foreach (var extra in menu?.Extras ?? new())
+                    {
+                        <SelectorOption @key=@extra.Id T=int Id=@extra.Id Selected=@SelectedExtras.Contains(extra.Id)
+                    OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra>
+                            <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+                                @extra.Name
+                                <Price Value=@extra.Price />
+                            </Row>
+                        </SelectorOption>
+                    }
+                </Selector>
+            }
+        </EditForm>
+
+    </Column>
+
+    <BottomButton Label=@M.AddToCart />
+
+</div>

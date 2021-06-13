@@ -53,8 +53,6 @@ namespace Order.Server.Persistence
 
         public DbSet<Address> Address { get; set; }
         public DbSet<Card> Card { get; set; }
-        public DbSet<CardDish> CardDish { get; set; }
-        public DbSet<CardMenu> CardMenu { get; set; }
         public DbSet<CardSection> CardSection { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<City> City { get; set; }
@@ -65,7 +63,6 @@ namespace Order.Server.Persistence
         public DbSet<DishSection> DishSection { get; set; }
         public DbSet<Extra> Extra { get; set; }
         public DbSet<Menu> Menu { get; set; }
-        public DbSet<MenuDish> MenuDish { get; set; }
         public DbSet<MenuSection> MenuSection { get; set; }
         public DbSet<Option> Option { get; set; }
         public DbSet<Profile> Profile { get; set; }
