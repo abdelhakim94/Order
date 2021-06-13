@@ -9,21 +9,21 @@
 .main-picture {
   height: 12em;
   width: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 10%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
 }
 
 ::deep .main {
   width: 95%;
   margin: auto;
-  padding-bottom: 7em;
+  padding-bottom: 5em;
 }
 
 ::deep .menu-name {
   max-width: 70%;
 }
 
-::deep .price,
+::deep .menu-price,
 ::deep .descrition {
   font-size: 1.1em;
 }

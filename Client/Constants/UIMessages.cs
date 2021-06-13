@@ -50,6 +50,7 @@ namespace Order.Client.Constants
 
         public static string Send { get => "Envoyer"; }
         public static string Save { get => "Enregistrer"; }
+        public static string Choose { get => "Choisir"; }
         public static string Cancel { get => "Annuler"; }
 
         public static string Reset { get => "Réinitialiser"; }

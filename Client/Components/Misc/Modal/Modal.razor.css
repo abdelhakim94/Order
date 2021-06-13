@@ -10,7 +10,7 @@
   transform: translate(-50%, -50%);
   width: 80%;
   max-height: 100%;
-  overflow: auto;
+  overflow: scroll;
 
   z-index: 7;
 }

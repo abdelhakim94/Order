@@ -16,14 +16,21 @@ namespace Order.Client.Pages
 
         private MenuDetailsDto menu { get; set; }
         private int quantity { get; set; } = 1;
+        private DishDetailsModal dishDetailsModal;
 
         private bool optionsUnfolded = true;
         private bool extrasUnfolded = true;
         private Dictionary<int, bool> sectionsUnfolded = new();
 
-        private List<int> SelectedOptions = new();
-        private List<int> SelectedExtras = new();
+        private HashSet<int> SelectedOptions = new();
+        private HashSet<int> SelectedExtras = new();
+        //All three dictionaries have IdSection as key.
+        // "selectedSectionDish" maps the section to the chosen dish in that section
+        // "sectionDishOptions" maps the section to the chosen options of the chosen dish in that section
+        // "sectionDishExtras" maps the section to the chosen extras of the chosen dish in that section
         private Dictionary<int, int?> selectedSectionDish = new();
+        private Dictionary<int, HashSet<int>> sectionDishOptions = new();
+        private Dictionary<int, HashSet<int>> sectionDishExtras = new();
 
         [Parameter]
         public int Id { get; set; }
@@ -86,6 +93,42 @@ namespace Order.Client.Pages
 
         void OnSelectedExtra(int id) => SelectedExtras.Add(id);
         void OnUnselectedExtra(int id) => SelectedExtras.Remove(id);
+
+        void OnSelectSectionDish(SectionDishOptionsAndExtrasDto dishInfos)
+        {
+            if (selectedSectionDish?.ContainsKey(dishInfos.IdSection) is true
+                && sectionDishOptions.ContainsKey(dishInfos.IdSection) is true
+                && sectionDishExtras.ContainsKey(dishInfos.IdSection) is true)
+            {
+                selectedSectionDish[dishInfos.IdSection] = dishInfos.IdDish;
+                sectionDishOptions[dishInfos.IdSection] = dishInfos.Options;
+                sectionDishExtras[dishInfos.IdSection] = dishInfos.Extras;
+            }
+        }
+
+        async Task ShowDishDetailsModal(int idDish, int idSection)
+        {
+            Console.WriteLine("Showing modal");
+            Console.WriteLine(idDish);
+            Console.WriteLine(idSection);
+            Console.WriteLine(selectedSectionDish?.ContainsKey(idSection) is true && selectedSectionDish[idSection] == idDish
+                    ? sectionDishOptions[idSection]?.Count
+                    : null);
+            Console.WriteLine(selectedSectionDish?.ContainsKey(idSection) is true && selectedSectionDish[idSection] == idDish
+                    ? sectionDishExtras[idSection]?.Count
+                    : null);
+            await dishDetailsModal?.Show(new SectionDishOptionsAndExtrasDto
+            {
+                IdDish = idDish,
+                IdSection = idSection,
+                Options = selectedSectionDish?.ContainsKey(idSection) is true && selectedSectionDish[idSection] == idDish
+                    ? sectionDishOptions[idSection]
+                    : null,
+                Extras = selectedSectionDish?.ContainsKey(idSection) is true && selectedSectionDish[idSection] == idDish
+                    ? sectionDishExtras[idSection]
+                    : null,
+            });
+        }
 
         public void Dispose()
         {

@@ -54,60 +54,6 @@ BEGIN
 			FROM order_schema.user u
 			INNER JOIN order_schema.card c
 			ON u."Id" = c.id_user
-			INNER JOIN order_schema.card_dish cd
-			ON c.id = cd.id_card
-			INNER JOIN order_schema.dish d
-			ON cd.id_dish = d.id
-			INNER JOIN order_schema.dish_category dc
-			ON d.id = dc.id_dish
-			INNER JOIN order_schema.category c1
-			ON dc.id_category = c1.id
-			WHERE u."Id" = $1 AND c.is_active = true
-		UNION
-			SELECT DISTINCT (c1.label) AS label
-			FROM order_schema.user u
-			INNER JOIN order_schema.card c
-			ON u."Id" = c.id_user
-			INNER JOIN order_schema.card_menu cm
-			ON c.id = cm.id_card
-			INNER JOIN order_schema.menu m
-			ON cm.id_menu = m.id
-			INNER JOIN order_schema.menu_dish md
-			ON m.id = md.id_menu
-			INNER JOIN order_schema.dish d
-			ON md.id_dish = d.id
-			INNER JOIN order_schema.dish_category dc
-			ON d.id = dc.id_dish
-			INNER JOIN order_schema.category c1
-			ON dc.id_category = c1.id
-			WHERE u."Id" = $1 AND c.is_active = true
-		UNION
-			SELECT DISTINCT (c1.label) AS label
-			FROM order_schema.user u
-			INNER JOIN order_schema.card c
-			ON u."Id" = c.id_user
-			INNER JOIN order_schema.card_menu cm
-			ON c.id = cm.id_card
-			INNER JOIN order_schema.menu m
-			ON cm.id_menu = m.id
-			INNER JOIN order_schema.menu_section ms
-			ON m.id = ms.id_menu
-			INNER JOIN order_schema.section s
-			ON ms.id_section = s.id
-			INNER JOIN order_schema.dish_section ds
-			ON s.id = ds.id_section
-			INNER JOIN order_schema.dish d
-			ON ds.id_dish = d.id
-			INNER JOIN order_schema.dish_category dc
-			ON d.id = dc.id_dish
-			INNER JOIN order_schema.category c1
-			ON dc.id_category = c1.id
-			WHERE u."Id" = $1 AND c.is_active = true AND ms.menu_owns =true
-		UNION
-			SELECT DISTINCT(c1.label) AS label
-			FROM order_schema.user u
-			INNER JOIN order_schema.card c
-			ON u."Id" = c.id_user
 			INNER JOIN order_schema.card_section cs
 			ON c.id = cs.id_card
 			INNER JOIN order_schema.section s
@@ -147,28 +93,6 @@ BEGIN
 			INNER JOIN order_schema.category c1
 			ON dc.id_category = c1.id
 			WHERE u."Id" = $1 AND c.is_active = true AND ms1.menu_owns = false and ms2.menu_owns = true
-		UNION
-			SELECT DISTINCT(c1.label) AS label
-			FROM order_schema.user u
-			INNER JOIN order_schema.card c
-			ON u."Id" = c.id_user
-			INNER JOIN order_schema.card_section cs
-			ON c.id = cs.id_card
-			INNER JOIN order_schema.section s
-			ON cs.id_section = s.id
-			INNER JOIN order_schema.menu_section ms
-			ON s.id = ms.id_section
-			INNER JOIN order_schema.menu m
-			ON ms.id_menu = m.id
-			INNER JOIN order_schema.menu_dish md
-			ON m.id = md.id_menu
-			INNER JOIN order_schema.dish d
-			ON md.id_dish = d.id
-			INNER JOIN order_schema.dish_category dc
-			ON d.id = dc.id_dish
-			INNER JOIN order_schema.category c1
-			ON dc.id_category = c1.id
-			WHERE u."Id" = $1 AND c.is_active = true AND ms.menu_owns = false
 	) t;
 
 	RETURN result;

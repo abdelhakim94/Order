@@ -22,7 +22,7 @@
 
         <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
             <OTitle CssClass="menu-name" Text=@menu?.Name Size=1.8 />
-            <Price CssClass="price" Value=@(menu?.Price ?? 0) />
+            <Price CssClass="menu-price" Value=@(menu?.Price ?? 0) />
         </Row>
 
         <Row CssClass="descrition" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
@@ -49,15 +49,10 @@
                 {
                     @if (section.Items?.Any() is true)
                     {
-
-                        @if (sectionsUnfolded?.ContainsKey(section.Id) is not true)
-                        {
-                            sectionsUnfolded?.Add(section.Id, true);
-                        }
-                        @if (selectedSectionDish?.ContainsKey(section.Id) is not true)
-                        {
-                            selectedSectionDish?.Add(section.Id, null);
-                        }
+                        @if (sectionsUnfolded?.ContainsKey(section.Id) is not true) sectionsUnfolded?.Add(section.Id, true);
+                        @if (selectedSectionDish?.ContainsKey(section.Id) is not true) selectedSectionDish?.Add(section.Id, null);
+                        @if (sectionDishOptions?.ContainsKey(section.Id) is not true) sectionDishOptions?.Add(section.Id, null);
+                        @if (sectionDishExtras?.ContainsKey(section.Id) is not true) sectionDishExtras?.Add(section.Id, null);
 
                         <Selector Name=@section?.Name @bind-Unfolded=@sectionsUnfolded[section.Id]>
                             @foreach (var dish in section.Items ?? new())
@@ -65,7 +60,8 @@
                                 <SelectorOption @key=@dish.Id T=int Id=@dish.Id Selected=@(selectedSectionDish[section.Id] == dish?.Id)
                     OnSelect=@(() => selectedSectionDish[section.Id] = dish?.Id) OnUnselect=@(() =>
                     selectedSectionDish[section.Id] = null)>
-                                    <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+                                    <Row @onclick=@(() => ShowDishDetailsModal(dish.Id, section.Id))
+                        Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
                                         @dish.Name
                                         <div class="picture" style=@getBackgroundPicture(dish?.Picture)></div>
                                     </Row>
@@ -109,5 +105,7 @@
     </Column>
 
     <BottomButton Label=@M.AddToCart />
+
+    <DishDetailsModal @ref=@dishDetailsModal Spinner=@Spinner Toast=@Toast OnChoose=@OnSelectSectionDish />
 
 </div>
