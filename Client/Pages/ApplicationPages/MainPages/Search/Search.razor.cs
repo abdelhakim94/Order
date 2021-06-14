@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
-using Order.Client.Components.Misc;
 using Order.Client.Constants;
 using Order.Client.Layouts;
 using Order.Client.Services;

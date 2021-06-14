@@ -1,0 +1,15 @@
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+@if (ShowModal)
+{
+    <div @attributes=@AdditionalAttributes class="@CSSCLasses.ComponentContainer @CssClass">
+        <Column Align=@AlignItems.STRETCH>
+            @ChildContent
+        </Column>
+    </div>
+
+    <div class="modal-overlay">
+    </div>
+}

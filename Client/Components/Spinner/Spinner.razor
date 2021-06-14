@@ -6,26 +6,3 @@
         <img id="spinner" src="icons/spinner.gif" />
     </div>
 }
-
-@code{
-    private bool show { get; set; }
-
-    [Parameter]
-    public EventCallback<bool> OnChange { get; set; }
-
-    public void Show()
-    {
-        show = true;
-        if (OnChange.HasDelegate)
-            OnChange.InvokeAsync(show);
-        StateHasChanged();
-    }
-
-    public void Hide()
-    {
-        show = false;
-        if (OnChange.HasDelegate)
-            OnChange.InvokeAsync(show);
-        StateHasChanged();
-    }
-}

@@ -1,6 +1,5 @@
-using System;
 using System.Threading.Tasks;
-using Order.Client.Components.Misc;
+using Order.Client.Components;
 using Order.Shared.Contracts;
 
 namespace Order.Client.Services

@@ -1,10 +1,9 @@
-@using Order.Client.Components.Misc
-@using Order.Client.Components.Form
-@using Order.Client.Components.Layout
 @using Order.Client.Constants
 @using M = Order.Client.Constants.UIMessages;
 
 @namespace Order.Client.Components
+
+@implements IDisposable
 
 <div @attributes=@AdditionalAttributes class=@CssClass>
     <Modal @ref=@Modal>

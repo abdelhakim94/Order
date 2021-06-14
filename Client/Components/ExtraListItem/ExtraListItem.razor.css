@@ -1,9 +1,0 @@
-::deep .first-block {
-  max-width: calc(100% - 6em);
-}
-
-.name {
-  max-width: calc(100% - 3.5em);
-  margin-left: 1em;
-  font-size: 1.1em;
-}

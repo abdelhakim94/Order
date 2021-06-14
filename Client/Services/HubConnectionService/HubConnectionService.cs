@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Order.Client.Components.Misc;
+using Order.Client.Components;
 using Order.Client.Constants;
 using Order.Shared.Contracts;
 

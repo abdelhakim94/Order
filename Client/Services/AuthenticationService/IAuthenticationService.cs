@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using Order.Shared.Dto.Account;
+using Order.Client.Components;
 using Order.Shared.Contracts;
-using Order.Client.Components.Misc;
 using Order.Shared.Dto;
+using Order.Shared.Dto.Account;
 
 namespace Order.Client.Services
 {
