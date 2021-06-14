@@ -108,15 +108,6 @@ namespace Order.Client.Pages
 
         async Task ShowDishDetailsModal(int idDish, int idSection)
         {
-            Console.WriteLine("Showing modal");
-            Console.WriteLine(idDish);
-            Console.WriteLine(idSection);
-            Console.WriteLine(selectedSectionDish?.ContainsKey(idSection) is true && selectedSectionDish[idSection] == idDish
-                    ? sectionDishOptions[idSection]?.Count
-                    : null);
-            Console.WriteLine(selectedSectionDish?.ContainsKey(idSection) is true && selectedSectionDish[idSection] == idDish
-                    ? sectionDishExtras[idSection]?.Count
-                    : null);
             await dishDetailsModal?.Show(new SectionDishOptionsAndExtrasDto
             {
                 IdDish = idDish,
