@@ -50,6 +50,7 @@ namespace Order.Client.Constants
 
         public static string Send { get => "Envoyer"; }
         public static string Save { get => "Enregistrer"; }
+        public static string Choose { get => "Choisir"; }
         public static string Cancel { get => "Annuler"; }
 
         public static string Reset { get => "Réinitialiser"; }
@@ -91,8 +92,8 @@ namespace Order.Client.Constants
 
         public static string Remaining { get => "éléments de plus"; }
 
-        public static string Options { get => "Options:"; }
-        public static string Extras { get => "Suppléments:"; }
+        public static string Options { get => "Options"; }
+        public static string Extras { get => "Suppléments"; }
 
         public static string AddToCart { get => "Ajouter au panier"; }
     }

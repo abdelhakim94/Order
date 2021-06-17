@@ -11,13 +11,7 @@ namespace Order.DomainModel
 
         public virtual User User { get; set; }
 
-        public virtual ICollection<CardMenu> CardMenus { get; set; }
-            = new HashSet<CardMenu>();
-
         public virtual ICollection<CardSection> CardSections { get; set; }
             = new HashSet<CardSection>();
-
-        public virtual ICollection<CardDish> CardDishes { get; set; }
-            = new HashSet<CardDish>();
     }
 }

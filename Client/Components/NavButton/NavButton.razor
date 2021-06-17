@@ -1,0 +1,34 @@
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+@if (DisplayHorizontal)
+{
+    <Row @attributes=@AdditionalAttributes class="@CssClass" Justify=@JustifyContent.CENTER Align=@AlignItems.CENTER>
+        <button class="button-image" type="button" style="background-image:url(@Icon); 
+                                        background-position: @(Translate)% 0%;
+                                        background-size: @(ImagesInSprite * 100)% 100%;">
+        </button>
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <div class="label" style="color:@labelColor">
+                @Label
+            </div>
+        }
+    </Row>
+}
+else
+{
+    <Column @attributes=@AdditionalAttributes class="@CssClass" Justify=@JustifyContent.CENTER  Align=@AlignItems.CENTER>
+        <button class="button-image" type="button" style="background-image:url(@Icon); 
+                                    background-position: @(Translate)% 0%;
+                                    background-size: @(ImagesInSprite * 100)% 100%;">
+        </button>
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <div class="label" style="color:@labelColor">
+                @Label
+            </div>
+        }
+    </Column>
+}

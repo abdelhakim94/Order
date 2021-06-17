@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Order.Server.Constants;
 using Order.Server.Persistence;
 using Order.Shared.Dto.Dish;
 
@@ -22,33 +23,21 @@ namespace Order.Server.CQRS.Dish.Queries
                     Id = d.Id,
                     Name = d.Name,
                     Description = d.Description,
-                    Picture = d.Picture,
+                    Picture = d.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                     Price = d.Price,
 
-                    ChefId = d.CardsDish
-                        .Select(cd => cd.Card.User.Id)
+                    ChefId = d.DishSections
+                        .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
+                        .Select(cs => cs.Card.User.Id)
                         .Union(d.DishSections
-                            .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                            .Select(cs => cs.Card.User.Id)
-                            .Union(d.MenuesDish
-                                .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
-                                .Select(cs => cs.Card.User.Id)
-                                .Union(d.DishSections
-                                    .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
-                                    .Where(ms => ms.MenuOwns)
-                                    .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
-                                    .Select(cs => cs.Card.User.Id))))
+                            .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
+                            .Where(ms => ms.MenuOwns)
+                            .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
+                            .Select(cs => cs.Card.User.Id))
                         .Single(id => id != 0),
 
-                    ChefFullName = d.CardsDish
-                            .Select(cd => cd.Card.User.FirstName + " " + cd.Card.User.LastName)
-                            .FirstOrDefault() ??
-                        d.DishSections
+                    ChefFullName = d.DishSections
                             .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                            .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
-                            .FirstOrDefault() ??
-                        d.MenuesDish
-                            .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
                             .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                             .FirstOrDefault() ??
                         d.DishSections
@@ -58,25 +47,8 @@ namespace Order.Server.CQRS.Dish.Queries
                             .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
                             .FirstOrDefault(),
 
-                    ChefCity = d.CardsDish
-                            .Select(cd => cd.Card.User.UserAddresses
-                                .OrderByDescending(ua => ua.LastTimeUsed)
-                                .FirstOrDefault()
-                                .Address
-                                .City
-                                .Name)
-                            .FirstOrDefault() ??
-                        d.DishSections
+                    ChefCity = d.DishSections
                             .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
-                            .Select(cs => cs.Card.User.UserAddresses
-                                .OrderByDescending(ua => ua.LastTimeUsed)
-                                .FirstOrDefault()
-                                .Address
-                                .City
-                                .Name)
-                            .FirstOrDefault() ??
-                        d.MenuesDish
-                            .SelectMany(md => md.Menu.CardsMenu, (md, cm) => cm)
                             .Select(cs => cs.Card.User.UserAddresses
                                 .OrderByDescending(ua => ua.LastTimeUsed)
                                 .FirstOrDefault()

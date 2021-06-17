@@ -1,0 +1,17 @@
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class="@CssClass">
+    <Row @onclick=@HandleClick CssClass="title" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER
+        ExpandHorizontally=@true>
+        <img src=@selectorArrow class="arrow" />
+        <div class="name">@Name</div>
+    </Row>
+    @if (Unfolded)
+    {
+        <div class="options">
+            @ChildContent
+        </div>
+    }
+</div>

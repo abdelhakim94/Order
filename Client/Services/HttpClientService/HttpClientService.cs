@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Order.Client.Components.Misc;
+using Order.Client.Components;
 using Order.Client.Constants;
 using Order.Shared.Contracts;
 

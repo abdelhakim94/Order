@@ -1,0 +1,10 @@
+@namespace Order.Client.Components
+
+<div @attributes=@AdditionalAttributes class="@ComponentContainer @CssClass">
+
+    <InputText readonly=@Disable type=@ShouldHideValue() placeholder=@PlaceHolder Value=@Value
+        @oninput=@HandleInputChange ValueExpression=@(() => Value) />
+
+    <img class="right-icon" src=@RightIcon @onclick=@HandleRightIconClick />
+
+</div>

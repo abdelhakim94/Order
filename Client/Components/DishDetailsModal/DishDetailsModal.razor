@@ -1,0 +1,66 @@
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+<div>
+    <Modal @ref=@modal>
+
+        <div class="dish-modal-picture" style=@pictureUrl></div>
+
+        <Column CssClass="dish-modal-main" Justify=@JustifyContent.FLEX_START Align=@AlignItems.STRETCH>
+
+            <OTitle Text=@dish?.Name Size=1.8 />
+
+            <Row CssClass="dish-modal-descrition" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+                @dish?.Description
+            </Row>
+
+            <Group CssClass="dish-modal-blank" />
+
+            <Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+                <IconData CssClass="dish-modal-chef-data" IconPath="icons/chef-hat.png" Data=@dish?.ChefFullName />
+                <IconData CssClass="dish-modal-chef-data" IconPath="icons/position.png" Data=@dish?.ChefCity />
+            </Row>
+
+            <Group CssClass="dish-modal-blank" />
+
+            <EditForm Model=new()>
+                @if (dish?.Options is not null && dish.Options.Any())
+                {
+                    <Selector Name=@M.Options @bind-Unfolded=@OptionsUnfolded>
+                        @foreach (var option in dish?.Options ?? new())
+                        {
+                            <SelectorOption @key=@option.Id T=int Id=@option.Id Selected=@SelectedOptions.Contains(option.Id)
+                        OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption>
+                                @option.Name
+                            </SelectorOption>
+                        }
+                    </Selector>
+                }
+
+                @if (dish?.Extras is not null && dish.Extras.Any())
+                {
+                    <Selector Name=@M.Extras @bind-Unfolded=@ExtrasUnfolded>
+                        @foreach (var extra in dish?.Extras ?? new())
+                        {
+                            <SelectorOption @key=@extra.Id T=int Id=@extra.Id Selected=@SelectedExtras.Contains(extra.Id)
+                        OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra>
+                                <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+                                    @extra.Name
+                                    <Price Value=@extra.Price />
+                                </Row>
+                            </SelectorOption>
+                        }
+                    </Selector>
+                }
+            </EditForm>
+        </Column>
+
+        <Row CssClass="dish-modal-button-row" Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH
+            ExpandHorizontally=@true>
+            <Button CssClass="dish-modal-button" Label=@M.Choose @onclick=Choose />
+            <Button CssClass="dish-modal-button" Label=@M.Cancel @onclick=Close Neutral=@true />
+        </Row>
+
+    </Modal>
+</div>

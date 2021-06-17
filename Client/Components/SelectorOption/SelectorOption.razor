@@ -1,0 +1,12 @@
+@using Order.Client.Constants
+
+@typeparam T
+
+@namespace Order.Client.Components
+
+<Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+    <OCheckBox @bind-Value=@Selected />
+    <div class="content">
+        @ChildContent
+    </div>
+</Row>

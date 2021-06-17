@@ -1,0 +1,10 @@
+@using Order.Client.Constants
+
+@namespace Order.Client.Components
+
+<div class="@CSSCLasses.ComponentContainer @shouldShow @messageType" @onclick=@(() => Close())>
+    <img src="@getIcon" class="notif-icon" />
+    <div class="content">
+        <p>@content</p>
+    </div>
+</div>

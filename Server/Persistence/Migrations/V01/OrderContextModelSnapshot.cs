@@ -75,42 +75,6 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.ToTable("card", "order_schema");
                 });
 
-            modelBuilder.Entity("Order.DomainModel.CardDish", b =>
-                {
-                    b.Property<int>("IdDish")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_dish");
-
-                    b.Property<int>("IdCard")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_card");
-
-                    b.HasKey("IdDish", "IdCard")
-                        .HasName("PK_CARD_DISH");
-
-                    b.HasIndex("IdCard");
-
-                    b.ToTable("card_dish", "order_schema");
-                });
-
-            modelBuilder.Entity("Order.DomainModel.CardMenu", b =>
-                {
-                    b.Property<int>("IdCard")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_card");
-
-                    b.Property<int>("IdMenu")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_menu");
-
-                    b.HasKey("IdCard", "IdMenu")
-                        .HasName("PK_CARD_MENU");
-
-                    b.HasIndex("IdMenu");
-
-                    b.ToTable("card_menu", "order_schema");
-                });
-
             modelBuilder.Entity("Order.DomainModel.CardSection", b =>
                 {
                     b.Property<int>("IdSection")
@@ -210,10 +174,6 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("character varying")
                         .HasColumnName("description");
 
-                    b.Property<bool>("IsMenuOnly")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_menu_only");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -298,10 +258,6 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasColumnType("integer")
                         .HasColumnName("id_section");
 
-                    b.Property<bool>("IsMandatory")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_mandatory");
-
                     b.HasKey("IdDish", "IdSection")
                         .HasName("PK_DISH_SECTION");
 
@@ -365,28 +321,6 @@ namespace Order.Server.Persistence.Migrations.V01
                         .HasName("PK_MENU");
 
                     b.ToTable("menu", "order_schema");
-                });
-
-            modelBuilder.Entity("Order.DomainModel.MenuDish", b =>
-                {
-                    b.Property<int>("IdDish")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_dish");
-
-                    b.Property<int>("IdMenu")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_menu");
-
-                    b.Property<bool>("IsMandatory")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_mandatory");
-
-                    b.HasKey("IdDish", "IdMenu")
-                        .HasName("PK_MENU_DISH");
-
-                    b.HasIndex("IdMenu");
-
-                    b.ToTable("menu_dish", "order_schema");
                 });
 
             modelBuilder.Entity("Order.DomainModel.MenuExtra", b =>
@@ -834,48 +768,6 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Order.DomainModel.CardDish", b =>
-                {
-                    b.HasOne("Order.DomainModel.Card", "Card")
-                        .WithMany("CardDishes")
-                        .HasForeignKey("IdCard")
-                        .HasConstraintName("FK_CARD_DISH_CARD")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Order.DomainModel.Dish", "Dish")
-                        .WithMany("CardsDish")
-                        .HasForeignKey("IdDish")
-                        .HasConstraintName("FK_CARD_DISH_DISH")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Card");
-
-                    b.Navigation("Dish");
-                });
-
-            modelBuilder.Entity("Order.DomainModel.CardMenu", b =>
-                {
-                    b.HasOne("Order.DomainModel.Card", "Card")
-                        .WithMany("CardMenus")
-                        .HasForeignKey("IdCard")
-                        .HasConstraintName("FK_CARD_MENU_CARD")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Order.DomainModel.Menu", "Menu")
-                        .WithMany("CardsMenu")
-                        .HasForeignKey("IdMenu")
-                        .HasConstraintName("FK_CARD_MENU_MENU")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Card");
-
-                    b.Navigation("Menu");
-                });
-
             modelBuilder.Entity("Order.DomainModel.CardSection", b =>
                 {
                     b.HasOne("Order.DomainModel.Card", "Card")
@@ -987,27 +879,6 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.Navigation("Dish");
 
                     b.Navigation("Section");
-                });
-
-            modelBuilder.Entity("Order.DomainModel.MenuDish", b =>
-                {
-                    b.HasOne("Order.DomainModel.Dish", "Dish")
-                        .WithMany("MenuesDish")
-                        .HasForeignKey("IdDish")
-                        .HasConstraintName("FK_MENU_DISH_DISH")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Order.DomainModel.Menu", "Menu")
-                        .WithMany("MenuDishes")
-                        .HasForeignKey("IdMenu")
-                        .HasConstraintName("FK_MENU_DISH_MENU")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Dish");
-
-                    b.Navigation("Menu");
                 });
 
             modelBuilder.Entity("Order.DomainModel.MenuExtra", b =>
@@ -1192,10 +1063,6 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.Card", b =>
                 {
-                    b.Navigation("CardDishes");
-
-                    b.Navigation("CardMenus");
-
                     b.Navigation("CardSections");
                 });
 
@@ -1211,8 +1078,6 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.Dish", b =>
                 {
-                    b.Navigation("CardsDish");
-
                     b.Navigation("DishCategories");
 
                     b.Navigation("DishExtras");
@@ -1220,8 +1085,6 @@ namespace Order.Server.Persistence.Migrations.V01
                     b.Navigation("DishOptions");
 
                     b.Navigation("DishSections");
-
-                    b.Navigation("MenuesDish");
                 });
 
             modelBuilder.Entity("Order.DomainModel.Extra", b =>
@@ -1233,10 +1096,6 @@ namespace Order.Server.Persistence.Migrations.V01
 
             modelBuilder.Entity("Order.DomainModel.Menu", b =>
                 {
-                    b.Navigation("CardsMenu");
-
-                    b.Navigation("MenuDishes");
-
                     b.Navigation("MenuExtras");
 
                     b.Navigation("MenuOptions");

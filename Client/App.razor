@@ -1,7 +1,4 @@
-﻿@using Order.Client.Components.Misc
-@using Order.Client.Components
-@using Order.Client.Constants
-@using Order.Shared.Security.Claims
+﻿@using Order.Shared.Security.Claims
 
 @* Read more about authentication/authorozation in blazor here: *@
 @* https://docs.microsoft.com/en-us/aspnet/core/blazor/security/?view=aspnetcore-5.0#authorization *@
@@ -37,10 +34,3 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
-
-@code{
-    public Toast Toast { get; set; }
-    public Spinner Spinner { get; set; }
-    public bool Blure { get; set; }
-    private string classBlured { get => Blure ? $"app-container {CSSCLasses.PageBlured}" : "app-container"; }
-}

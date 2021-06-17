@@ -13,12 +13,6 @@ namespace Order.DomainModel
         public virtual ICollection<MenuSection> MenuSections { get; set; }
             = new HashSet<MenuSection>();
 
-        public virtual ICollection<MenuDish> MenuDishes { get; set; }
-            = new HashSet<MenuDish>();
-
-        public virtual ICollection<CardMenu> CardsMenu { get; set; }
-            = new HashSet<CardMenu>();
-
         public virtual ICollection<MenuOption> MenuOptions { get; set; }
             = new HashSet<MenuOption>();
 

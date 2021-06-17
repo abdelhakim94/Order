@@ -3,9 +3,6 @@
 @using Order.Client.Layouts
 @using Order.Client.Constants
 @using Order.Client.Components
-@using Order.Client.Components.Form
-@using Order.Client.Components.Layout
-@using Order.Client.Components.Dish
 @using Order.Shared.Security.Policies
 @using Microsoft.AspNetCore.Authorization
 
@@ -40,17 +37,38 @@
 
         <Quantity @bind-Value=@quantity />
 
-        @if (dish?.Options is not null && dish.Options.Any())
-        {
-            <OTitle Text=@M.Options Size=1.1 />
-            <OptionList Options=@dish?.Options OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption />
-        }
+        <Group CssClass="blank" />
 
-        @if (dish?.Extras is not null && dish.Extras.Any())
-        {
-            <OTitle Text=@M.Extras Size=1.1 />
-            <ExtraList Extras=@dish?.Extras OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra />
-        }
+        <EditForm Model=new()>
+            @if (dish?.Options is not null && dish.Options.Any())
+            {
+                <Selector Name=@M.Options @bind-Unfolded=@OptionsUnfolded>
+                    @foreach (var option in dish?.Options ?? new())
+                    {
+                        <SelectorOption @key=@option.Id T=int Id=@option.Id Selected=@SelectedOptions.Contains(option.Id)
+                    OnSelect=@OnSelectedOption OnUnselect=@OnUnselectedOption>
+                            @option.Name
+                        </SelectorOption>
+                    }
+                </Selector>
+            }
+
+            @if (dish?.Extras is not null && dish.Extras.Any())
+            {
+                <Selector Name=@M.Extras @bind-Unfolded=@ExtrasUnfolded>
+                    @foreach (var extra in dish?.Extras ?? new())
+                    {
+                        <SelectorOption @key=@extra.Id T=int Id=@extra.Id Selected=@SelectedExtras.Contains(extra.Id)
+                    OnSelect=@OnSelectedExtra OnUnselect=@OnUnselectedExtra>
+                            <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER>
+                                @extra.Name
+                                <Price Value=@extra.Price />
+                            </Row>
+                        </SelectorOption>
+                    }
+                </Selector>
+            }
+        </EditForm>
 
     </Column>
 

@@ -1,0 +1,22 @@
+::deep .title {
+  min-height: 3em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 0.5em;
+  background: linear-gradient(to left, ghostwhite 0%, #f9a624 100%);
+}
+
+.arrow {
+  width: 1.2em;
+}
+
+.name {
+  max-width: calc(100% - 1.2em);
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-left: 0.5em;
+}
+
+.options {
+  margin-left: 1.7em;
+}

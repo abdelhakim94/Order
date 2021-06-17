@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
-using Order.Client.Components.Misc;
 using Order.Client.Layouts;
 using Order.Client.Services;
 using Order.Shared.Dto.Dish;
@@ -14,12 +13,15 @@ namespace Order.Client.Pages
     {
         private bool canDispose;
 
+        private bool OptionsUnfolded = true;
+        private bool ExtrasUnfolded = true;
+
         private DishDetailsDto dish { get; set; }
         private string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
         private int quantity { get; set; } = 1;
 
-        private List<int> SelectedOptions = new();
-        private List<int> SelectedExtras = new();
+        private HashSet<int> SelectedOptions = new();
+        private HashSet<int> SelectedExtras = new();
 
         [Parameter]
         public int Id { get; set; }

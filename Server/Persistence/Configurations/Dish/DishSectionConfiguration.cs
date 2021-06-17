@@ -26,10 +26,6 @@ namespace Order.Server.Persistence
                 .HasColumnType("integer")
                 .IsRequired();
 
-            builder.Property(ds => ds.IsMandatory)
-                .HasColumnName("is_mandatory")
-                .HasColumnType("boolean");
-
             builder.HasOne(ds => ds.Dish)
                 .WithMany(d => d.DishSections)
                 .HasForeignKey(ds => ds.IdDish)

@@ -9,8 +9,6 @@ namespace Order.Server.Persistence
     {
         DbSet<Address> Address { get; set; }
         DbSet<Card> Card { get; set; }
-        DbSet<CardDish> CardDish { get; set; }
-        DbSet<CardMenu> CardMenu { get; set; }
         DbSet<CardSection> CardSection { get; set; }
         DbSet<Category> Category { get; set; }
         DbSet<City> City { get; set; }
@@ -21,7 +19,6 @@ namespace Order.Server.Persistence
         DbSet<DishSection> DishSection { get; set; }
         DbSet<Extra> Extra { get; set; }
         DbSet<Menu> Menu { get; set; }
-        DbSet<MenuDish> MenuDish { get; set; }
         DbSet<MenuSection> MenuSection { get; set; }
         DbSet<Option> Option { get; set; }
         DbSet<Profile> Profile { get; set; }
