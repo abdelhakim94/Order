@@ -26,6 +26,11 @@ namespace Order.Server.Persistence
                 .HasColumnType("integer")
                 .IsRequired();
 
+
+            builder.Property(ms => ms.Order)
+                .HasColumnName("ordre")
+                .HasColumnType("integer");
+
             builder.Property(ms => ms.MenuOwns)
                 .HasColumnName("menu_owns")
                 .HasColumnType("boolean")

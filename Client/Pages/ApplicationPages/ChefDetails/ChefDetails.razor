@@ -16,13 +16,13 @@
             <OTitle CssClass="name" Text=@chef?.ChefFullName Size=1.5 />
             <IconData CssClass="position" IconPath="icons/position.png" Data=@chef?.City />
         </Row>
-        <Row CssClass="categories" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
-            @chef?.Categories
+        <Row CssClass="bio" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+            @chef?.Bio
         </Row>
         @foreach (var section in chef?.Card?.Sections ?? new())
         {
             <Group CssClass="blank" />
-            <OTitle CssClass="section" Text=@section.Name Size=1.5 />
+            <OTitle Text=@section.Name Size=1.5 />
             @foreach (var dishOrMenu in section.Items ?? new())
             {
                 <DishOrMenuListItem DishOrMenu=@dishOrMenu />

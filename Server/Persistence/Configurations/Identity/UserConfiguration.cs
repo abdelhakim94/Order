@@ -23,6 +23,9 @@ namespace Order.Server.Persistence
             builder.Property(e => e.Picture)
                 .HasColumnName("Picture");
 
+            builder.Property(e => e.Bio)
+                .HasColumnName("bio");
+
             // Each User can have many UserClaims
             builder.HasMany(e => e.Claims)
                 .WithOne(e => e.User)

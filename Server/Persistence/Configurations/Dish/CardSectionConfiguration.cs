@@ -26,6 +26,10 @@ namespace Order.Server.Persistence
                 .HasColumnType("integer")
                 .IsRequired();
 
+            builder.Property(cs => cs.Order)
+                .HasColumnName("ordre")
+                .HasColumnType("integer");
+
             builder.HasOne(cs => cs.Section)
                 .WithMany(s => s.CardsSection)
                 .HasForeignKey(cs => cs.IdSection)

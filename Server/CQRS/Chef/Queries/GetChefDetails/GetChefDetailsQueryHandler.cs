@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Order.Server.Constants;
-using Order.Server.Helpers;
 using Order.Server.Persistence;
 using Order.Shared.Dto.Chef;
 using Order.Shared.Dto.Dish;
+using Order.Shared.Security.Claims;
 
 namespace Server.CQRS.Chef.Queries
 {
@@ -20,6 +20,7 @@ namespace Server.CQRS.Chef.Queries
         public async Task<ChefDetailsDto> Handle(GetChefDetailsQuery query, CancellationToken ct)
         {
             var asAnonymous = await context.Users
+                .Where(u => u.Id == query.Id && u.UserProfiles.Any(p => p.IdProfile == (int)Profile.CHEF))
                 .Select(u => new
                 {
                     Id = u.Id,
@@ -31,13 +32,14 @@ namespace Server.CQRS.Chef.Queries
                         .Address
                         .City
                         .Name,
-                    Categories = DatabaseFunctions.UserCategories(u.Id),
+                    Bio = u.Bio,
                     Card = u.Cards
                         .Where(c => c.IsActive)
                         .Select(c => new
                         {
                             Name = c.Name,
                             Sections = c.CardSections
+                                .OrderBy(s => s.Order)
                                 .Select(cs => new
                                 {
                                     Id = cs.Section.Id,
@@ -50,6 +52,7 @@ namespace Server.CQRS.Chef.Queries
                                             Picture = ds.Dish.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                                             Description = ds.Dish.Description,
                                             Price = ds.Dish.Price,
+                                            Order = ds.Order,
                                             IsMenu = false,
                                         })
                                         .ToList(),
@@ -61,6 +64,7 @@ namespace Server.CQRS.Chef.Queries
                                                 Picture = ms.Menu.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                                                 Description = ms.Menu.Description,
                                                 Price = ms.Menu.Price,
+                                                Order = ms.Order,
                                                 IsMenu = true,
                                             })
                                             .ToList(),
@@ -68,7 +72,7 @@ namespace Server.CQRS.Chef.Queries
                         })
                         .SingleOrDefault(),
                 })
-                .SingleOrDefaultAsync(u => u.Id == query.Id);
+                .SingleOrDefaultAsync();
 
             return new()
             {
@@ -76,7 +80,7 @@ namespace Server.CQRS.Chef.Queries
                 Picture = asAnonymous.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
                 ChefFullName = asAnonymous.ChefFullName,
                 City = asAnonymous.City,
-                Categories = asAnonymous.Categories,
+                Bio = asAnonymous.Bio,
                 Card = new()
                 {
                     Name = asAnonymous.Card.Name,
@@ -85,6 +89,8 @@ namespace Server.CQRS.Chef.Queries
                         Id = s.Id,
                         Name = s.Name,
                         Items = s.Dishes
+                            .Union(s.Menues)
+                            .OrderBy(e => e.Order)
                             .Select(d => new DishOrMenuListItemDto
                             {
                                 Id = d.Id,
@@ -94,15 +100,6 @@ namespace Server.CQRS.Chef.Queries
                                 Price = d.Price,
                                 IsMenu = d.IsMenu,
                             })
-                            .Union(s.Menues.Select(m => new DishOrMenuListItemDto
-                            {
-                                Id = m.Id,
-                                Name = m.Name,
-                                Picture = m.Picture ?? NoDataFallbacks.NO_DATA_IMAGE,
-                                Description = m.Description,
-                                Price = m.Price,
-                                IsMenu = m.IsMenu,
-                            }))
                             .ToList(),
                     })
                     .ToList(),

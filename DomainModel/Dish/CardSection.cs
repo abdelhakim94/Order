@@ -4,6 +4,7 @@ namespace Order.DomainModel
     {
         public int IdSection { get; set; }
         public int IdCard { get; set; }
+        public int? Order { get; set; }
 
         public virtual Section Section { get; set; }
         public virtual Card Card { get; set; }
