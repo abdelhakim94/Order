@@ -14,6 +14,7 @@ namespace Order.Client.Components
 {
     public partial class AddressModal : ComponentBase, IDisposable
     {
+        Spinner spinner;
         Modal Modal;
         Timer timer { get; set; }
         UserAddressDetailDto CurrentAddress = new();
@@ -45,9 +46,6 @@ namespace Order.Client.Components
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
         [Parameter]
         public EventCallback OnClose { get; set; }
 
@@ -66,12 +64,18 @@ namespace Order.Client.Components
             timer.Elapsed += async (s, e) => await OnTimedEvent(s, e);
         }
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await base.OnParametersSetAsync();
-            CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
-            AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses", Toast);
-            AllAddresses = AllAddresses is null ? new() : AllAddresses;
+            await base.OnAfterRenderAsync(firstRender);
+            if (firstRender)
+            {
+                spinner?.Show();
+                CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
+                AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses", Toast);
+                AllAddresses = AllAddresses is null ? new() : AllAddresses;
+                spinner?.Hide();
+                StateHasChanged();
+            }
         }
 
         public void Show()
@@ -109,13 +113,13 @@ namespace Order.Client.Components
 
         async Task HandleAddressSave(EditContext context)
         {
-            Spinner.Show();
+            spinner?.Show();
             var result = await HubConnection.Invoke<bool, UserAddressDetailDto>("SaveUserAddress", CurrentAddress, Toast);
             if (result)
             {
                 Store.Set(StoreKey.ADDRESS, CurrentAddress);
             }
-            Spinner.Hide();
+            spinner?.Hide();
             await Close();
         }
 
@@ -124,6 +128,7 @@ namespace Order.Client.Components
             if (args.Key is StoreKey.ADDRESS)
             {
                 CurrentAddress = args.Value as UserAddressDetailDto;
+                StateHasChanged();
             }
         }
 

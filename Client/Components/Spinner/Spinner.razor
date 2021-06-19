@@ -1,8 +1,8 @@
 @namespace Order.Client.Components
 
-@if (show)
-{
-    <div id="spinner-container">
-        <img id="spinner" src="icons/spinner.gif" />
+<div id="spinner-container">
+    <img class=@isVisible id="spinner" src="icons/spinner.gif" />
+    <div class=@isDisabled>
+        @ChildContent
     </div>
-}
+</div>

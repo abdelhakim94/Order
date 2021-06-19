@@ -11,6 +11,8 @@ namespace Order.Client.Pages
 {
     public partial class ResetPassword : ComponentBase
     {
+        private Spinner spinner;
+
         private bool isPasswordHidden = true;
         private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
         private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
@@ -37,14 +39,11 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
         public ResetPasswordDto PasswordReset { get; set; } = new ResetPasswordDto();
 
         public async Task HandleFormSubmition(EditContext context)
         {
-            Spinner.Show();
+            spinner?.Show();
             ResetPasswordResultDto result;
             try
             {
@@ -63,7 +62,7 @@ namespace Order.Client.Pages
             }
             finally
             {
-                Spinner.Hide();
+                spinner?.Hide();
                 StateHasChanged();
             }
 

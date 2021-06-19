@@ -5,18 +5,6 @@ namespace Order.Client.Layouts
 {
     public partial class MainPagesLayout : LayoutComponentBase
     {
-        private string bluredPage { get => Blured ? $"{CSSCLasses.PageBlured} bottom" : "bottom"; }
-        private bool blured;
-        public bool Blured
-        {
-            get => blured;
-            set
-            {
-                blured = value;
-                StateHasChanged();
-            }
-        }
-
         // This is really bad design choice. Should refactor. Violation of the Open-Closed principle.
         // This implies that if a new page is added, the same pattern below
         // will be applied to it. This layout should instead have a method (AddPage)

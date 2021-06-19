@@ -14,9 +14,8 @@ namespace Order.Client.Pages
 {
     public partial class SignIn : ComponentBase
     {
-        private bool isResetingPassword { get; set; }
-        private string shouldBlureMainPage { get => isResetingPassword ? CSSCLasses.PageBlured : string.Empty; }
-
+        private Spinner signInSpinner;
+        private Spinner resetPwSpinner;
         private Modal resetPasswordModal { get; set; }
 
         private bool isPasswordHidden = true;
@@ -37,9 +36,6 @@ namespace Order.Client.Pages
 
         [CascadingParameter]
         public Task<AuthenticationState> AuthenticationState { get; set; }
-
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
 
         [Parameter]
         public string AccessToken { get; set; }
@@ -81,7 +77,7 @@ namespace Order.Client.Pages
 
         public async Task HandleSignInFormSubmition(EditContext context)
         {
-            Spinner.Show();
+            signInSpinner?.Show();
             SignInResultDto result;
 
             try
@@ -98,7 +94,7 @@ namespace Order.Client.Pages
             }
             finally
             {
-                Spinner.Hide();
+                signInSpinner?.Hide();
                 StateHasChanged();
             }
 
@@ -129,13 +125,12 @@ namespace Order.Client.Pages
 
         public void ResetPasswordModalShow()
         {
-            isResetingPassword = true;
             resetPasswordModal.Show();
         }
 
         public async Task HandleResetPasswordFormSubmit(EditContext context)
         {
-            Spinner.Show();
+            resetPwSpinner?.Show();
             bool result;
             try
             {
@@ -154,8 +149,7 @@ namespace Order.Client.Pages
             }
             finally
             {
-                Spinner.Hide();
-                isResetingPassword = false;
+                resetPwSpinner?.Hide();
                 RequestResetPassword.Email = string.Empty;
                 await resetPasswordModal.Close();
                 StateHasChanged();
@@ -167,14 +161,13 @@ namespace Order.Client.Pages
         public async Task HandleResetPasswordCanceled()
         {
             await resetPasswordModal.Close();
-            isResetingPassword = false;
         }
 
         // =================================== External identity providers ============================================= //
 
         public async Task CheckoutConsentScreen(ValueWrapperDto<string> provider)
         {
-            Spinner.Show();
+            signInSpinner.Show();
             ValueWrapperDto<string> result;
             try
             {
@@ -188,7 +181,7 @@ namespace Order.Client.Pages
             }
             finally
             {
-                Spinner.Hide();
+                signInSpinner.Hide();
             }
 
             NavigationManager.NavigateTo(result.Value);

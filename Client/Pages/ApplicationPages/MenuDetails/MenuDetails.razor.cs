@@ -11,6 +11,7 @@ namespace Order.Client.Pages
 {
     public partial class MenuDetails : ComponentBase, IDisposable
     {
+        private Spinner spinner;
         private bool canDispose;
 
         private MenuDetailsDto menu { get; set; }
@@ -43,46 +44,41 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-            canDispose = false;
-            await GetMenuDetails();
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            // Entering the details page should be done from a list page.
-            if (!string.IsNullOrWhiteSpace(Search))
+            if (firstRender)
             {
-                if (MainLayout is not null)
+                await GetMenuDetails();
+                // Entering the details page should be done from a list page.
+                if (!string.IsNullOrWhiteSpace(Search))
                 {
-                    MainLayout.PreviousPage = $"search/results/{Search}";
+                    if (MainLayout is not null)
+                    {
+                        MainLayout.PreviousPage = $"search/results/{Search}";
+                    }
                 }
+                else
+                {
+                    MainLayout.PreviousPage = "search/";
+                    return;
+                }
+                canDispose = true;
+                StateHasChanged();
             }
-            else
-            {
-                MainLayout.PreviousPage = "search/";
-                return;
-            }
-            canDispose = true;
         }
 
         async Task GetMenuDetails()
         {
-            Spinner.Show();
+            spinner?.Show();
             menu = await HubConnection.Invoke<MenuDetailsDto, int>("GetMenuDetails", Id, Toast);
-            Spinner.Hide();
+            spinner?.Hide();
         }
 
         string getBackgroundPicture(string url) => $"background-image:url({url})";
@@ -117,9 +113,9 @@ namespace Order.Client.Pages
             }
         }
 
-        async Task ShowDishDetailsModal(int idDish, int idSection)
+        void ShowDishDetailsModal(int idDish, int idSection)
         {
-            await dishDetailsModal?.Show(new SectionDishOptionsAndExtrasDto
+            dishDetailsModal?.Show(new SectionDishOptionsAndExtrasDto
             {
                 IdDish = idDish,
                 IdSection = idSection,

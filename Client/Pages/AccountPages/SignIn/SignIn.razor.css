@@ -22,6 +22,6 @@
   margin-bottom: 1em;
 }
 
-::deep .blank{
+::deep .blank {
   height: 1em;
 }

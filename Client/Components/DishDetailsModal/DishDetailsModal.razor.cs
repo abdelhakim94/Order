@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -8,10 +9,12 @@ namespace Order.Client.Components
 {
     public partial class DishDetailsModal : ComponentBase
     {
+        private Spinner spinner;
         private Modal modal;
         private DishDetailsDto dish;
         private int IdDish { get; set; }
         private int IdSection { get; set; }
+        private bool shouldReloadDish;
 
         private string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
 
@@ -20,9 +23,6 @@ namespace Order.Client.Components
 
         private HashSet<int> SelectedOptions = new();
         private HashSet<int> SelectedExtras = new();
-
-        [Parameter]
-        public Spinner Spinner { get; set; }
 
         [Parameter]
         public Toast Toast { get; set; }
@@ -36,22 +36,32 @@ namespace Order.Client.Components
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
 
-        async Task GetDishDetails()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            Spinner.Show();
-            dish = await HubConnection.Invoke<DishDetailsDto, int>("GetDishDetails", IdDish, Toast);
-            Spinner.Hide();
+            await base.OnAfterRenderAsync(firstRender);
+            if (shouldReloadDish)
+            {
+                await GetDishDetails();
+                shouldReloadDish = false;
+                StateHasChanged();
+            }
         }
 
-        public async Task Show(SectionDishOptionsAndExtrasDto dishInfos)
+        async Task GetDishDetails()
+        {
+            spinner?.Show();
+            dish = await HubConnection.Invoke<DishDetailsDto, int>("GetDishDetails", IdDish, Toast);
+            spinner?.Hide();
+        }
+
+        public void Show(SectionDishOptionsAndExtrasDto dishInfos)
         {
             IdDish = dishInfos.IdDish;
             IdSection = dishInfos.IdSection;
             if (dishInfos.Options is not null) SelectedOptions.UnionWith(dishInfos.Options);
             if (dishInfos.Extras is not null) SelectedExtras.UnionWith(dishInfos.Extras);
+            shouldReloadDish = true;
             modal.Show();
-            await GetDishDetails();
-            StateHasChanged();
         }
 
         public async Task Close()
@@ -94,6 +104,7 @@ namespace Order.Client.Components
             ExtrasUnfolded = true;
             SelectedOptions = new();
             SelectedExtras = new();
+            shouldReloadDish = true;
         }
     }
 

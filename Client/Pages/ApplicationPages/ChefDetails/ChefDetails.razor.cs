@@ -25,9 +25,6 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
 
@@ -62,9 +59,7 @@ namespace Order.Client.Pages
 
         async Task GetChefDetails()
         {
-            Spinner.Show();
             chef = await HubConnection.Invoke<ChefDetailsDto, int>("GetChefDetails", Id, Toast);
-            Spinner.Hide();
         }
 
         void NavigateToDishOrMenuDetails(int id, bool isMenu)

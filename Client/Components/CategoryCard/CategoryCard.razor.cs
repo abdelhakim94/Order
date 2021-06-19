@@ -5,6 +5,8 @@ namespace Order.Client.Components
 {
     public partial class CategoryCard : ComponentBase
     {
+        private string pictureUrl { get => $"background-image:url({Picture})"; }
+
         [Parameter]
         public string Label { get; set; }
 

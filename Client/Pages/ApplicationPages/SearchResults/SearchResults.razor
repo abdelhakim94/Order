@@ -15,36 +15,37 @@
                 ValueChanged=@HandleDishOrChefToggle />
         </Top>
     </LayoutSetter>
-
     <Column>
         <EditForm Model=@SearchValue>
             <OInputText CssClass="search-bar" PlaceHolder=@(searchByChefs ? M.ChefSearchBar : M.DishOrMenuSearchBar)
                 RightIcon="icons/searchbar-magnifier.png" @bind-Value=@SearchValue.Value
                 OnRightIconClick=@HandleSearch />
         </EditForm>
-        @if (searchByChefs)
-        {
-            <p class="text">@M.ChefsFound(chefs?.TotalItems)</p>
-            foreach (var item in chefs?.Items ?? new())
+        <Spinner @ref=@spinner>
+            @if (searchByChefs)
             {
-                <ChefListItem @key=@item Chef=@item @onclick=@(() => NavigateToChefDetails(item)) />
+                <p class="text">@M.ChefsFound(chefs?.TotalItems)</p>
+                foreach (var item in chefs?.Items ?? new())
+                {
+                    <ChefListItem @key=@item Chef=@item @onclick=@(() => NavigateToChefDetails(item)) />
+                }
+                if (chefs is not null && chefs.Items.Count < chefs.TotalItems)
+                {
+                    <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues />
+                }
             }
-            if (chefs is not null && chefs.Items.Count < chefs.TotalItems)
+            else
             {
-                <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues />
+                <p class="text">@M.DishesAndMenuesFound(dishAndMenues?.TotalItems)</p>
+                foreach (var item in dishAndMenues?.Items ?? new())
+                {
+                    <DishOrMenuListItem @key=@item DishOrMenu=@item @onclick=@(() => NavigateToDishOrMenuDetails(item)) />
+                }
+                if (dishAndMenues is not null && dishAndMenues.Items.Count < dishAndMenues.TotalItems)
+                {
+                    <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues />
+                }
             }
-        }
-        else
-        {
-            <p class="text">@M.DishesAndMenuesFound(dishAndMenues?.TotalItems)</p>
-            foreach (var item in dishAndMenues?.Items ?? new())
-            {
-                <DishOrMenuListItem @key=@item DishOrMenu=@item @onclick=@(() => NavigateToDishOrMenuDetails(item)) />
-            }
-            if (dishAndMenues is not null && dishAndMenues.Items.Count < dishAndMenues.TotalItems)
-            {
-                <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues />
-            }
-        }
+        </Spinner>
     </Column>
 </div>

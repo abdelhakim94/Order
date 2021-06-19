@@ -15,6 +15,7 @@ namespace Order.Client.Pages
 {
     public partial class SearchResults : ComponentBase, IDisposable
     {
+        private Spinner spinner;
         private bool canDispose;
 
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
@@ -41,9 +42,6 @@ namespace Order.Client.Pages
         public string Search { get; set; }
 
         [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
-        [CascadingParameter]
         public Toast Toast { get; set; }
 
         [CascadingParameter]
@@ -58,21 +56,18 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-            canDispose = false;
-            address = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
-            dishAndMenuesPageIndex = 1;
-            chefsPageIndex = 1;
-            await SearchChefsOrDishesAndMenues();
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            MainLayout.PreviousPage = "search/";
-            canDispose = true;
+            if (firstRender)
+            {
+                canDispose = true;
+                MainLayout.PreviousPage = "search/";
+                address = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
+                dishAndMenuesPageIndex = 1;
+                chefsPageIndex = 1;
+                await SearchChefsOrDishesAndMenues();
+            }
         }
 
         async Task HandleDishOrChefToggle(bool value)
@@ -105,14 +100,14 @@ namespace Order.Client.Pages
                 ItemsPerPage = Pagination.ItemsPerPage,
             };
 
-            Spinner.Show();
+            spinner?.Show();
             var results = await HubConnection.Invoke<PaginatedList<DishOrMenuListItemDto>, DishesOrMenuesSearchFilter>(
                 "GetDishesAndMenues",
                 dishAndMenuesFilter,
                 Toast);
             if (dishAndMenues is not null) dishAndMenues.AddRange(results.Items, new DishOrMenuListItemEqualityComparer());
             else dishAndMenues = results;
-            Spinner.Hide();
+            spinner?.Hide();
         }
 
         async Task SearchChefs()
@@ -132,14 +127,14 @@ namespace Order.Client.Pages
                 ItemsPerPage = Pagination.ItemsPerPage,
             };
 
-            Spinner.Show();
+            spinner?.Show();
             var results = await HubConnection.Invoke<PaginatedList<ChefListItemDto>, ChefsSearchFilter>(
                 "GetChefs",
                 chefsSearchFilter,
                 Toast);
             if (chefs is not null) chefs.AddRange(results.Items, new ChefListItemComparer());
             else chefs = results;
-            Spinner.Hide();
+            spinner?.Hide();
         }
 
         async Task SearchChefsOrDishesAndMenues()

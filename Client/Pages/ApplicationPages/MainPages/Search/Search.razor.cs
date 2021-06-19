@@ -14,6 +14,7 @@ namespace Order.Client.Pages
 {
     public partial class Search : ComponentBase, IDisposable
     {
+        private Spinner spinner;
         private bool canDispose;
 
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
@@ -21,9 +22,6 @@ namespace Order.Client.Pages
         UserAddressDetailDto CurrentAddress { get; set; }
         AddressModal AddressModal;
         IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
-
-        private bool isEditingAddress { get; set; }
-        private string blured { get => isEditingAddress ? CSSCLasses.PageBlured : string.Empty; }
 
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
@@ -43,57 +41,49 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-            canDispose = false;
-            if (BottomLayout is not null) BottomLayout.SearchSelected = true;
-            if (TopLayout is not null) TopLayout.PreviousPage = string.Empty;
-
-            Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
-            if (Categories is null)
-            {
-                Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories", Toast);
-                Categories = Categories is null ? new() : Categories;
-                Store.Set(StoreKey.CATEGORIES, Categories);
-            }
-
-            CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
-            if (CurrentAddress is null)
-            {
-                CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
-                if (CurrentAddress is not null)
-                {
-                    Store.Set(StoreKey.ADDRESS, CurrentAddress);
-                }
-                else
-                {
-                    AddressModal.Show();
-                }
-            }
-
-            Store.OnUpdate += OnStoreAddressChange;
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            canDispose = true;
+            if (firstRender)
+            {
+                canDispose = true;
+                if (BottomLayout is not null) BottomLayout.SearchSelected = true;
+                if (TopLayout is not null) TopLayout.PreviousPage = string.Empty;
+
+                Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
+                if (Categories is null)
+                {
+                    spinner?.Show();
+                    Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories", Toast);
+                    Categories = Categories is null ? new() : Categories;
+                    Store.Set(StoreKey.CATEGORIES, Categories);
+                    spinner?.Hide();
+                }
+
+                CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
+                if (CurrentAddress is null)
+                {
+                    spinner?.Show();
+                    CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
+                    spinner?.Hide();
+                    if (CurrentAddress is not null)
+                    {
+                        Store.Set(StoreKey.ADDRESS, CurrentAddress);
+                    }
+                    else
+                    {
+                        AddressModal.Show();
+                    }
+                }
+
+                Store.OnUpdate += OnStoreAddressChange;
+                StateHasChanged();
+            }
         }
 
         void HandleAddressBarClick()
         {
-            isEditingAddress = true;
-            BottomLayout.Blured = true;
-            TopLayout.Blured = true;
             AddressModal.Show();
-        }
-
-        void OnAddressModalClosed()
-        {
-            isEditingAddress = false;
-            BottomLayout.Blured = false;
-            TopLayout.Blured = false;
         }
 
         void OnStoreAddressChange(object sender, StoreUpdateArgs args)
@@ -101,6 +91,7 @@ namespace Order.Client.Pages
             if (args.Key is StoreKey.ADDRESS)
             {
                 CurrentAddress = args.Value as UserAddressDetailDto;
+                StateHasChanged();
             }
         }
 
@@ -120,7 +111,7 @@ namespace Order.Client.Pages
 
         public void Dispose()
         {
-            if(canDispose)
+            if (canDispose)
             {
                 Store.OnUpdate -= OnStoreAddressChange;
                 if (TopLayout is not null) TopLayout.PreviousPage = "search/";

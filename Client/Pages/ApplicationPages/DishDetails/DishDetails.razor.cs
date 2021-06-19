@@ -11,6 +11,7 @@ namespace Order.Client.Pages
 {
     public partial class DishDetails : ComponentBase, IDisposable
     {
+        private Spinner spinner;
         private bool canDispose;
 
         private bool OptionsUnfolded = true;
@@ -35,46 +36,41 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
         [Inject]
         public IHubConnectionService HubConnection { get; set; }
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-            canDispose = false;
-            await GetDishDetails();
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
             // Entering the details page should be done from a list page.
-            if (!string.IsNullOrWhiteSpace(Search))
+            if (firstRender)
             {
-                if (MainLayout is not null)
+                await GetDishDetails();
+                if (!string.IsNullOrWhiteSpace(Search))
                 {
-                    MainLayout.PreviousPage = $"search/results/{Search}";
+                    if (MainLayout is not null)
+                    {
+                        MainLayout.PreviousPage = $"search/results/{Search}";
+                    }
                 }
+                else
+                {
+                    MainLayout.PreviousPage = "search/";
+                    return;
+                }
+                canDispose = true;
+                StateHasChanged();
             }
-            else
-            {
-                MainLayout.PreviousPage = "search/";
-                return;
-            }
-            canDispose = true;
         }
 
         async Task GetDishDetails()
         {
-            Spinner.Show();
+            spinner?.Show();
             dish = await HubConnection.Invoke<DishDetailsDto, int>("GetDishDetails", Id, Toast);
-            Spinner.Hide();
+            spinner?.Hide();
         }
 
         void OnSelectedOption(int id) => SelectedOptions.Add(id);

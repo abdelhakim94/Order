@@ -7,38 +7,33 @@
 
 <div @attributes=@AdditionalAttributes class=@CssClass>
     <Modal @ref=@Modal>
-        <EditForm class="address-form" Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
-            <ObjectGraphDataAnnotationsValidator />
-
-            <OTitle Text=@M.DeliveryAddress Size=1.2 />
-
-            <Group CssClass="validated">
-                <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
-                <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
-            </Group>
-
-            <Group>
-                <OInputText PlaceHolder=@M.Address2 @bind-Value=@CurrentAddress.Address2 />
-            </Group>
-
-            <Group CssClass="validated">
-                <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions
-                    OptionChanged=@OnOptionChanged />
-                <ValidationMessage For=@( () => CurrentAddress.City ) />
-            </Group>
-
-            @if (AllAddresses is not null && AllAddresses.Any())
-            {
-                <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
-                <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress
-                Options=@RecentAddressOptions />
-            }
-
-            <Row Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH ExpandHorizontally=@true>
-                <Button CssClass="button" Type="submit" Label=@M.Save />
-                <Button CssClass="button" Label=@M.Cancel Neutral=@true @onclick=Close />
-            </Row>
-
-        </EditForm>
+        <Spinner @ref=@spinner>
+            <EditForm class="address-form" Model=@CurrentAddress OnValidSubmit=@HandleAddressSave>
+                <ObjectGraphDataAnnotationsValidator />
+                <OTitle Text=@M.DeliveryAddress Size=1.2 />
+                <Group CssClass="validated">
+                    <OInputText PlaceHolder=@M.Address1 @bind-Value=@CurrentAddress.Address1 />
+                    <ValidationMessage For=@( () => CurrentAddress.Address1 ) />
+                </Group>
+                <Group>
+                    <OInputText PlaceHolder=@M.Address2 @bind-Value=@CurrentAddress.Address2 />
+                </Group>
+                <Group CssClass="validated">
+                    <OInputDatalist PlaceHolder=@M.City @bind-Value=@CurrentAddress.City Options=@CityOptions
+                        OptionChanged=@OnOptionChanged />
+                    <ValidationMessage For=@( () => CurrentAddress.City ) />
+                </Group>
+                @if (AllAddresses is not null && AllAddresses.Any())
+                {
+                    <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
+                    <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress
+                    Options=@RecentAddressOptions />
+                }
+                <Row Justify=@JustifyContent.SPACE_AROUND Align=@AlignItems.STRETCH ExpandHorizontally=@true>
+                    <Button CssClass="button" Type="submit" Label=@M.Save />
+                    <Button CssClass="button" Label=@M.Cancel Neutral=@true @onclick=Close />
+                </Row>
+            </EditForm>
+        </Spinner>
     </Modal>
 </div>

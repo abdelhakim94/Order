@@ -8,37 +8,35 @@
 @namespace Order.Client.Pages
 @attribute [Authorize(Policy = IsGuest.Name)]
 
-<div class=@blured>
+<div>
     <Column CssClass="search-column" Align=@AlignItems.STRETCH>
-
         <LayoutSetter>
             <Top>
                 @* The "Model" does not really matter here because we are not submitting the form *@
-                <Row CssClass="address-container" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER @onclick=@HandleAddressBarClick >
+                <Row CssClass="address-container" Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER
+                    @onclick=@HandleAddressBarClick>
                     <img class="address-icon" src="icons/position.png" />
                     <EditForm Model=@(new object())>
                         <OInputText CssClass="address-bar" Disable=@true PlaceHolder=@M.DeliveryAddress
-                            Value=@CurrentAddress?.ToString()/>
+                            Value=@CurrentAddress?.ToString() />
                     </EditForm>
                 </Row>
             </Top>
         </LayoutSetter>
-
         <EditForm Model=@SearchValue>
             <OInputText CssClass="search-bar" PlaceHolder=@M.CategorySearchBar RightIcon="icons/searchbar-magnifier.png"
                 @bind-Value=@SearchValue.Value OnRightIconClick=@((string search) => HandleSearch(search)) />
         </EditForm>
-
         <p class="text">@M.TopCategories</p>
-
-        <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.SPACE_BETWEEN>
-            @foreach (var category in Categories ?? new())
-            {
-                <CategoryCard @key=@category Label=@category.Label Picture=@category.Picture @onclick=@(() =>
-                HandleSearch(category.Label)) />
-            }
-        </Row>
+        <Spinner @ref=@spinner>
+            <Row CssClass="categories" Wrap=@FlexWrap.WRAP Justify=@JustifyContent.SPACE_BETWEEN>
+                @foreach (var category in Categories ?? new())
+                {
+                    <CategoryCard @key=@category Label=@category.Label Picture=@category.Picture @onclick=@(() =>
+                    HandleSearch(category.Label)) />
+                }
+            </Row>
+        </Spinner>
     </Column>
+    <AddressModal @ref=@AddressModal />
 </div>
-
-<AddressModal @ref=@AddressModal OnClose=@OnAddressModalClosed />

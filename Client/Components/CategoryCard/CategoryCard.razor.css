@@ -1,16 +1,17 @@
 .component-container {
   position: relative;
   width: 50%;
-  padding-top: 50%;
+  padding-bottom: 50%;
 }
 
-img {
+.picture {
   position: absolute;
-  top: 1%;
-  left: 1%;
-  width: 98%;
   height: 98%;
-  filter: brightness(70%);
+  width: 98%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: brightness(60%);
 }
 
 .label {
@@ -20,5 +21,6 @@ img {
   transform: translateY(-50);
   color: white;
   width: 100%;
+  font-size: 1.1em;
   font-weight: bold;
 }

@@ -23,18 +23,6 @@ namespace Order.Client.Layouts
             : JustifyContent.SPACE_BETWEEN;
         }
 
-        private string bluredPage { get => Blured ? $"{CSSCLasses.PageBlured} cart-button" : "cart-button"; }
-        private bool blured;
-        public bool Blured
-        {
-            get => blured;
-            set
-            {
-                blured = value;
-                base.StateHasChanged();
-            }
-        }
-
         private int translateCartIcon { get => cartSelected ? 0 : 100; }
         private bool cartSelected;
         public bool CartSelected

@@ -7,24 +7,19 @@
         <Found Context="routeData">
             <Toast @ref=@Toast />
             <CascadingValue Value=@Toast IsFixed=@true>
-                <Spinner @ref=@Spinner OnChange=@((isSpinning) => Blure = isSpinning) />
-                <CascadingValue Value=@Spinner IsFixed=@true>
-                    <div class=@classBlured>
-                        <AuthorizeRouteView RouteData="@routeData">
-                            <NotAuthorized>
-                                @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
-                                nameof(Profile) && c.Value == nameof(Profile.GUEST))))
-                                {
-                                <Redirect Route="SignIn/" />
-                                }
-                                else
-                                {
-                                <Redirect Route="Unauthorized/" />
-                                }
-                            </NotAuthorized>
-                        </AuthorizeRouteView>
-                    </div>
-                </CascadingValue>
+                <AuthorizeRouteView RouteData="@routeData">
+                    <NotAuthorized>
+                        @if (!(context.User.Identity.IsAuthenticated && !context.User.Claims.Any(c => c.Type ==
+                        nameof(Profile) && c.Value == nameof(Profile.GUEST))))
+                            {
+                        <Redirect Route="SignIn/" />
+                        }
+                            else
+                            {
+                        <Redirect Route="Unauthorized/" />
+                        }
+                    </NotAuthorized>
+                </AuthorizeRouteView>
             </CascadingValue>
         </Found>
         <NotFound>

@@ -1,16 +1,17 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
+using Order.Client.Components;
+using Order.Client.Constants;
 using Order.Client.Services;
 using Order.Shared.Dto.Account;
-using Order.Client.Constants;
-using Order.Client.Components;
 
 namespace Order.Client.Pages
 {
     public partial class SignUp : ComponentBase
     {
+        private Spinner spinner;
         private bool isPasswordHidden = true;
         private string passwordRightIcon { get => isPasswordHidden ? "icons/show-password.png" : "icons/hide-password.png"; }
         private void TogglePasswordHide() => isPasswordHidden = !isPasswordHidden;
@@ -24,9 +25,6 @@ namespace Order.Client.Pages
         [CascadingParameter]
         public Toast Toast { get; set; }
 
-        [CascadingParameter]
-        public Spinner Spinner { get; set; }
-
         [Inject]
         public IAuthenticationService AuthenticationService { get; set; }
 
@@ -38,7 +36,7 @@ namespace Order.Client.Pages
 
         public async Task HandleFormSubmition(EditContext context)
         {
-            Spinner.Show();
+            spinner?.Show();
             SignUpResultDto result;
 
             try
@@ -55,7 +53,7 @@ namespace Order.Client.Pages
             }
             finally
             {
-                Spinner.Hide();
+                spinner?.Hide();
                 StateHasChanged();
             }
 
