@@ -1,27 +1,17 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
 using Order.Client.Layouts;
 using Order.Client.Services;
-using Order.Shared.Dto.Dish;
+using Order.Shared.Dto.Chef;
 
 namespace Order.Client.Pages
 {
-    public partial class DishDetails : ComponentBase, IDisposable
+    public partial class ChefDetails : ComponentBase
     {
         private bool canDispose;
-
-        private bool OptionsUnfolded = true;
-        private bool ExtrasUnfolded = true;
-
-        private DishDetailsDto dish { get; set; }
-        private string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
-        private int quantity { get; set; } = 1;
-
-        private HashSet<int> SelectedOptions = new();
-        private HashSet<int> SelectedExtras = new();
+        private ChefDetailsDto chef;
+        private string pictureUrl { get => $"background-image:url({chef?.Picture})"; }
 
         [Parameter]
         public int Id { get; set; }
@@ -48,7 +38,7 @@ namespace Order.Client.Pages
         {
             await base.OnInitializedAsync();
             canDispose = false;
-            await GetDishDetails();
+            await GetChefDetails();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -70,28 +60,17 @@ namespace Order.Client.Pages
             canDispose = true;
         }
 
-        async Task GetDishDetails()
+        async Task GetChefDetails()
         {
             Spinner.Show();
-            dish = await HubConnection.Invoke<DishDetailsDto, int>("GetDishDetails", Id, Toast);
+            chef = await HubConnection.Invoke<ChefDetailsDto, int>("GetChefDetails", Id, Toast);
             Spinner.Hide();
         }
 
-        void OnSelectedOption(int id) => SelectedOptions.Add(id);
-        void OnUnselectedOption(int id) => SelectedOptions.Remove(id);
-        void OnSelectedExtra(int id) => SelectedExtras.Add(id);
-        void OnUnselectedExtra(int id) => SelectedExtras.Remove(id);
-
-        void OnChefDataClick()
+        void NavigateToDishOrMenuDetails(int id, bool isMenu)
         {
-            if (!string.IsNullOrWhiteSpace(Search))
-            {
-                NavigationManager.NavigateTo($"ChefDetails/{Search}/{dish?.ChefId}");
-            }
-            else
-            {
-                NavigationManager.NavigateTo($"ChefDetails/{dish?.ChefId}");
-            }
+            var segment = isMenu ? "MenuDetails" : "DishDetails";
+            NavigationManager.NavigateTo($"{segment}/{id}");
         }
 
         public void Dispose()
@@ -100,11 +79,11 @@ namespace Order.Client.Pages
             {
                 if (!string.IsNullOrWhiteSpace(Search))
                 {
-                    MainLayout.PreviousPage = $"DishDetails/{Search}/{Id}";
+                    MainLayout.PreviousPage = $"ChefDetails/{Search}/{Id}";
                 }
                 else
                 {
-                    MainLayout.PreviousPage = $"DishDetails/{Search}/{Id}";
+                    MainLayout.PreviousPage = $"ChefDetails/{Search}/{Id}";
                 }
             }
         }

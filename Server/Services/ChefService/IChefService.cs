@@ -9,5 +9,6 @@ namespace Order.Server.Services
     public interface IChefService : IScopedService
     {
         Task<PaginatedList<ChefListItemDto>> SearchForChefs(ChefsSearchFilter filter);
+        Task<ChefDetailsDto> GetChefDetails(int id);
     }
 }

@@ -12,5 +12,10 @@ namespace Order.Server.Hubs
         {
             return chefService.SearchForChefs(filter);
         }
+
+        public Task<ChefDetailsDto> GetChefDetails(int id)
+        {
+            return chefService.GetChefDetails(id);
+        }
     }
 }

@@ -1,3 +1,4 @@
+@page "/MenuDetails/{Id:int}"
 @page "/MenuDetails/{search}/{Id:int}"
 
 @using Order.Client.Layouts
@@ -28,7 +29,8 @@
 
         <Group CssClass="blank" />
 
-        <Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+
+        <Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER @onclick=@OnChefDataClick>
             <IconData CssClass="chef-data" IconPath="icons/chef-hat.png" Data=@menu?.ChefFullName />
             <IconData CssClass="chef-data" IconPath="icons/position.png" Data=@menu?.ChefCity />
         </Row>

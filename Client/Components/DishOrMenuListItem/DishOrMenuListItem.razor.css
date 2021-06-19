@@ -26,6 +26,10 @@
   max-height: 2.9em;
 }
 
+.second-overridden {
+  max-height: 4.5em;
+}
+
 ::deep .city {
   max-width: 60%;
 }

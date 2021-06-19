@@ -1,0 +1,33 @@
+.picture {
+  height: 12em;
+  background-position: 50% 20%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+}
+
+::deep .main {
+  width: 95%;
+  height: fit-content;
+  margin: auto;
+  padding-bottom: 5em;
+}
+
+::deep .name {
+  max-width: 60%;
+}
+
+::deep .position {
+  max-width: 40%;
+  font-size: 1.1em;
+}
+
+::deep .bio {
+  font-size: 1.1em;
+}
+
+::deep .blank {
+  width: 100%;
+  height: 1.5em;
+}
