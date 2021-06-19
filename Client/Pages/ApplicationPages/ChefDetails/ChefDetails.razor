@@ -25,7 +25,8 @@
             <OTitle Text=@section.Name Size=1.5 />
             @foreach (var dishOrMenu in section.Items ?? new())
             {
-                <DishOrMenuListItem DishOrMenu=@dishOrMenu />
+                <DishOrMenuListItem DishOrMenu=@dishOrMenu @onclick=@((args) => NavigateToDishOrMenuDetails(dishOrMenu.Id,
+            dishOrMenu.IsMenu)) />
             }
         }
     </Column>

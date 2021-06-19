@@ -105,6 +105,18 @@ namespace Order.Client.Pages
             }
         }
 
+        void OnChefDataClick()
+        {
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                NavigationManager.NavigateTo($"ChefDetails/{Search}/{menu?.ChefId}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"ChefDetails/{menu?.ChefId}");
+            }
+        }
+
         async Task ShowDishDetailsModal(int idDish, int idSection)
         {
             await dishDetailsModal?.Show(new SectionDishOptionsAndExtrasDto

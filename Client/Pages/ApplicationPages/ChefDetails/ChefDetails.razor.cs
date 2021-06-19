@@ -67,6 +67,12 @@ namespace Order.Client.Pages
             Spinner.Hide();
         }
 
+        void NavigateToDishOrMenuDetails(int id, bool isMenu)
+        {
+            var segment = isMenu ? "MenuDetails" : "DishDetails";
+            NavigationManager.NavigateTo($"{segment}/{id}");
+        }
+
         public void Dispose()
         {
             if (canDispose)

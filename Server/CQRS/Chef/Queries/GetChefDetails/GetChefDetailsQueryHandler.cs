@@ -39,7 +39,8 @@ namespace Server.CQRS.Chef.Queries
                         {
                             Name = c.Name,
                             Sections = c.CardSections
-                                .OrderBy(s => s.Order)
+                                .OrderByDescending(s => s.Order.HasValue)
+                                .ThenBy(s => s.Order)
                                 .Select(cs => new
                                 {
                                     Id = cs.Section.Id,
@@ -90,7 +91,8 @@ namespace Server.CQRS.Chef.Queries
                         Name = s.Name,
                         Items = s.Dishes
                             .Union(s.Menues)
-                            .OrderBy(e => e.Order)
+                            .OrderByDescending(e => e.Order.HasValue)
+                            .ThenBy(e => e.Order)
                             .Select(d => new DishOrMenuListItemDto
                             {
                                 Id = d.Id,

@@ -82,6 +82,18 @@ namespace Order.Client.Pages
         void OnSelectedExtra(int id) => SelectedExtras.Add(id);
         void OnUnselectedExtra(int id) => SelectedExtras.Remove(id);
 
+        void OnChefDataClick()
+        {
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                NavigationManager.NavigateTo($"ChefDetails/{Search}/{dish?.ChefId}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"ChefDetails/{dish?.ChefId}");
+            }
+        }
+
         public void Dispose()
         {
             if (canDispose)
