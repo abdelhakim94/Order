@@ -72,6 +72,7 @@ namespace Order.Client.Pages
 
         async Task HandleDishOrChefToggle(bool value)
         {
+            searchByChefs = value;
             if (value && chefs is null)
             {
                 await SearchChefs();
@@ -80,7 +81,6 @@ namespace Order.Client.Pages
             {
                 await SearchDishesAndMenues();
             }
-            searchByChefs = value;
         }
 
         async Task SearchDishesAndMenues()

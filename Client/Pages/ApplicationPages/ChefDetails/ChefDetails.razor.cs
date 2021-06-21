@@ -9,6 +9,7 @@ namespace Order.Client.Pages
 {
     public partial class ChefDetails : ComponentBase
     {
+        private Spinner spinner;
         private bool canDispose;
         private ChefDetailsDto chef;
         private string pictureUrl { get => $"background-image:url({chef?.Picture})"; }
@@ -31,35 +32,35 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-            canDispose = false;
-            await GetChefDetails();
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            // Entering the details page should be done from a list page.
-            if (!string.IsNullOrWhiteSpace(Search))
+            if (firstRender)
             {
-                if (MainLayout is not null)
+                await GetChefDetails();
+                // Entering the details page should be done from a list page.
+                if (!string.IsNullOrWhiteSpace(Search))
                 {
-                    MainLayout.PreviousPage = $"search/results/{Search}";
+                    if (MainLayout is not null)
+                    {
+                        MainLayout.PreviousPage = $"search/results/{Search}";
+                    }
                 }
+                else
+                {
+                    MainLayout.PreviousPage = "search/";
+                    return;
+                }
+                canDispose = true;
+                StateHasChanged();
             }
-            else
-            {
-                MainLayout.PreviousPage = "search/";
-                return;
-            }
-            canDispose = true;
         }
 
         async Task GetChefDetails()
         {
+            spinner?.Show();
             chef = await HubConnection.Invoke<ChefDetailsDto, int>("GetChefDetails", Id, Toast);
+            spinner?.Hide();
         }
 
         void NavigateToDishOrMenuDetails(int id, bool isMenu)

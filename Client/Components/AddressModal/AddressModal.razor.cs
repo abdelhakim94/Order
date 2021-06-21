@@ -19,6 +19,7 @@ namespace Order.Client.Components
         Timer timer { get; set; }
         UserAddressDetailDto CurrentAddress = new();
         List<IdentifiedUserAddressDetailDto> AllAddresses = new();
+        bool shouldReload;
         string SelectedRecentAddress
         {
             get =>
@@ -58,7 +59,6 @@ namespace Order.Client.Components
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            Store.OnUpdate += OnStoreAddressChanged;
             timer = new Timer(400);
             timer.AutoReset = false;
             timer.Elapsed += async (s, e) => await OnTimedEvent(s, e);
@@ -69,18 +69,24 @@ namespace Order.Client.Components
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
+                Store.OnUpdate += OnStoreAddressChanged;
+            }
+            if (shouldReload)
+            {
+                shouldReload = false;
                 spinner?.Show();
                 CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS) ?? CurrentAddress;
                 AllAddresses = await HubConnection.Invoke<List<IdentifiedUserAddressDetailDto>>("GetAllUserAddresses", Toast);
                 AllAddresses = AllAddresses is null ? new() : AllAddresses;
                 spinner?.Hide();
-                StateHasChanged();
             }
         }
 
         public void Show()
         {
+            shouldReload = true;
             Modal.Show();
+            StateHasChanged();
         }
 
         public async Task Close()
@@ -128,6 +134,7 @@ namespace Order.Client.Components
             if (args.Key is StoreKey.ADDRESS)
             {
                 CurrentAddress = args.Value as UserAddressDetailDto;
+                shouldReload = true;
                 StateHasChanged();
             }
         }
