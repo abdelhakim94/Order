@@ -3,19 +3,22 @@
 }
 
 ::deep .address-bar {
-  width: 65vw;
+  width: 70vw;
 }
 
 ::deep div.address-bar input {
   border: none;
-  border-radius: 0%;
   padding: 0.5em;
 }
 
 ::deep .address-container {
-  border-bottom: 0.1em solid lightgrey;
+  border: 0.05em solid lightgrey;
+  border-radius: 0.5em;
 }
 
 ::deep .address-icon {
   height: 1.2em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  border-right: 0.05em solid lightgray;
 }
