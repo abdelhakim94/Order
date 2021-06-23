@@ -9,8 +9,6 @@
 .main-picture {
   height: 12em;
   width: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
 }
 
 ::deep .main {

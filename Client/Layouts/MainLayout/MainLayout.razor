@@ -10,14 +10,15 @@
 
         @if (DisplayPreviousPage is true)
         {
-            <NavButton ImagesInSprite=1 Icon="icons/previous.png" @onclick=@(() => HistoryService.GoBack()) />
+            <NavButton CssClass="layout-button" ImagesInSprite=1 Icon="icons/previous.png" @onclick=@(() =>
+            HistoryService.GoBack()) />
         }
 
         @Top
 
-        <NavButton Justify=@JustifyContent.CENTER DisplayHorizontal=@true Label=@NbElements.ToString()
-            Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2 Translate=@translateCartIcon
-            @onclick=@(() => CartSelected = true) />
+        <NavButton CssClass="layout-button" Justify=@JustifyContent.CENTER DisplayHorizontal=@true
+            Label=@NbElements.ToString() Icon="icons/cart-sprite.png" Selected=@CartSelected ImagesInSprite=2
+            Translate=@translateCartIcon @onclick=@(() => CartSelected = true) />
 
     </Row>
 </div>

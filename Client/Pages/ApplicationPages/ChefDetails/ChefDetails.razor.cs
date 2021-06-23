@@ -17,9 +17,6 @@ namespace Order.Client.Pages
         [Parameter]
         public int Id { get; set; }
 
-        [Parameter]
-        public string Search { get; set; }
-
         [CascadingParameter]
         public MainLayout MainLayout { get; set; }
 

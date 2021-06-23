@@ -117,7 +117,7 @@ namespace Order.Client.Pages
                 return;
             }
 
-            NavigationManager.NavigateTo($"search/results/{search}");
+            NavigationManager.NavigateTo($"search/{search}");
         }
     }
 }

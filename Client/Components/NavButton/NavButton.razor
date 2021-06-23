@@ -4,7 +4,7 @@
 
 @if (DisplayHorizontal)
 {
-    <Row @attributes=@AdditionalAttributes class="@CssClass" Justify=@JustifyContent.CENTER Align=@AlignItems.CENTER>
+    <Row @attributes=@AdditionalAttributes CssClass="@CssClass" Justify=@JustifyContent.CENTER Align=@AlignItems.CENTER>
         <button class="button-image" type="button" style="background-image:url(@Icon); 
                                         background-position: @(Translate)% 0%;
                                         background-size: @(ImagesInSprite * 100)% 100%;">
@@ -19,7 +19,7 @@
 }
 else
 {
-    <Column @attributes=@AdditionalAttributes class="@CssClass" Justify=@JustifyContent.CENTER  Align=@AlignItems.CENTER>
+    <Column @attributes=@AdditionalAttributes CssClass="@CssClass" Justify=@JustifyContent.CENTER Align=@AlignItems.CENTER>
         <button class="button-image" type="button" style="background-image:url(@Icon); 
                                     background-position: @(Translate)% 0%;
                                     background-size: @(ImagesInSprite * 100)% 100%;">

@@ -1,9 +1,22 @@
-::deep .cart-button {
+::deep .layout-container {
+  width: 100vw;
   padding: 2vw;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  z-index: 5;
+}
+
+::deep .layout-button {
+  background-color: white;
+  border-radius: 10em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
 }
 
 ::deep .address-bar {
   width: 70vw;
+  box-shadow: none;
 }
 
 ::deep div.address-bar input {

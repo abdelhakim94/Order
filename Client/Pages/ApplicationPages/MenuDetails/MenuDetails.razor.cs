@@ -35,9 +35,6 @@ namespace Order.Client.Pages
         [Parameter]
         public int Id { get; set; }
 
-        [Parameter]
-        public string Search { get; set; }
-
         [CascadingParameter]
         public MainLayout MainLayout { get; set; }
 
@@ -95,14 +92,7 @@ namespace Order.Client.Pages
 
         void OnChefDataClick()
         {
-            if (!string.IsNullOrWhiteSpace(Search))
-            {
-                NavigationManager.NavigateTo($"ChefDetails/{Search}/{menu?.ChefId}");
-            }
-            else
-            {
-                NavigationManager.NavigateTo($"ChefDetails/{menu?.ChefId}");
-            }
+            NavigationManager.NavigateTo($"ChefDetails/{menu?.ChefId}");
         }
 
         void ShowDishDetailsModal(int idDish, int idSection)

@@ -157,17 +157,17 @@ namespace Order.Client.Pages
         {
             if (item.IsMenu)
             {
-                NavigationManager.NavigateTo($"MenuDetails/{Search}/{item.Id}");
+                NavigationManager.NavigateTo($"MenuDetails/{item.Id}");
             }
             else
             {
-                NavigationManager.NavigateTo($"DishDetails/{Search}/{item.Id}");
+                NavigationManager.NavigateTo($"DishDetails/{item.Id}");
             }
         }
 
         void NavigateToChefDetails(ChefListItemDto item)
         {
-            NavigationManager.NavigateTo($"ChefDetails/{Search}/{item.Id}");
+            NavigationManager.NavigateTo($"ChefDetails/{item.Id}");
         }
 
         async Task HandleSearch(string search)

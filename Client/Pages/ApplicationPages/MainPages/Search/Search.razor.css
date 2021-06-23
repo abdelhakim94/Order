@@ -1,6 +1,7 @@
 ::deep .search-column {
   width: 96%;
   margin: auto;
+  padding-top: 3em;
 }
 
 ::deep .search-column > * {
@@ -9,7 +10,7 @@
   padding-bottom: 5%;
 }
 
-::deep .search-bar{
+::deep .search-bar {
   margin-top: 7%;
 }
 
@@ -23,6 +24,6 @@
   color: lightslategrey;
 }
 
-::deep .categories{
+::deep .categories {
   padding-bottom: 15%;
 }
