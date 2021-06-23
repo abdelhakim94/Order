@@ -9,20 +9,20 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Client.Pages
 {
-    public partial class DishDetails : ComponentBase, IDisposable
+    public partial class DishDetails : ComponentBase
     {
-        private Spinner spinner;
-        private bool canDispose;
+        Spinner spinner;
 
-        private bool OptionsUnfolded = true;
-        private bool ExtrasUnfolded = true;
+        bool OptionsUnfolded = true;
+        bool ExtrasUnfolded = true;
 
-        private DishDetailsDto dish { get; set; }
-        private string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
-        private int quantity { get; set; } = 1;
+        DishDetailsDto dish { get; set; }
+        int quantity { get; set; } = 1;
 
-        private HashSet<int> SelectedOptions = new();
-        private HashSet<int> SelectedExtras = new();
+        string pictureUrl { get => $"background-image:url({dish?.Picture})"; }
+
+        HashSet<int> SelectedOptions = new();
+        HashSet<int> SelectedExtras = new();
 
         [Parameter]
         public int Id { get; set; }
@@ -42,6 +42,12 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            MainLayout.DisplayPreviousPage = true;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -49,19 +55,6 @@ namespace Order.Client.Pages
             if (firstRender)
             {
                 await GetDishDetails();
-                if (!string.IsNullOrWhiteSpace(Search))
-                {
-                    if (MainLayout is not null)
-                    {
-                        MainLayout.PreviousPage = $"search/results/{Search}";
-                    }
-                }
-                else
-                {
-                    MainLayout.PreviousPage = "search/";
-                    return;
-                }
-                canDispose = true;
                 StateHasChanged();
             }
         }
@@ -87,21 +80,6 @@ namespace Order.Client.Pages
             else
             {
                 NavigationManager.NavigateTo($"ChefDetails/{dish?.ChefId}");
-            }
-        }
-
-        public void Dispose()
-        {
-            if (canDispose)
-            {
-                if (!string.IsNullOrWhiteSpace(Search))
-                {
-                    MainLayout.PreviousPage = $"DishDetails/{Search}/{Id}";
-                }
-                else
-                {
-                    MainLayout.PreviousPage = $"DishDetails/{Search}/{Id}";
-                }
             }
         }
     }

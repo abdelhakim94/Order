@@ -1,5 +1,7 @@
+using System.Linq;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Constants;
+using Order.Client.Services;
 
 namespace Order.Client.Layouts
 {
@@ -8,6 +10,9 @@ namespace Order.Client.Layouts
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        [Inject]
+        public IHistoryService HistoryService { get; set; }
+
         private RenderFragment Top;
         public void SetTop(RenderFragment top)
         {
@@ -15,10 +20,10 @@ namespace Order.Client.Layouts
             base.StateHasChanged();
         }
 
-        public string PreviousPage { get; set; }
+        public bool DisplayPreviousPage { get; set; } = true;
         private string justifyTopContent
         {
-            get => Top is null && string.IsNullOrWhiteSpace(PreviousPage)
+            get => Top is null && !DisplayPreviousPage
             ? JustifyContent.FLEX_END
             : JustifyContent.SPACE_BETWEEN;
         }

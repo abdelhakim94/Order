@@ -9,28 +9,28 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Client.Pages
 {
-    public partial class MenuDetails : ComponentBase, IDisposable
+    public partial class MenuDetails : ComponentBase
     {
-        private Spinner spinner;
-        private bool canDispose;
+        Spinner spinner;
 
-        private MenuDetailsDto menu { get; set; }
-        private int quantity { get; set; } = 1;
-        private DishDetailsModal dishDetailsModal;
+        MenuDetailsDto menu { get; set; }
+        int quantity { get; set; } = 1;
+        DishDetailsModal dishDetailsModal;
 
-        private bool optionsUnfolded = true;
-        private bool extrasUnfolded = true;
-        private Dictionary<int, bool> sectionsUnfolded = new();
+        bool optionsUnfolded = true;
+        bool extrasUnfolded = true;
+        Dictionary<int, bool> sectionsUnfolded = new();
 
-        private HashSet<int> SelectedOptions = new();
-        private HashSet<int> SelectedExtras = new();
+        HashSet<int> SelectedOptions = new();
+        HashSet<int> SelectedExtras = new();
+
         //All three dictionaries have IdSection as key.
         // "selectedSectionDish" maps the section to the chosen dish in that section
         // "sectionDishOptions" maps the section to the chosen options of the chosen dish in that section
         // "sectionDishExtras" maps the section to the chosen extras of the chosen dish in that section
-        private Dictionary<int, int?> selectedSectionDish = new();
-        private Dictionary<int, HashSet<int>> sectionDishOptions = new();
-        private Dictionary<int, HashSet<int>> sectionDishExtras = new();
+        Dictionary<int, int?> selectedSectionDish = new();
+        Dictionary<int, HashSet<int>> sectionDishOptions = new();
+        Dictionary<int, HashSet<int>> sectionDishExtras = new();
 
         [Parameter]
         public int Id { get; set; }
@@ -50,26 +50,18 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            MainLayout.DisplayPreviousPage = true;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
                 await GetMenuDetails();
-                // Entering the details page should be done from a list page.
-                if (!string.IsNullOrWhiteSpace(Search))
-                {
-                    if (MainLayout is not null)
-                    {
-                        MainLayout.PreviousPage = $"search/results/{Search}";
-                    }
-                }
-                else
-                {
-                    MainLayout.PreviousPage = "search/";
-                    return;
-                }
-                canDispose = true;
                 StateHasChanged();
             }
         }
@@ -126,21 +118,6 @@ namespace Order.Client.Pages
                     ? sectionDishExtras[idSection]
                     : null,
             });
-        }
-
-        public void Dispose()
-        {
-            if (canDispose)
-            {
-                if (!string.IsNullOrWhiteSpace(Search))
-                {
-                    MainLayout.PreviousPage = $"MenuDetails/{Search}/{Id}";
-                }
-                else
-                {
-                    MainLayout.PreviousPage = $"MenuDetails/{Search}/{Id}";
-                }
-            }
         }
     }
 }

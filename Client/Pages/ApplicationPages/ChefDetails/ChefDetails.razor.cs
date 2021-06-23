@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Order.Client.Components;
@@ -9,10 +10,9 @@ namespace Order.Client.Pages
 {
     public partial class ChefDetails : ComponentBase
     {
-        private Spinner spinner;
-        private bool canDispose;
-        private ChefDetailsDto chef;
-        private string pictureUrl { get => $"background-image:url({chef?.Picture})"; }
+        Spinner spinner;
+        ChefDetailsDto chef;
+        string pictureUrl { get => $"background-image:url({chef?.Picture})"; }
 
         [Parameter]
         public int Id { get; set; }
@@ -32,26 +32,18 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            MainLayout.DisplayPreviousPage = true;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
                 await GetChefDetails();
-                // Entering the details page should be done from a list page.
-                if (!string.IsNullOrWhiteSpace(Search))
-                {
-                    if (MainLayout is not null)
-                    {
-                        MainLayout.PreviousPage = $"search/results/{Search}";
-                    }
-                }
-                else
-                {
-                    MainLayout.PreviousPage = "search/";
-                    return;
-                }
-                canDispose = true;
                 StateHasChanged();
             }
         }
@@ -67,21 +59,6 @@ namespace Order.Client.Pages
         {
             var segment = isMenu ? "MenuDetails" : "DishDetails";
             NavigationManager.NavigateTo($"{segment}/{id}");
-        }
-
-        public void Dispose()
-        {
-            if (canDispose)
-            {
-                if (!string.IsNullOrWhiteSpace(Search))
-                {
-                    MainLayout.PreviousPage = $"ChefDetails/{Search}/{Id}";
-                }
-                else
-                {
-                    MainLayout.PreviousPage = $"ChefDetails/{Search}/{Id}";
-                }
-            }
         }
     }
 }

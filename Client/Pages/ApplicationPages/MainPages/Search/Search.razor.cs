@@ -12,13 +12,12 @@ using Order.Shared.Dto.Category;
 
 namespace Order.Client.Pages
 {
-    public partial class Search : ComponentBase, IDisposable
+    public partial class Search : ComponentBase
     {
-        private Spinner spinner;
-        private bool canDispose;
-
+        Spinner categoriesSpinner;
+        Spinner addressSpinner;
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
-        CloneableList<CategoryListItemDto> Categories = new();
+        CloneableList<CategoryListItemDto> Categories;
         UserAddressDetailDto CurrentAddress { get; set; }
         AddressModal AddressModal;
         IEnumerable<DatalistOption> options { get; set; } = new List<DatalistOption> { };
@@ -36,7 +35,7 @@ namespace Order.Client.Pages
         public MainPagesLayout BottomLayout { get; set; }
 
         [CascadingParameter]
-        public MainLayout TopLayout { get; set; }
+        public MainLayout MainLayout { get; set; }
 
         [CascadingParameter]
         public Toast Toast { get; set; }
@@ -46,26 +45,37 @@ namespace Order.Client.Pages
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
-                canDispose = true;
-                if (BottomLayout is not null) BottomLayout.SearchSelected = true;
-                if (TopLayout is not null) TopLayout.PreviousPage = string.Empty;
+                BottomLayout.SearchSelected = true;
+                MainLayout.DisplayPreviousPage = false;
+
+                Task<CloneableList<CategoryListItemDto>> categoriesTask = null;
+                Task<UserAddressDetailDto> addressTask = null;
 
                 Categories = Store.Get<CloneableList<CategoryListItemDto>>(StoreKey.CATEGORIES);
                 if (Categories is null)
                 {
-                    spinner?.Show();
-                    Categories = await HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories", Toast);
-                    Categories = Categories is null ? new() : Categories;
-                    Store.Set(StoreKey.CATEGORIES, Categories);
-                    spinner?.Hide();
+                    categoriesSpinner?.Show();
+                    categoriesTask = HubConnection.Invoke<CloneableList<CategoryListItemDto>>("GetCategories", Toast);
                 }
 
                 CurrentAddress = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
                 if (CurrentAddress is null)
                 {
-                    spinner?.Show();
-                    CurrentAddress = await HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
-                    spinner?.Hide();
+                    addressSpinner?.Show();
+                    Console.WriteLine("showing spinner");
+                    addressTask = HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
+                }
+
+                if (categoriesTask is not null)
+                {
+                    Categories = await categoriesTask;
+                    Store.Set(StoreKey.CATEGORIES, Categories);
+                    categoriesSpinner?.Hide();
+                }
+
+                if (addressTask is not null)
+                {
+                    CurrentAddress = await addressTask;
                     if (CurrentAddress is not null)
                     {
                         Store.Set(StoreKey.ADDRESS, CurrentAddress);
@@ -74,6 +84,7 @@ namespace Order.Client.Pages
                     {
                         AddressModal.Show();
                     }
+                    addressSpinner?.Hide();
                 }
 
                 Store.OnUpdate += OnStoreAddressChange;
@@ -107,15 +118,6 @@ namespace Order.Client.Pages
             }
 
             NavigationManager.NavigateTo($"search/results/{search}");
-        }
-
-        public void Dispose()
-        {
-            if (canDispose)
-            {
-                Store.OnUpdate -= OnStoreAddressChange;
-                if (TopLayout is not null) TopLayout.PreviousPage = "search/";
-            }
         }
     }
 }

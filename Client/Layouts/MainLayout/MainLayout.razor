@@ -6,12 +6,11 @@
 @inherits LayoutComponentBase
 
 <div>
-    <Row CssClass="cart-button" Justify=@justifyTopContent>
+    <Row CssClass="layout-container" Justify=@justifyTopContent>
 
-        @if (!string.IsNullOrWhiteSpace(PreviousPage))
+        @if (DisplayPreviousPage is true)
         {
-            <NavButton ImagesInSprite=1 Icon="icons/previous.png" @onclick=@(() =>
-            NavigationManager.NavigateTo(PreviousPage)) />
+            <NavButton ImagesInSprite=1 Icon="icons/previous.png" @onclick=@(() => HistoryService.GoBack()) />
         }
 
         @Top

@@ -13,25 +13,23 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Client.Pages
 {
-    public partial class SearchResults : ComponentBase, IDisposable
+    public partial class SearchResults : ComponentBase
     {
-        private Spinner spinner;
-        private bool canDispose;
-
+        Spinner spinner;
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
 
-        private PaginatedList<DishOrMenuListItemDto> dishAndMenues;
-        private DishesOrMenuesSearchFilter dishAndMenuesFilter;
-        private int dishAndMenuesPageIndex;
+        PaginatedList<DishOrMenuListItemDto> dishAndMenues;
+        DishesOrMenuesSearchFilter dishAndMenuesFilter;
+        int dishAndMenuesPageIndex;
 
-        private PaginatedList<ChefListItemDto> chefs;
-        private ChefsSearchFilter chefsSearchFilter;
-        private int chefsPageIndex;
+        PaginatedList<ChefListItemDto> chefs;
+        ChefsSearchFilter chefsSearchFilter;
+        int chefsPageIndex;
 
-        private bool searchByChefs;
-        private UserAddressDetailDto address;
+        bool searchByChefs;
+        UserAddressDetailDto address;
 
-        private string remaining
+        string remaining
         {
             get => searchByChefs
                 ? $"{chefs?.TotalItems - chefs?.Items?.Count} {UIMessages.Remaining}"
@@ -56,13 +54,17 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            MainLayout.DisplayPreviousPage = true;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
-                canDispose = true;
-                MainLayout.PreviousPage = "search/";
                 address = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
                 dishAndMenuesPageIndex = 1;
                 chefsPageIndex = 1;
@@ -148,6 +150,7 @@ namespace Order.Client.Pages
             {
                 await SearchDishesAndMenues();
             }
+            StateHasChanged();
         }
 
         void NavigateToDishOrMenuDetails(DishOrMenuListItemDto item)
@@ -182,14 +185,6 @@ namespace Order.Client.Pages
             chefsPageIndex = 1;
             Search = search;
             await SearchChefsOrDishesAndMenues();
-        }
-
-        public void Dispose()
-        {
-            if (canDispose)
-            {
-                MainLayout.PreviousPage = $"search/results/{Search}";
-            }
         }
     }
 }
