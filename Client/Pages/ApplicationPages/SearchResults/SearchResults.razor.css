@@ -1,3 +1,7 @@
+::deep .main {
+  min-height: 101vh;
+}
+
 .text {
   color: lightslategrey;
   margin: 8%;

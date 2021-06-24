@@ -13,6 +13,6 @@ namespace Order.Client.Services
             this.jsRuntime = jsRuntime;
         }
 
-        public ValueTask GoBack() => jsRuntime.InvokeVoidAsync("window.history.back");
+        public ValueTask GoBack() => jsRuntime.InvokeVoidAsync("GoBack");
     }
 }

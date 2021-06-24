@@ -1,6 +1,7 @@
 @page "/search/{Search}"
 
 @using Order.Client.Components
+@using Order.Client.Constants
 @using Order.Client.Layouts
 @using Order.Shared.Security.Policies
 @using Microsoft.AspNetCore.Authorization
@@ -15,7 +16,7 @@
                 ValueChanged=@HandleDishOrChefToggle />
         </Top>
     </LayoutSetter>
-    <Column>
+    <Column CssClass="main" Justify=@JustifyContent.FLEX_START Align=@AlignItems.STRETCH ExpandHorizontally=@true>
         <EditForm Model=@SearchValue>
             <OInputText CssClass="search-bar" PlaceHolder=@(searchByChefs ? M.ChefSearchBar : M.DishOrMenuSearchBar)
                 RightIcon="icons/searchbar-magnifier.png" @bind-Value=@SearchValue.Value
@@ -29,10 +30,6 @@
                 {
                     <ChefListItem @key=@item Chef=@item @onclick=@(() => NavigateToChefDetails(item)) />
                 }
-                if (chefs is not null && chefs.Items.Count < chefs.TotalItems)
-                {
-                    <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues />
-                }
             }
             else
             {
@@ -40,10 +37,6 @@
                 foreach (var item in dishAndMenues?.Items ?? new())
                 {
                     <DishOrMenuListItem @key=@item DishOrMenu=@item @onclick=@(() => NavigateToDishOrMenuDetails(item)) />
-                }
-                if (dishAndMenues is not null && dishAndMenues.Items.Count < dishAndMenues.TotalItems)
-                {
-                    <Scroll Text=@remaining @onclick=@SearchChefsOrDishesAndMenues />
                 }
             }
         </Spinner>

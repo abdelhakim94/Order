@@ -62,7 +62,6 @@ namespace Order.Client.Pages
                 if (CurrentAddress is null)
                 {
                     addressSpinner?.Show();
-                    Console.WriteLine("showing spinner");
                     addressTask = HubConnection.Invoke<UserAddressDetailDto>("GetLastUsedAddress", Toast);
                 }
 

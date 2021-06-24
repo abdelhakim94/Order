@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Order.Client.Components;
 using Order.Client.Constants;
 using Order.Client.Layouts;
@@ -13,7 +14,7 @@ using Order.Shared.Dto.Dish;
 
 namespace Order.Client.Pages
 {
-    public partial class SearchResults : ComponentBase
+    public partial class SearchResults : ComponentBase, IDisposable
     {
         Spinner spinner;
         ValueWrapperDto<string> SearchValue { get; set; } = new(string.Empty);
@@ -28,13 +29,6 @@ namespace Order.Client.Pages
 
         bool searchByChefs;
         UserAddressDetailDto address;
-
-        string remaining
-        {
-            get => searchByChefs
-                ? $"{chefs?.TotalItems - chefs?.Items?.Count} {UIMessages.Remaining}"
-                : $"{dishAndMenues?.TotalItems - dishAndMenues?.Items?.Count} {UIMessages.Remaining}";
-        }
 
         [Parameter]
         public string Search { get; set; }
@@ -54,6 +48,10 @@ namespace Order.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
+        DotNetObjectReference<SearchResults> thisReference;
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -68,6 +66,11 @@ namespace Order.Client.Pages
                 address = Store.Get<UserAddressDetailDto>(StoreKey.ADDRESS);
                 dishAndMenuesPageIndex = 1;
                 chefsPageIndex = 1;
+                SearchValue.Value = Search;
+
+                var thisReference = DotNetObjectReference.Create(this);
+                await JSRuntime.InvokeVoidAsync("OnSearchResultEndScroll", thisReference);
+
                 await SearchChefsOrDishesAndMenues();
             }
         }
@@ -75,73 +78,17 @@ namespace Order.Client.Pages
         async Task HandleDishOrChefToggle(bool value)
         {
             searchByChefs = value;
-            if (value && chefs is null)
-            {
-                await SearchChefs();
-            }
-            else if (!value && dishAndMenues is null)
-            {
-                await SearchDishesAndMenues();
-            }
+            await SearchChefsOrDishesAndMenues();
         }
 
-        async Task SearchDishesAndMenues()
+        [JSInvokable("SearchChefsOrDishesAndMenues")]
+        public async Task SearchChefsOrDishesAndMenues()
         {
             if (address is null)
             {
                 NavigationManager.NavigateTo("search/");
                 return;
             }
-
-            dishAndMenuesFilter = new()
-            {
-                Search = Search,
-                Latitude = address.Latitude,
-                Longitude = address.Longitude,
-                PageIndex = dishAndMenuesPageIndex++,
-                ItemsPerPage = Pagination.ItemsPerPage,
-            };
-
-            spinner?.Show();
-            var results = await HubConnection.Invoke<PaginatedList<DishOrMenuListItemDto>, DishesOrMenuesSearchFilter>(
-                "GetDishesAndMenues",
-                dishAndMenuesFilter,
-                Toast);
-            if (dishAndMenues is not null) dishAndMenues.AddRange(results.Items, new DishOrMenuListItemEqualityComparer());
-            else dishAndMenues = results;
-            spinner?.Hide();
-        }
-
-        async Task SearchChefs()
-        {
-            if (address is null)
-            {
-                NavigationManager.NavigateTo("search/");
-                return;
-            }
-
-            chefsSearchFilter = new()
-            {
-                Search = Search,
-                Latitude = address.Latitude,
-                Longitude = address.Longitude,
-                PageIndex = chefsPageIndex++,
-                ItemsPerPage = Pagination.ItemsPerPage,
-            };
-
-            spinner?.Show();
-            var results = await HubConnection.Invoke<PaginatedList<ChefListItemDto>, ChefsSearchFilter>(
-                "GetChefs",
-                chefsSearchFilter,
-                Toast);
-            if (chefs is not null) chefs.AddRange(results.Items, new ChefListItemComparer());
-            else chefs = results;
-            spinner?.Hide();
-        }
-
-        async Task SearchChefsOrDishesAndMenues()
-        {
-            SearchValue.Value = Search;
             if (searchByChefs)
             {
                 await SearchChefs();
@@ -151,6 +98,54 @@ namespace Order.Client.Pages
                 await SearchDishesAndMenues();
             }
             StateHasChanged();
+        }
+
+        async Task SearchChefs()
+        {
+            if (chefs is null || chefs.Items.Count < chefs.TotalItems)
+            {
+                chefsSearchFilter = new()
+                {
+                    Search = Search,
+                    Latitude = address.Latitude,
+                    Longitude = address.Longitude,
+                    PageIndex = chefsPageIndex++,
+                    ItemsPerPage = Pagination.ItemsPerPage,
+                };
+
+                spinner?.Show();
+                var results = await HubConnection.Invoke<PaginatedList<ChefListItemDto>, ChefsSearchFilter>(
+                    "GetChefs",
+                    chefsSearchFilter,
+                    Toast);
+                if (chefs is not null) chefs.AddRange(results.Items, new ChefListItemComparer());
+                else chefs = results;
+                spinner?.Hide();
+            }
+        }
+
+        async Task SearchDishesAndMenues()
+        {
+            if (dishAndMenues is null || dishAndMenues.Items.Count < dishAndMenues.TotalItems)
+            {
+                dishAndMenuesFilter = new()
+                {
+                    Search = Search,
+                    Latitude = address.Latitude,
+                    Longitude = address.Longitude,
+                    PageIndex = dishAndMenuesPageIndex++,
+                    ItemsPerPage = Pagination.ItemsPerPage,
+                };
+
+                spinner?.Show();
+                var results = await HubConnection.Invoke<PaginatedList<DishOrMenuListItemDto>, DishesOrMenuesSearchFilter>(
+                    "GetDishesAndMenues",
+                    dishAndMenuesFilter,
+                    Toast);
+                if (dishAndMenues is not null) dishAndMenues.AddRange(results.Items, new DishOrMenuListItemEqualityComparer());
+                else dishAndMenues = results;
+                spinner?.Hide();
+            }
         }
 
         void NavigateToDishOrMenuDetails(DishOrMenuListItemDto item)
@@ -185,6 +180,17 @@ namespace Order.Client.Pages
             chefsPageIndex = 1;
             Search = search;
             await SearchChefsOrDishesAndMenues();
+            NavigationManager.NavigateTo($"search/{SearchValue?.Value}");
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            if (thisReference is not null)
+            {
+                // TO DO : Remove the listener added to the 'scroll' event in the javascript code.
+                thisReference.Dispose();
+            }
         }
     }
 }
