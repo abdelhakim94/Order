@@ -1,15 +1,15 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Order.Shared.Contracts;
 using Order.Shared.Dto.Account;
-using Order.Shared.Security;
-using System.Net.Http.Json;
-using System.Text.Json;
 using Order.Shared.Exceptions;
+using Order.Shared.Security;
 
 namespace Order.Client.Services
 {
@@ -104,7 +104,7 @@ namespace Order.Client.Services
             var currentAccessToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.AccessToken));
             var currentRefreshToken = await localStorage.GetItemAsync<string>(nameof(SignInResultDto.TokenPair.RefreshToken));
 
-            var response = await httpClient.PostAsJsonAsync<TokenPairDto>("api/user/RefreshExpiredTokens", new()
+            var response = await httpClient.PostAsJsonAsync<TokenPairDto>("api/account/RefreshExpiredTokens", new()
             {
                 AccessToken = currentAccessToken,
                 RefreshToken = currentRefreshToken,

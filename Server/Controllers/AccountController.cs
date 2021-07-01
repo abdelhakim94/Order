@@ -14,12 +14,12 @@ namespace Order.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class UserController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly IAccountService accountService;
-        private readonly ILogger<UserController> logger;
+        private readonly ILogger<AccountController> logger;
 
-        public UserController(IAccountService accountService, ILogger<UserController> logger)
+        public AccountController(IAccountService accountService, ILogger<AccountController> logger)
         {
             this.accountService = accountService;
             this.logger = logger;
@@ -31,7 +31,7 @@ namespace Order.Server.Controllers
         {
             return accountService.SignUp(userInfo, p => Url.Action(
                 "ConfirmEmail",
-                "User",
+                "Account",
                 p,
                 Request.Scheme
             ));
@@ -45,7 +45,7 @@ namespace Order.Server.Controllers
             {
                 await accountService.ConfirmEmail(confirmation, p => Url.Action(
                     "ConfirmEmail",
-                    "User",
+                    "Account",
                     p,
                     Request.Scheme
                 ));
@@ -75,7 +75,7 @@ namespace Order.Server.Controllers
         {
             return accountService.RequestResetPassword(request, p => Url.Action(
                 "RedirectToResetPassword",
-                "User",
+                "Account",
                 p,
                 Request.Scheme
             ));
@@ -94,7 +94,7 @@ namespace Order.Server.Controllers
         {
             return accountService.ResetPassword(resetPwInfo, p => Url.Action(
                 "RedirectToResetPassword",
-                "User",
+                "Account",
                 p,
                 Request.Scheme
             ));
@@ -140,7 +140,7 @@ namespace Order.Server.Controllers
         [AllowAnonymous]
         public IActionResult ExternalProviderSignIn(ValueWrapperDto<string> provider)
         {
-            var redirectUrl = Url.Action("ExternalProviderSignInCallback", "User");
+            var redirectUrl = Url.Action("ExternalProviderSignInCallback", "Account");
             var properties = accountService.ConfigureSignInWithExternalProvider(provider.Value, redirectUrl);
             return new ChallengeResult(provider.Value, properties);
         }
@@ -176,7 +176,7 @@ namespace Order.Server.Controllers
             var result = await accountService.HandleFirstExternalSignIn(
                 userEmail,
                 info,
-                p => Url.Action("ConfirmExternalProviderAssociation", "User", p, Request.Scheme)
+                p => Url.Action("ConfirmExternalProviderAssociation", "Account", p, Request.Scheme)
             );
 
             return Redirect($"/app/SignIn/{result?.TokenPair?.AccessToken}/{result?.TokenPair?.RefreshToken}");

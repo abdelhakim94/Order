@@ -32,7 +32,7 @@ namespace Order.Server.Persistence
                 .HasColumnName("address2")
                 .HasColumnType("character varying")
                 .IsRequired()
-                .HasDefaultValue<string>(string.Empty);
+                .HasDefaultValue<string>("");
 
             builder.Property(ua => ua.IdCity)
                 .HasColumnName("id_city")

@@ -18,7 +18,7 @@ namespace Order.Client.Components
 
         protected override void OnInitialized()
         {
-            timer = new Timer(3000);
+            timer = new Timer(5000);
             timer.Elapsed += OnTimedEvent;
         }
 

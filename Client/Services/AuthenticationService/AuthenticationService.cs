@@ -28,7 +28,7 @@ namespace Order.Client.Services
             Toast toast = default(Toast))
         {
             return httpClientService.Post<SignUpDto, SignUpResultDto>(
-                "api/user/SignUp",
+                "api/account/SignUp",
                 userInfo,
                 toast);
         }
@@ -38,7 +38,7 @@ namespace Order.Client.Services
             Toast toast = default(Toast))
         {
             var result = await httpClientService.Post<SignInDto, SignInResultDto>(
-                "api/user/SignIn",
+                "api/account/SignIn",
                 userInfo,
                 toast);
             if (result is not null && result.Successful)
@@ -59,7 +59,7 @@ namespace Order.Client.Services
 
         public async Task SignOut(Toast toast = default(Toast))
         {
-            await httpClientService.Get("api/user/SignOut", toast);
+            await httpClientService.Get("api/account/SignOut", toast);
             await authenticationStateProvider.MarkUserAsSignedOut();
         }
 
@@ -68,7 +68,7 @@ namespace Order.Client.Services
             Toast toast = default(Toast))
         {
             var result = await httpClientService.Post<ValueWrapperDto<string>, TokenPairDto>(
-                "api/user/RefreshTokens",
+                "api/account/RefreshTokens",
                 refreshToken,
                 toast);
             if (result is not null)
@@ -90,7 +90,7 @@ namespace Order.Client.Services
             Toast toast = default(Toast))
         {
             return httpClientService.Post<RequestResetPasswordDto>(
-                "api/user/RequestResetPassword",
+                "api/account/RequestResetPassword",
                 userEmail,
                 toast);
         }
@@ -100,7 +100,7 @@ namespace Order.Client.Services
             Toast toast)
         {
             return await httpClientService.Post<ResetPasswordDto, ResetPasswordResultDto>(
-                "api/user/ResetPassword",
+                "api/account/ResetPassword",
                 password,
                 toast);
         }
@@ -110,7 +110,7 @@ namespace Order.Client.Services
             Toast toast)
         {
             return httpClientService.Post<ValueWrapperDto<string>, ValueWrapperDto<string>>(
-                "api/user/ExternalProviderSignIn",
+                "api/account/ExternalProviderSignIn",
                 provider,
                 toast);
         }

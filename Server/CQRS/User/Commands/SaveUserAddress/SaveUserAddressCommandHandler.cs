@@ -20,6 +20,13 @@ namespace Order.Server.CQRS.User.Commands
 
         public async Task<bool> Handle(SaveUserAddressCommand command, CancellationToken ct)
         {
+            // Since Address2 is part of the primary key, if no value
+            // is specified, postgres will insert a random value in it.
+            // the empty string ("") is the default value for Address2
+            // so just replace null with it.
+            if (command.Address.Address2 is null)
+                command.Address.Address2 = string.Empty;
+
             var address = await context.Address
                 .Include(a => a.UsersAddress)
                 .FirstOrDefaultAsync(a =>

@@ -23,7 +23,7 @@
                         OptionChanged=@OnOptionChanged />
                     <ValidationMessage For=@( () => CurrentAddress.City ) />
                 </Group>
-                @if (AllAddresses is not null && AllAddresses.Any())
+                @if (AllAddresses?.Any() is true)
                 {
                     <LineTextSeparator CssClass="separator" Text=@M.RecentAddresses />
                     <OInputSelect PlaceHolder=@M.DeliveryAddress @bind-Value=@SelectedRecentAddress

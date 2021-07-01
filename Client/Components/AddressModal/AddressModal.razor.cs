@@ -20,12 +20,16 @@ namespace Order.Client.Components
         UserAddressDetailDto CurrentAddress = new();
         List<IdentifiedUserAddressDetailDto> AllAddresses = new();
         bool shouldReload;
+
+        string selectedRecentAddress;
         string SelectedRecentAddress
         {
-            get =>
-                AllAddresses?.FirstOrDefault(a => a.Id == CurrentAddress?.ToString())?.Id;
-            set =>
+            get => selectedRecentAddress;
+            set
+            {
+                selectedRecentAddress = value;
                 CurrentAddress = AllAddresses?.FirstOrDefault(a => a.Id == value).Address.Clone();
+            }
         }
 
         List<DatalistOption> CityOptions { get; set; } = new();

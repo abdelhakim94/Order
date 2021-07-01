@@ -41,7 +41,7 @@ namespace Order.Server.Services.EmailService
             var subject = "Confirmation de votre adresse mail";
             var body = new StringBuilder();
             body.AppendLine("<p>Félicitations! vous êtes à une étape de la finalisation de la création de votre compte.</p>");
-            body.AppendLine($"<p>Veuillez cliquer <a href=\"{ confirmationUrl}\">ici</a> afin de confirmer votre adresse mail.</p>");
+            body.AppendLine($"<p>Veuillez cliquer <a href=\"{confirmationUrl}\">ici</a> afin de confirmer votre adresse mail.</p>");
             body.AppendLine("<p>Ceci est un email automatique. Veuillez ne pas y répondre.</p>");
             body.AppendLine("<p>Cordialement,</p>");
             body.AppendLine("<p>l'équipe Order</p>");
