@@ -20,6 +20,7 @@ namespace Order.Server.CQRS.Category.Queries
         {
             return await context.Category
                 .AsNoTracking()
+                .OrderBy(c => c.Order)
                 .Select(c => new CategoryListItemDto
                 {
                     Id = c.Id,

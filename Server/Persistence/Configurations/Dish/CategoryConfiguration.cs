@@ -32,6 +32,10 @@ namespace Order.Server.Persistence
             builder.Property(e => e.IsMain)
                 .HasColumnName("is_main")
                 .HasColumnType("boolean");
+
+            builder.Property(e => e.Order)
+                .HasColumnName("ordre")
+                .HasColumnType("integer");
         }
     }
 }
