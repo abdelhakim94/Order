@@ -2,50 +2,53 @@
 -- CATEGORY
 -- -----------------------------------------------------------------------------
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 1, 'Pizza', 'images/category/pizza.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 1, 'Traditionnel', 'images/category/traditionnel.png', true, 1
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 1);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 2, 'Soupes', 'images/category/soupes.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 2, 'Djouez et tadjines', 'images/category/djouez-et-tadjines.png', true, 2
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 2);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 3, 'Salades', 'images/category/salades.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 3, 'Les pains', 'images/category/pains.png', true, 3
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 3);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 4, 'Sandwitches', 'images/category/sandwitches.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 4, 'Soupes', 'images/category/soupes.png', true, 4
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 4);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 5, 'Viandes', 'images/category/viandes.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 5, 'Riz et grains', 'images/category/riz-et-grains.png', true, 5
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 5);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 6, 'Salées', 'images/category/salees.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 6, 'Pâtes', 'images/category/pates.png', true, 6
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 6);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 7, 'Riz et grains', 'images/category/riz-et-grains.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 7, 'Pizza', 'images/category/pizza.png', true, 7
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 7);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 8, 'Poisson et fruits de mer', 'images/category/poisson-et-fruits-de-mer.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 8, 'Salées', 'images/category/salees.png', true, 8
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 8);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 9, 'Pâtes', 'images/category/pates.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 9, 'Sandwitches', 'images/category/sandwitches.png', true, 9
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 9);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 10, 'Boulangeries', 'images/category/boulangeries.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 10, 'Salades', 'images/category/salades.png', true, 10
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 10);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 11, 'Desserts', 'images/category/desserts.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 11, 'Viandes', 'images/category/viandes.png', true, 11
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 11);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 12, 'Pâtisseries', 'images/category/patisseries.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 12, 'Poisson et fruits de mer', 'images/category/poisson-et-fruits-de-mer.png', true, 12
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 12);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 13, 'Djouez et tadjines', 'images/category/djouez-et-tadjines.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 13, 'Desserts', 'images/category/desserts.png', true, 13
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 13);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 14, 'Boissons', 'images/category/boissons.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 14, 'Boissons', 'images/category/boissons.png', true, 14
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 14);
 
-INSERT INTO order_schema.category( id, label, picture, is_main ) SELECT 15, 'Légumes', 'images/category/legumes.png', true 
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 15, 'Pâtisseries', 'images/category/patisseries.png', true, 15
     WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 15);
+
+INSERT INTO order_schema.category( id, label, picture, is_main, ordre) SELECT 16, 'Gâteaux', 'images/category/gateaux.png', true, 16
+    WHERE NOT EXISTS (SELECT id FROM order_schema.category WHERE id = 16);
 
 -- -----------------------------------------------------------------------------
 -- WILAYA
