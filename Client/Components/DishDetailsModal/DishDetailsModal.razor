@@ -12,7 +12,7 @@
                     @dish?.Description
                 </Row>
                 <Group CssClass="dish-modal-blank" />
-                <Row Justify=@JustifyContent.FLEX_START Align=@AlignItems.CENTER>
+                <Row Justify=@JustifyContent.SPACE_BETWEEN Align=@AlignItems.CENTER ExpandHorizontally=@true>
                     <IconData CssClass="dish-modal-chef-data" IconPath="icons/chef-hat.png" Data=@dish?.ChefFullName />
                     <IconData CssClass="dish-modal-chef-data" IconPath="icons/position.png" Data=@dish?.ChefCity />
                 </Row>

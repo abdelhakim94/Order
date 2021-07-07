@@ -18,6 +18,7 @@ namespace Order.Server.CQRS.Dish.Queries
         public async Task<DishDetailsDto> Handle(GetDishDetailsQuery query, CancellationToken ct)
         {
             return await context.Dish
+                .Where(d => d.Id == query.Id)
                 .Select(d => new DishDetailsDto
                 {
                     Id = d.Id,
@@ -30,8 +31,8 @@ namespace Order.Server.CQRS.Dish.Queries
                         .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
                         .Select(cs => cs.Card.User.Id)
                         .Union(d.DishSections
-                            .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
-                            .Where(ms => ms.MenuOwns)
+                            .SelectMany(ds => ds.Section.MenuesSection.Where(ms => ms.MenuOwns), (ds, ms) => ms)
+                            .SelectMany(ms => ms.Menu.MenuSections.Where(ms => !ms.MenuOwns), (ms1, ms2) => ms2)
                             .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
                             .Select(cs => cs.Card.User.Id))
                         .Single(id => id != 0),
@@ -39,13 +40,12 @@ namespace Order.Server.CQRS.Dish.Queries
                     ChefFullName = d.DishSections
                             .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
                             .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
-                            .FirstOrDefault() ??
-                        d.DishSections
-                            .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
-                            .Where(ms => ms.MenuOwns)
-                            .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
-                            .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName)
-                            .FirstOrDefault(),
+                            .Union(d.DishSections
+                                .SelectMany(ds => ds.Section.MenuesSection.Where(ms => ms.MenuOwns), (ds, ms) => ms)
+                                .SelectMany(ms => ms.Menu.MenuSections.Where(ms => !ms.MenuOwns), (ms1, ms2) => ms2)
+                                .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
+                                .Select(cs => cs.Card.User.FirstName + " " + cs.Card.User.LastName))
+                            .Single(),
 
                     ChefCity = d.DishSections
                             .SelectMany(ds => ds.Section.CardsSection, (ds, cs) => cs)
@@ -55,18 +55,17 @@ namespace Order.Server.CQRS.Dish.Queries
                                 .Address
                                 .City
                                 .Name)
-                            .FirstOrDefault() ??
-                        d.DishSections
-                            .SelectMany(ds => ds.Section.MenuesSection, (ds, ms) => ms)
-                            .Where(ms => ms.MenuOwns)
-                            .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
-                            .Select(cs => cs.Card.User.UserAddresses
-                                .OrderByDescending(ua => ua.LastTimeUsed)
-                                .FirstOrDefault()
-                                .Address
-                                .City
-                                .Name)
-                            .FirstOrDefault(),
+                            .Union(d.DishSections
+                                .SelectMany(ds => ds.Section.MenuesSection.Where(ms => ms.MenuOwns), (ds, ms) => ms)
+                                .SelectMany(ms => ms.Menu.MenuSections.Where(ms => !ms.MenuOwns), (ms1, ms2) => ms2)
+                                .SelectMany(ms => ms.Section.CardsSection, (ms, cs) => cs)
+                                .Select(cs => cs.Card.User.UserAddresses
+                                    .OrderByDescending(ua => ua.LastTimeUsed)
+                                    .FirstOrDefault()
+                                    .Address
+                                    .City
+                                    .Name))
+                            .Single(),
 
                     Options = d.DishOptions
                         .Select(dop => new OptionDetailsDto
@@ -85,7 +84,7 @@ namespace Order.Server.CQRS.Dish.Queries
                         })
                         .ToList(),
                 })
-                .FirstOrDefaultAsync(d => d.Id == query.Id);
+                .SingleOrDefaultAsync();
         }
     }
 }
