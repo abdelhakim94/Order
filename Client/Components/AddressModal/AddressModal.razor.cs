@@ -124,6 +124,15 @@ namespace Order.Client.Components
         async Task HandleAddressSave(EditContext context)
         {
             spinner?.Show();
+            if (!CityOptions.Any(co => co.Value == CurrentAddress.City))
+            {
+                CurrentAddress.City = null;
+                CurrentAddress.IdCity = 0;
+                CityOptions.RemoveAll(x => true);
+                context.Validate();
+                spinner?.Hide();
+                return;
+            }
             var result = await HubConnection.Invoke<bool, UserAddressDetailDto>("SaveUserAddress", CurrentAddress, Toast);
             if (result)
             {
