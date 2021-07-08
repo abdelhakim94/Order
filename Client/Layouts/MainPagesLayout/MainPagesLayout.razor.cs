@@ -5,6 +5,9 @@ namespace Order.Client.Layouts
 {
     public partial class MainPagesLayout : LayoutComponentBase
     {
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
+
         // This is really bad design choice. Should refactor. Violation of the Open-Closed principle.
         // This implies that if a new page is added, the same pattern below
         // will be applied to it. This layout should instead have a method (AddPage)

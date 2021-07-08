@@ -18,12 +18,12 @@
 ::deep .element,
 ::deep .group {
   margin: 0%;
-  overflow: scroll;
+  overflow: hidden;
   max-height: 1.4em;
 }
 
 .second {
-  max-height: 5em;
+  max-height: 4.1em;
 }
 
 .third {
